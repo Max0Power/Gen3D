@@ -249,11 +249,25 @@ function generate(callbacks) {
 		
 		const args = httpGetArgs([lat_1,lng_1,lat_2,lng_2,max]);
 		httpGet(url,args,function(res) {
+            
+            /* interpoloi puuttuvat arvot */
+            var t = fillAllDataHoles(t);
+            //var t = lineaari(res.heights);
+            t = tuplavarmistus(t);
+            res.heights = t;
+            
 			var result = [res.heights,res.minMaxH];
 			callbacks.map(f => f(...result));
 		});
     } else {
 		httpGet(url,"",function(res) {
+            
+            /* interpoloi puuttuvat arvot */
+            var t = fillAllDataHoles(t);
+            //var t = lineaari(res.heights);
+            t = tuplavarmistus(t);
+            res.heights = t;
+            
 			var result = [res.heights,res.minMaxH];
 			callbacks.map(f => f(...result));
 		})
