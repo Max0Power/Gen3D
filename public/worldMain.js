@@ -251,7 +251,7 @@ function generate(callbacks) {
 		httpGet(url,args,function(res) {
             
             /* interpoloi puuttuvat arvot */
-            var t = fillAllDataHoles(t);
+            var t = fillAllDataHoles(res.heights);
             //var t = lineaari(res.heights);
             t = tuplavarmistus(t);
             res.heights = t;
@@ -263,7 +263,7 @@ function generate(callbacks) {
 		httpGet(url,"",function(res) {
             
             /* interpoloi puuttuvat arvot */
-            var t = fillAllDataHoles(t);
+            var t = fillAllDataHoles(res.heights);
             //var t = lineaari(res.heights);
             t = tuplavarmistus(t);
             res.heights = t;
