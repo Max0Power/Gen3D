@@ -1,0 +1,56 @@
+<!--
+/**
+ * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
+ * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
+ * @version 12.12.2018
+ */
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8"/>
+
+      <!-- lib -->
+      <script src="lib/three.js"></script> <!-- 3d mallien luonnin lisa kirjasto -->
+      <script src="lib/OrbitControls.js"></script> <!-- Three js trackball controllit 3d mallin katseluun -->
+
+      <!-- modules -->
+      <script src="modules/textures.js"></script> <!-- Luo 3d mallin -->
+      <script src="modules/uiComponents.js"></script> <!-- Paaohjelma -->
+      <script src="modules/controller3d.js"></script> <!-- Luo 3d mallin -->
+      <script src="modules/simplex.js"></script> <!-- Luo 3d mallin -->
+      <script src="modules/textureEditor.js"></script> <!-- Luo textureEditorin -->	
+
+      <!-- css -->
+      <link rel="StyleSheet" href="styles/styles.css" type="text/css" />
+
+      <!-- Bootstrap -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+      <!-- main -->
+      <script src="noiseMain.js"></script>
+
+      <title>3D-Gen</title>
+    </head>
+    <body>	
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand">3D-Gen</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="world.html">World Map 3D</a></li>
+            <li class="active"><a href="noise.html">Noise generator</a></li>
+            <li><a href="userImg.html">Make 3D from picture</a></li>
+            <li><a href="about.html">About us</a></li>
+          </ul>   
+        </div>
+        <div id="tools"></div>  <!-- <label>Show/hide</label> -->
+      </nav>
+      <div id="container3D"></div> <!-- div, johon 3D malli luodaan -->
+      <a href="instructions/noise.html" target="_blank">
+        <img id="help" src="instructions/help.png" />
+      </a>
+    </body>
+</html>
