@@ -1,0 +1,59 @@
+<!--
+/**
+ * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
+ * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
+ * @version 12.12.2018
+ */
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+
+	<!-- css -->
+	<link rel="StyleSheet" href="styles/styles.css" type="text/css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- modules -->
+	<script src="modules\readImg.js"></script>
+	<script src="modules\DataController.js"></script>
+	<script src="modules\controller3d.js"></script> <!-- Luo 3d mallin -->
+	<script src="modules/uiComponents.js"></script>
+	<script src="modules/textures.js"></script>
+	<script src="modules/textureEditor.js"></script>
+
+	<!-- lib -->
+	<script src="lib\three.js"></script> <!-- 3d mallien luonnin lisa kirjasto -->
+	<script src="lib\OrbitControls.js"></script> <!-- Three js trackball controllit 3d mallin katseluun -->
+	
+	<!-- main -->
+	<script src="userImgMain.js"></script>
+	
+	<title>3D-Gen</title>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+		<div class="navbar-header">
+		  <a class="navbar-brand">3D-Gen</a>
+		</div>
+		<ul class="nav navbar-nav">
+		  <li><a href="world.html">World Map 3D</a></li>
+			<li><a href="noise.html">Noise generator</a></li>
+			<li class="active"><a href="#">Make 3D from picture</a></li>
+				<li><a href="about.html">About us</a></li>
+		</ul>
+		</div>
+		<div id="tools"> <!-- class="container-fluid" -->
+			<!--<button class="btn btn-primary navbar-btn" type="button" id="buttonMap">Map</button>
+			<button class="btn btn-primary navbar-btn" type="button" id="buttonController3D">Controller 3D</button>
+			<button class="btn btn-primary navbar-btn" type="button" id="buttonGrayscale">Grayscale</button>-->
+		</div>
+	</nav>
+	<div id="container3D"> </div>
+	<a href="instructions/userImg.html" target="_blank">
+        <img id="help" src="instructions/help.png" />
+    </a>
+</body>
+</html>

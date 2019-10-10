@@ -1,0 +1,127 @@
+﻿/**
+ * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
+ * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
+ * @version 12.12.2018
+ */
+
+ html {
+	height: 100%;
+	width: 100%;
+}
+
+body { 
+	font-family: Arial;
+	font-size: 14px;
+}
+
+.navbar.navbar-inverse {
+	margin-bottom: 0px;
+	border-radius: 0px;
+}
+
+#mapid { 
+	height: 500px;
+	width: 500px;
+}
+
+#container3D {
+	height: calc(100% - 93px);
+	width: 100%;
+	background-color: black;
+	position: absolute; /* jos halutaan, etta ikkuna ei kasva kun objektia raahataan, ja raahattavat elementit on asetettu container3D:n sisaan */
+	overflow: hidden; /* samaa kuin edellinen kommentti */
+}
+
+#div3d {
+	position: absolute;
+	top: 70px;
+	left: 525px;
+	width: calc(100% - 550px);
+}
+
+input.inputsArea {
+	width: 75px;
+}
+
+#inputSize {
+	width: 50px;
+}
+
+#canv {
+	max-height: 500px;
+	max-width: 500px;
+}
+
+span {
+	padding-right: 5px;
+}
+
+/* Draggable components */
+
+.draggable {
+	position: absolute;
+    z-index: 8;
+    background-color: #f1f1f1;
+    border: 1px solid #d3d3d3;
+}
+
+.draggableHeader {
+	text-align: center;
+    padding-top: 10px;
+	padding-bottom: 10px;
+	width: 100%;
+    cursor: move;
+    z-index: 10;
+    background-color: #337AB7; /* #2196F3; */
+    color: #fff;
+}
+
+.draggableHeaderBtn {
+    float: right;
+}
+
+.draggableContainer {
+	padding: 0.5em;
+}
+
+.draggableToggleBtnActive {
+	background-color: #2196F3;
+	color: #fff;
+	text-align: center;
+	padding: 1em;
+	font-size: 12px;
+	font-weight: bold;
+	border-width: 0px;
+	margin-right: 2px;
+	border-radius: 4px;
+}
+
+.draggableToggleBtnInactive {
+	background-color: #1A78C2;
+	color: #fff;
+	text-align: center;
+	padding: 1em;
+	font-size: 12px;
+	font-weight: bold;
+	border-width: 0px;
+	margin-right: 2px;
+	border-radius: 4px;
+}
+
+.rgbInputBox {
+	width: 30px;
+}
+
+/* Instructions */
+
+#help {
+	height: 60px;
+	width: 60px;
+	position: absolute;
+	top: 10px;
+	left: calc(100% - 70px);
+}
+
+#instructions {
+	width: 100%;
+}

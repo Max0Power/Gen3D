@@ -1,0 +1,81 @@
+﻿<!--
+/**
+ * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
+ * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
+ * @version 12.12.2018
+ */
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8"/>
+
+		<!-- css -->
+		<link rel="stylesheet" href="lib/leaflet.css" />
+		<link rel="StyleSheet" href="styles/styles.css" type="text/css" />
+
+		<!-- modules -->
+		<script src="modules/data.js"></script>
+		<script src="modules/DataController.js"></script>
+		<script src="modules/textures.js"></script>
+		<script src="modules/controller3d.js"></script>
+		<script src="modules/uiComponents.js"></script>
+		<script src="modules/textureEditor.js"></script>
+        <script src="modules/DataStruct.js"></script>
+        <script src="modules/File.js"></script>
+		
+		<!-- js -->
+		<script src="js/mallit.js"></script>
+		<script src="js/http.js"></script>
+        <script src="js/matriisi.js"></script>
+        <script src="js/apufunktiot.js"></script>
+        <script src="js/kaavat.js"></script>
+        <script src="js/tiedosto.js"></script>
+        <script src="js/mjonot.js"></script>
+		
+		<!-- lib -->
+		<script src="lib/leaflet.js"></script>
+		<script src="lib/three.js"></script>
+		<script src="lib/OrbitControls.js"></script>
+		<script src="lib/inflate.js"></script>
+		<script src="lib/zip.js"></script>
+		<script src="lib/z-worker.js"></script>
+		<script src="lib/math.js"></script>
+		<script src="lib/deflate.js"></script>
+        
+        <!-- sh -->
+        <script src="sh/others.js"></script>
+        <script src="sh/usgs.js"></script>
+
+		<!-- main -->
+		  <script src="worldMain.js"></script>
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+      <title>3D-Gen</title>
+    </head>
+    <body>
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand">3D-Gen</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="world.html">World Map 3D</a></li>
+            <li><a href="noise.html">Noise generator</a></li>
+            <li><a href="userImg.html">Make 3D from picture</a></li>
+            <li><a href="about.html">About us</a></li>
+          </ul>
+        </div>
+        <div id="tools"></div>
+      </nav>
+    	<div id="mapid"></div>
+      <div id="div3d"></div>
+      <div id="container3D"></div>
+      <a href="instructions/world.html" target="_blank">
+        <img id="help" src="instructions/help.png" />
+      </a>
+    </body>
+</html>

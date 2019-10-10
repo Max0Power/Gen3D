@@ -1,0 +1,65 @@
+/**
+ * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
+ * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
+ * @version 12.12.2018
+ */
+
+ html {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	background-color: black;
+}
+
+p {
+	color: white;
+}
+
+h2 {
+	color: white;
+}
+
+.featurette-divider {
+	margin-top: 300px;
+}
+
+#vali {
+	float: left;
+	left: 500px;
+}
+
+#tekstit {
+	width: 100%;
+	padding-left: 10px;
+	padding-right: 10px;
+	float: left;
+	left: 500px;
+}
+
+#tekijat {
+	margin: auto;
+	position: absolute;
+	left: 500px;
+}
+
+#x {
+	float: left;
+	width: 250px;
+}
+
+#xx {
+	float: left;
+	width: 250px;
+}
+
+#xxx {
+	float: left;
+	width: 260px;
+}
+
+#xxxx {
+	float: left;
+	width: 250px;
+}
