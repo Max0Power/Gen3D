@@ -1,11 +1,21 @@
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  */
 
-"use strict";
-
+/**
+ * @author Jussi Parviainen
+ * @edited 09.10.2018
+ * @edited 20.10.2018
+ * @edited 8.10.2019 -> Rakennetta muutettu, koska three.js pääsi generoimaan ylimääräistä muistia. Aikaisemmin mallit
+ * tuhottiin poistamalla canvasista three.js elementit -> muisti ei vapautunut.
+ * Nykyään three.js:än scene tyhjennetään, joka ei generoi turhaa muistia -> muisti vapautuu
+ * First created 02.10.2018
+ */
+ 
 var meshVertices; // generoitavan meshin verticet (pakollinen)
 var meshTriangles; // generoitavan meshin kolmiot (pakollinen)
 var meshNormals; // generoitavan meshin normaalit (ei pakollinen)
@@ -15,59 +25,79 @@ var material;
 
 var cameraPosition = [0,100,100];
 
+var initialized = false;
+
+var container;
+var scene;
+var renderer;
+var camera;
+var controls;
+var mesh = null;
+
+function init() {
+    
+	if(!initialized) {
+		container = document.getElementById('container3D'); // container, johon renderer lisataan
+		
+		scene = new THREE.Scene();
+		
+		renderer = new THREE.WebGLRenderer();
+		renderer.setSize( container.clientWidth, container.clientHeight );
+		renderer.shadowMap.enabled = true; // pistetaan shadowmappi (ei pakollinen)
+		renderer.shadowMap.type = THREE.basicShadowMap; // asetetaan varjon tyyppi (ei pakollinen)
+		container.appendChild( renderer.domElement );
+		
+		var ambientLight = new THREE.AmbientLight(0x404040, 1.0); // valo sceneen (ei pakollinen)
+		scene.add(ambientLight);
+
+		var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+		//directionalLight.position.x = Math.random() - 0.5;
+		//directionalLight.position.y = Math.random() - 0.5;
+		//directionalLight.position.z = Math.random() - 0.5;
+		//directionalLight.position.normalize();
+		scene.add( directionalLight );
+		
+		// kamera
+		var maxDrawDistance = 10000; //1000;
+		camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, maxDrawDistance );
+		
+		// controllit
+		controls = new THREE.OrbitControls( camera, renderer.domElement );
+		controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+		controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+		controls.dampingFactor = 0;
+		controls.screenSpacePanning = false;
+		controls.minDistance = 1;
+		controls.maxDistance = 10000;
+		controls.maxPolarAngle = Math.PI / 2;
+		
+		initialized = true;
+	}
+}
+
 
 // https://github.com/mrdoob/three.js/blob/master/examples/misc_controls_orbit.html // orbit esimerkki, eli kuinka kontrollit toimivat
 function drawMesh() {
+	
 	//console.log ("verticeja: " + meshVertices.length);
 	//console.log ("kolmioita: " + meshTriangles.length);
 	
 	// generoidun meshin piirto:
-	var container = document.getElementById('container3D'); // container, johon renderer lisataan
-	// container3D:n tyhjennys tarvittaessa!
-	/*if (container.firstChild != null) {
-		container.removeChild(container.firstChild);
-	}*/	
-	var children = container.childNodes;
-	for (var i = 0; i < children.length; i++) {
-		if (children[i].nodeName == "CANVAS" ) {
-			container.removeChild(children[i]);
-			i = children.length + 1;
-		}
+	
+	init(); // suoritetaan tarvittavien komponenttien luonti (kutsutaan vain kerran)
+	
+	// Tyhjennetaan scene:
+	if (mesh != null) {
+		scene.remove(mesh);
+		mesh.geometry.dispose();
+		mesh.material.dispose();
+		mesh = null;
 	}
 	
-	var scene = new THREE.Scene();
-	
-	var renderer = new THREE.WebGLRenderer();
-	renderer.setSize( container.clientWidth, container.clientHeight );
-	renderer.shadowMap.enabled = true; // pistetaan shadowmappi (ei pakollinen)
-	renderer.shadowMap.type = THREE.basicShadowMap; // asetetaan varjon tyyppi (ei pakollinen)
-	container.appendChild( renderer.domElement );
-	
-	// kamera
-	var maxDrawDistance = 10000; //1000;
-	var camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, maxDrawDistance );
+	// Kameran paikka
 	camera.position.set(cameraPosition[0],cameraPosition[1],cameraPosition[2]);
 	camera.lookAt(0, 0, 0);
 
-	var ambientLight = new THREE.AmbientLight(0x404040, 1.0); // valo sceneen (ei pakollinen)
-	scene.add(ambientLight);
-	
-	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-	//directionalLight.position.x = Math.random() - 0.5;
-	//directionalLight.position.y = Math.random() - 0.5;
-	//directionalLight.position.z = Math.random() - 0.5;
-	//directionalLight.position.normalize();
-	scene.add( directionalLight );
-	
-	// controllit
-	var controls = new THREE.OrbitControls( camera, renderer.domElement );
-	controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
-	controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
-	controls.dampingFactor = 0;
-	controls.screenSpacePanning = false;
-	controls.minDistance = 1;
-	controls.maxDistance = 10000;
-	controls.maxPolarAngle = Math.PI / 2;
 	
 	var geometry = new THREE.Geometry(); // luodaan meshin geometria datasta
 	
@@ -92,7 +122,7 @@ function drawMesh() {
 	}	
 	geometry.uvsNeedUpdate = true; // UV, poista, jos omia tekstureita ei kayteta!!!!!!!!!!
 	
-	var mesh = new THREE.Mesh( geometry, material ); // luodaan meshi ja asetetaan materiaali
+	mesh = new THREE.Mesh( geometry, material ); // luodaan meshi ja asetetaan materiaali
 	mesh.drawMode = THREE.TrianglesDrawMode; //default
 
 	scene.add( mesh ); // lisataan luotu meshi sceneen
@@ -115,12 +145,12 @@ function drawMesh() {
 		render();
 		
 	}*/
-	
-	// renderoi 3d mallin nakyvaksi
-	function render() {
-		renderer.render( scene, camera );
-		cameraPosition = [camera.position.x, camera.position.y, camera.position.z]; // paivittaa kameran position talteen
-	}
+}
+
+// renderoi 3d mallin nakyvaksi
+function render() {
+	renderer.render( scene, camera );
+	cameraPosition = [camera.position.x, camera.position.y, camera.position.z]; // paivittaa kameran position talteen
 }
 
 
@@ -288,6 +318,7 @@ function meshDataToObj() {
  */
 function downloadObj() {
 	if (!meshVertices || meshVertices.length < 4) return; // jos meshverticeja ei ole viela maaritelty tai niita on liian vahan
+	
 	var content = meshDataToObj(); // otetaan 3d objektin data merkkijonoksi
 	
 	var a = document.createElement('a'); // luodaan a elementti
