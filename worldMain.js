@@ -282,6 +282,7 @@ function generate(callbacks) {
         var dataStruct = new DataStruct();
         dataStruct.setCallbacks([function(arg) {
             var res = fillAllDataHoles(arg[0]);
+            // var res = lineaari(arg[0]);
             res = tuplavarmistus(res);
             
             var result = [res,arg[1]];
