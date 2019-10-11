@@ -369,3 +369,52 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 
 	return draggableUiComponent("Controller 3D", [top, left], container);
 }
+
+/*
+ * ---------------------------------------------------------------------------
+ * Konsoli alustettu 11.10.2019
+ * Konsoliin voi tulostaa tekstia, jonka kayttaja nakee helposti.
+ * ---------------------------------------------------------------------------
+ */
+
+var con; // konsolin komponentti (TextArea), jolla tekstit esitetaan
+
+/**
+ * Luo raahattavan ikkunan, joka toimii konsolina.
+ * Konsoliin voi tulostaa tekstia, jonka kayttaja nakee helposti.
+ */
+function createConsoleWindow(top, left, callback) {
+	
+	// -------------------------- Container for console
+	
+	var container = document.createElement("DIV");
+	container.style.width = "200px";
+	container.style.height = "200px";
+	
+	// --------------------------- Console text area ja sen tyylit
+	
+	con = document.createElement("TEXTAREA");
+	con.style.width = "100%";
+	con.style.height = "100%";
+	con.style.resize = "none";
+	con.style.overflow = "auto";
+	con.style.whiteSpace = "pre";
+	con.style.backgroundColor = "black";
+	con.style.color = "white";
+	con.readOnly = true; 
+	con.value = "Hello, welcome to Gen3D!";
+	container.appendChild(con);
+	
+
+	return draggableUiComponent("Console", [top, left], container); // tehdaan console raahattavaksi komponentiksi
+}
+
+
+/**
+ * Lisaa konsoliin uuden tekstirivin.
+ */
+function consoleAdd(txt) {
+	if (con != null) {
+		con.value += txt + '\n' ;
+	}
+}
