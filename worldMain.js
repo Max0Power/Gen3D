@@ -249,51 +249,16 @@ function generate(callbacks) {
 		
 		const max = ["max",latlngs[2]];
 		
-		//const args = httpGetArgs([lat_1,lng_1,lat_2,lng_2,max]);
 		
-        /*
-        httpGet(url,args,function(res) {
-            
-            // interpoloi puuttuvat arvot
-            var t = fillAllDataHoles(res.heights);
-            //var t = lineaari(res.heights);
-            t = tuplavarmistus(t);
-            res.heights = t;
-            
-			var result = [res.heights,res.minMaxH];
-			callbacks.map(f => f(...result));
-		});
-    } else {
-		httpGet(url,"",function(res) {
-            
-            // interpoloi puuttuvat arvot
-            var t = fillAllDataHoles(res.heights);
-            //var t = lineaari(res.heights);
-            t = tuplavarmistus(t);
-            res.heights = t;
-            
-			var result = [res.heights,res.minMaxH];
-			callbacks.map(f => f(...result));
-		})
-        */
-        
         var files = fileTehtaat([lat_1[1],lng_1[1]],[lat_2[1],lng_2[1]],max[1]);
         
         var dataStruct = new DataStruct();
         dataStruct.setCallbacks([function(arg) {
-            var res = fillAllDataHoles(arg[0]);
-            // var res = lineaari(arg[0]);
-            res = tuplavarmistus(res);
-            
-            var result = [res,arg[1]];
+            var result = [arg.heights,arg.minMaxH];
             callbacks.map(f => f(...result));
         }]);
         
-        
-        
-        
         dataStruct.execute(files);
-        
     }
 }
 

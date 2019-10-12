@@ -4,9 +4,16 @@
  * @version 12.12.2018
  */
 
-importScripts('matriisi.js', '../lib/math.js');
+/*
+importScripts('matriisi.js', 'interpolointi.js', '../lib/math.js');
 
 self.addEventListener('message', function(e) {
     self.postMessage(lineaari(e.data));
+    self.close();
+});
+*/
+
+self.addEventListener('message', function(e) {
+    self.postMessage(e.data);
     self.close();
 });

@@ -46,13 +46,12 @@ function lueTiedosto(tiedosto,callback) {
  * @param callback    funktio vastaanottaa korkeusarvot
  */
 function lueTiedostoUrl(url,file,callback) {
-	//const XMLHttpRequest = require("xhr2").XMLHttpRequest;
-	const filename = url.split('/').pop();
-	
+    const filename = url.split('/').pop();
+    
     const request = new XMLHttpRequest();
     request.onprogress = function(e) {
         if (e.loaded && e.total) {
-            console.log(Math.floor(e.loaded / e.total * 100)+" % luettu tiedostosta "+filename);
+            console.log(filename+" "+Math.floor(e.loaded / e.total * 100)+" %");
         }
     };
     request.onreadystatechange = function() {
@@ -66,6 +65,13 @@ function lueTiedostoUrl(url,file,callback) {
     request.open("GET", url);
     request.responseType = "arraybuffer";
     request.send();
+    
+    /**
+    * Ilmoittaa virheestä selaimen konsoliin
+    */
+    function errorListener() {
+        throw new Error("Virhe! Tiedostonluku epäonnistui.");
+    }
 }
 
 /**
@@ -73,8 +79,8 @@ function lueTiedostoUrl(url,file,callback) {
  * @param tiedosto       binäärinen zip-tiedosto
  * @param tiedostonimi   pakatun tiedoston nimi
  * @param callback       funktio vastaanottaa korkeusarvot
+ * TODO: https://github.com/gildas-lormeau/zip.js/blob/master/WebContent/tests/test18.js
  */
-
 function lueTiedostoZip(dataZip,file,callback) {
     zip.workerScriptsPath = "lib/";
     const blob = new Blob([dataZip], {
@@ -98,91 +104,12 @@ function lueTiedostoZip(dataZip,file,callback) {
     }, onerror);
 }
 
-/*
-// TODO: ilman blob-muunnosta
-function unzipArrayBuffer(arrayBuffer,callback) {
-    zip.workerScriptsPath = "./";
-	zip.createReader(new zip.ArrayBufferReader(arrayBuffer), function(zipReader) {
-		zipReader.getEntries(function(entries) {
-			entries[0].getData(new zip.ArrayBufferWriter(), function(data) {
-				zipReader.close();
-				callback(data,file);
-			});
-		});
-	}, onerror);
-}
-*/
-
-function lueTiedostoZipNode(data,file,callback) {
-    var buf = toBuffer(data);
-
-    var AdmZip = require('adm-zip');
-    var zip = new AdmZip(buf);
-    var arr = zip.getEntries()[0].getData();
-    
-    var arrbuf = toArrayBuffer(arr);
-    callback(lueKorkeudet(arrbuf),file);
-	
-	function toBuffer(ab) {
-		var buf = Buffer.alloc(ab.byteLength);
-		var view = new Int8Array(ab);
-		for (var i = 0; i < buf.length; ++i) {
-			buf[i] = view[i];
-		}
-		return buf;
-	}
-	
-	function toArrayBuffer(buf) {
-		var ab = new ArrayBuffer(buf.length);
-		var view = new Int8Array(ab);
-		for (var i = 0; i < buf.length; ++i) {
-			view[i] = buf[i];
-		}
-		return ab;
-	}
-}
-
-function lueTiedostoZipNode2(data,files,callback) {
-    var buf = toBuffer(data);
-
-    var AdmZip = require('adm-zip');
-    var zip = new AdmZip(buf);
-    var arrs = zip.getEntries();
-	
-	for (var i = 0; i < arrs.length; i++) {
-		var arr = arrs[i].getData();
-		var name = arrs[i].entryName.split('/')[1];
-		name = name.split('.')[0];
-		
-		for (var j = 0; j < files.length; j++) {
-			var fname = files[j].getFileName();
-			
-			if (name === fname) {
-				var arrbuf = toArrayBuffer(arr);
-				callback(lueKorkeudet(arrbuf),files[j]);
-			}
-		}
-	}
-	
-	function toBuffer(ab) {
-		var buf = Buffer.alloc(ab.byteLength);
-		var view = new Int8Array(ab);
-		for (var i = 0; i < buf.length; ++i) {
-			buf[i] = view[i];
-		}
-		return buf;
-	}
-	
-	function toArrayBuffer(buf) {
-		var ab = new ArrayBuffer(buf.length);
-		var view = new Int8Array(ab);
-		for (var i = 0; i < buf.length; ++i) {
-			view[i] = buf[i];
-		}
-		return ab;
-	}
-}
-
+/**
+ * Ei käytössä
+ * Muodostaa hgt korkeusdatasta zip tiedoston
+ * välimuistiin säilömistä varten
+ * 
+ */
 function kirjoitaTiedostoZip(dataHgt,file,callback) {
     dataHgt = kirjoitaKorkeudet(dataHgt);
     const filename = file.getFileName()+".hgt.zip";
@@ -205,25 +132,6 @@ function kirjoitaTiedostoZip(dataHgt,file,callback) {
             });
         });
     }, onerror);
-}
-
-/*
-// TODO: ilman blob-muunnosta
-function zipArrayBuffer(arrayBuffer,callback) {
-    zip.workerScriptsPath = "./";
-	zip.createWriter(new zip.ArrayBufferWriter(), function(zipWriter) {
-		zipWriter.add(FILENAME, new zip.ArrayBufferReader(arrayBuffer), function() {
-			zipWriter.close(callback);
-		});
-	}, onerror);
-}
-*/
-
-/**
- * Ilmoittaa virheestä selaimen konsoliin
- */
-function errorListener() {
-    console.error("Virhe!");
 }
 
 /**
