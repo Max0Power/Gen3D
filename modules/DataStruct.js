@@ -152,8 +152,8 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
     file.setHeights(data); // modules/File.js
     
     if (noneNullFiles(this.files)) {
-        const vasYla = this.files[0].getAsteet(); // js/kaavat.js, modules/File.js
-        const oikAla = this.files[this.files.length-1].getAsteet(); // js/kaavat.js, modules/File.js
+        const vasYla = this.files[0].getAsteet(); // modules/File.js
+        const oikAla = this.files[this.files.length-1].getAsteet(); // modules/File.js
         
         // DATAN LUOMINEN
         var t = this.files.map(x => x.getHeights()); // modules/File.js
