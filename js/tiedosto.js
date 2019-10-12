@@ -75,11 +75,10 @@ function lueTiedostoUrl(url,file,callback) {
 }
 
 /**
- * Purkaa zip-tiedoston ja kutsuu callback-funktiota
- * @param tiedosto       binäärinen zip-tiedosto
- * @param tiedostonimi   pakatun tiedoston nimi
- * @param callback       funktio vastaanottaa korkeusarvot
- * TODO: https://github.com/gildas-lormeau/zip.js/blob/master/WebContent/tests/test18.js
+ * Purkaa zip-paketin ja kutsuu callback-funktiota
+ * @param dataZip    binäärinen zip-tiedosto
+ * @param file       tiedostoa vastaava file-olio
+ * @param callback   funktio vastaanottaa korkeusarvot
  */
 function lueTiedostoZip(dataZip,file,callback) {
     zip.workerScriptsPath = "lib/";
@@ -105,11 +104,53 @@ function lueTiedostoZip(dataZip,file,callback) {
 }
 
 /**
+ * Purkaa zip-paketin kaikki tiedostot ja kutsuu callback-funktiota
+ * @param dataZip    binäärinen zip-tiedosto sisältää useita tiedostoja
+ * @param files      zip-paketin tiedostoja vastaavat file-oliot
+ * @param callback   funktio vastaanottaa korkeusarvot
+ */
+function lueTiedostotZip(dataZip,files,callback) {
+    zip.workerScriptsPath = "lib/";
+    const blob = new Blob([dataZip], {
+        type : "ArrayBuffer"
+    });
+    
+    zip.createReader(new zip.BlobReader(blob), function(zipReader) {
+        zipReader.getEntries(function(entries) {
+            for (var i = 0; i < entries.length; i++) {
+                var name = entries[i].filename;
+                name = name.split('/')[1];
+                name = name.split('.')[0];
+                
+                for (var j = 0; j < files.length; j++) {
+                    const file = files[j]; // BlobWriter
+                    if (name === files[j].getFileName()) {
+                        entries[i].getData(new zip.BlobWriter(), function(data) {
+                            zipReader.close();
+                            
+                            const myReader = new FileReader();
+                            myReader.readAsArrayBuffer(data);
+                            
+                            const tied = file; // FileReader
+                            myReader.onload = function(e) {
+                                const buffer = e.srcElement.result;
+                                callback(lueKorkeudet(buffer),tied);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }, onerror);
+}
+
+/*
  * Ei käytössä
  * Muodostaa hgt korkeusdatasta zip tiedoston
  * välimuistiin säilömistä varten
  * 
  */
+/*
 function kirjoitaTiedostoZip(dataHgt,file,callback) {
     dataHgt = kirjoitaKorkeudet(dataHgt);
     const filename = file.getFileName()+".hgt.zip";
@@ -133,6 +174,7 @@ function kirjoitaTiedostoZip(dataHgt,file,callback) {
         });
     }, onerror);
 }
+*/
 
 /**
  * Palauttaa SMRT3 korkesarvot tavujonosta
@@ -154,6 +196,13 @@ function lueKorkeudet(result) {
     return t;
 }
 
+/*
+ * Ei käytössä!
+ * Kirjoittaa SMRT3 korkesarvot tavujonoksi
+ * @param data   korkeusarvot matriisissa
+ * @return       korkeusarvot pareittain tavujonossa
+ */
+/*
 function kirjoitaKorkeudet(data) {
     const koko = Math.pow(data.length,2)*2;
     const buffer = new ArrayBuffer(koko); // Int8
@@ -167,3 +216,4 @@ function kirjoitaKorkeudet(data) {
     
     return bytes.buffer;
 }
+*/

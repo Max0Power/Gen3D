@@ -9,19 +9,20 @@
  * @param callbacks   datan käsittelijät
  * @example
  *   var struct = new DataStruct()
- *   struct.setOption(makeGrayscale).execute(files);
- *   struct.execute(null);
+ *   struct.setCallbacks(makeGrayscale);
+ *   struct.execute(files);
  */
-function DataStruct(callbacks = []) {
-    this.zips = [];
+function DataStruct() {
     this.files = [];
     this.heights = [];
     this.minMaxH = [];
-    this.callbacks = callbacks;
+    this.callbacks = [];
     
     // TODO: korjaa tiedostopolun virheet sh/fail.txt
-    this.filelists = [usgs,usgs_urls]; // sh/usgs,js
-    this.filelists2 = [others,others_urls]; // sh/others.js
+    this.usgs = [usgs,usgs_urls]; // sh/usgs,js
+    this.others = [others,others_urls]; // sh/others.js
+    this.usgs_url = usgs_url; // sh/usgs,js
+    this.others_url = others_url; // sh/others.js
 }
 
 /**
@@ -30,8 +31,8 @@ function DataStruct(callbacks = []) {
  * @return            metodien ketjuttava oliviite
  * @example
  *   var struct = new DataStruct();
- *   struct.setCallbacks([function(x)])
- *   struct.execute()
+ *   struct.setCallbacks(makeGrayscale)
+ *   struct.execute(files)
  */
 DataStruct.prototype.setCallbacks = function(callbacks) {
     this.callbacks = callbacks;
@@ -39,137 +40,88 @@ DataStruct.prototype.setCallbacks = function(callbacks) {
 }
 
 /**
- * Suorittaa tiedostojen lataamisen kutsuen monia apufunktioita
- * Lopuksi kutsuu 
+ * Suorittaa tiedostojen lataamisen tai generoimisen
  * @param files   kaikki ladattavat tiedostot
  */
 DataStruct.prototype.execute = function(files) {
     this.files = files;
     
+    // kloonaa ladattavat tiedostot
     var fs = files.slice();
-    fs = this.recycleZipFiles(fs);
-    fs = this.generateHgtFiles(fs);
-    fs = this.downloadZipFiles(fs);
-    
-    if (fs.length > 0) {
-        throw new Error('Virhe! Tiedostoja '+fs+' ei ladattu.');
-    }
-}
-
-/** 
- * Takaisinkutsuu callbacks-listan funktioita, kun
- * kaikki tiedostot ladattu. Palauttaa suorituksen
- * Execute-funktiota kutsuneeseen ohjelmanosaan.
- */
-DataStruct.prototype.finish = function() {
-    const args = { heights: this.heights, minMaxH: this.minMaxH };
-    this.callbacks.map(f => f(args));
+    // lataa tai generoi tiedostot
+    fs = this.downloadZipFile(fs); // nasa, muu
+    this.generateHgtFile(fs); // avomeri
 }
 
 /**
- * Kierrättää valmiiksi ladatut tiedostot käyttöön.
- * @param files   kaikki ladattavat tiedostot
- * @return        tiedostot joita ei tallennettu
+ * Lataa puuttuvan tiedoston nasan palvelimelta
+ * @param files   ladattavat tiedostot
  */
-DataStruct.prototype.recycleZipFiles = function(files) {
-    // kloonaa ladattavat tiedostot
+DataStruct.prototype.downloadZipFile = function(files) {
     var fs = files.slice();
     
     var i = -1;
     while (++i < fs.length) {
-        for (var j = 0; j < this.zips.length; j++) {
-            if (fs[i] && fs[i].getFileName() === this.zips[j][0]) { 
-                // käytä valmiiksi ladattua tiedostoa
-                lueTiedostoZip(this.zips[j][1],fs[i],this.loadHgtFile.bind(this)); // js/tiedosto.js
-                
-                // poista ladattavien listalta
+        for (var j = 0; j < this.usgs[0].length; j++) {
+            if (fs[i] && this.usgs[0][j].includes(fs[i].getFileName())) {
+                var path = this.usgs_url+this.usgs[1][j]+fs[i].getFileName()+".hgt.zip";
+                lueTiedostoUrl(path,fs[i],this.saveZipFile.bind(this));// js/tiedosto.js
                 fs.splice(i--,1);
             }
         }
     }
     
-    return fs;
-}
-
-/**
- * Generoi puuttuvaa korkeusdataa avomereltä
- * @param files   kaikki ladattavat tiedostot
- * @return        tiedostot joita ei generoida
- */
-DataStruct.prototype.generateHgtFiles = function(files) {
-    // kloonaa ladattavat tiedostot
-    var fs = files.slice();
-    
-    var i = -1;
-    while (++i < fs.length) {
-        var not_exists = true;
-        for (var j = 0; j < this.filelists[0].length; j++) {
-            // tiedosto löytyi nasalta
-            if (fs[i] && this.filelists[0][j].includes(fs[i].getFileName())) {
-                not_exists = false;
-            }
-        }
-        
-        for (var k = 0; k < this.filelists2[0].length; k++) {
-            // tiedosto löytyi muulta palvelimelta
-            if (fs[i] && this.filelists2[0][k].includes(fs[i].getFileName())) {
-                not_exists = false;
-            }
-        }
-        
-        // tiedostoa ei löytynyt
-        if (not_exists) {
-            // generoidaan tyhjää dataa
-            this.loadHgtFile(luoMatriisi(1201,1201,0),fs[i]); // js/matriisi.js
-            // poista ladattavien listalta
-            fs.splice(i--,1);
-        }
-    }
-    
-    return fs;
-}
-
-/**
- * Lataa puuttuvat tiedostot palvelimelta jos löytyy
- * @param files   kaikki ladattavat tiedostot
- * @return        tiedostot joita ei ladattu
- */
-DataStruct.prototype.downloadZipFiles = function(files) {
-    // kloonaa ladattavat tiedostot
-    var fs = files.slice();
-    
-    var i = -1;
-    while (++i < fs.length) {
-        for (var j = 0; j < this.filelists[0].length; j++) {
-            // tiedosto löytyi nasalta
-            if (fs[i] && this.filelists[0][j].includes(fs[i].getFileName())) {
-                // muodosta ladattavan tiedoston url
-                const path = url+this.filelists[1][j]+fs[i].getFileName()+".hgt.zip";
-                // lataa ja tallenna tiedosto
-                lueTiedostoUrl(path,fs[i],this.saveZipFile.bind(this)); // js/tiedosto.js
-                // poista ladattavien listalta
-                fs.splice(i--,1);
-            }
-        }
-    }
-    
-    var k = -1;
-    while (++k < fs.length) {
-        for (var i = 0; i < this.filelists2[0].length; i++) {
-            for (var j = 0; j < this.filelists2[0][i].length; j++) {
-                // tiedosto löytyi muulta palvelimelta
-                if (fs[k] && this.filelists2[0][i][j].includes(fs[k].getFileName())) {
-                    // muodosta ladattavan tiedoston url
-                    var path = url2+this.filelists2[1][i];
-                    lueTiedostoUrl(path,fs[k],this.saveZipFile.bind(this)); // js/tiedosto.js
-                    // poista ladattavien listalta
+    for (var i = 0; i < this.others[0].length; i++) {
+        for (var j = 0; j < this.others[0][i].length; j++) {
+            var t = [];
+            
+            var k = -1;
+            while (++k < fs.length) {
+                if (fs[k] && this.others[0][i][j].includes(fs[k].getFileName())) {
+                    t.push(fs[k]);
                     fs.splice(k--,1);
                 }
             }
+            
+            if (0 < t.length) {
+                var path = this.others_url+this.others[1][i];
+                lueTiedostoUrl(path,t,this.saveZipFiles.bind(this));// js/tiedosto.js
+            }
         }
     }
-    
+        
     return fs;
+}
+
+/**
+ * Generoi tiedostoille puuttuvan korkeusdatan
+ * @param files   tiedostot joille generoidaan
+ */
+DataStruct.prototype.generateHgtFile = function(files) {
+    for (var i = 0; i < files.length; i++) {
+        this.loadHgtFile(luoMatriisi(1201,1201,0),files[i]); // js/matriisi.js
+    }
+}
+
+/**
+ * Säilyttää ladatun tiedoston paketoituna (zip) välimuistissa
+ * Huom! Nasalla yksi zip-paketti vastaa yhtä korkeusdataa
+ * @param dataZip   korkeusdata paketoituna zip formaatissa
+ * @param file      zip pakettia vastaavan File-olio
+ */
+DataStruct.prototype.saveZipFile = function(dataZip,file) {
+    //lueTiedostoZip(dataZip,file,this.loadHgtFile.bind(this)); // js/tiedosto.js
+    lueTiedostoZip(dataZip,file,this.multiThreadHgt.bind(this)); // js/tiedosto.js
+}
+
+/**
+ * Lataa kerralla useamman korkeusdatan yhdestä zip-paketista
+ * Huom! Nasan ulkopuolinen data paketoitu eri tavalla,
+ *       siksi samaan asiaan useampi funktio
+ */
+DataStruct.prototype.saveZipFiles = function(dataZip,files) {
+   //lueTiedostotZip(dataZip,files,this.loadHgtFile.bind(this)); // js/tiedosto.js
+   lueTiedostotZip(dataZip,files,this.multiThreadHgt.bind(this)); // js/tiedosto.js
 }
 
 /**
@@ -188,31 +140,6 @@ DataStruct.prototype.multiThreadHgt = function(dataHgt,file) {
         worker.terminate();
     });
     worker.postMessage(dataHgt);
-}
-
-/*
- * Ei käytössä!
- */
-/*
-DataStruct.prototype.multiThreadZip = function(dataZip,file) {
-    for (var i = 0; i < this.zips.length; i++) {
-        if (file.getFileName() === this.zips[i][0]) {
-            this.zips[i][1] = dataZip;
-        }
-    }
-    console.log(file.getFileName()+" done.");
-}
-*/
-
-/**
- * Säilyttää ladatun tiedoston paketoituna (zip) välimuistissa
- * @param dataZip   korkeusdata paketoituna zip formaatissa
- * @param file      zip pakettia vastaavan File-olio
- */
-DataStruct.prototype.saveZipFile = function(dataZip,file) {
-    //this.zips.push([file.getFileName(),dataZip]); // modules/File.js
-    //lueTiedostoZip(dataZip,file,this.loadHgtFile.bind(this)); // js/tiedosto.js
-    lueTiedostoZip(dataZip,file,this.multiThreadHgt.bind(this)); // js/tiedosto.js
 }
 
 /**
@@ -257,3 +184,27 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
         return true;
     }
 }
+
+/** 
+ * Takaisinkutsuu callbacks-listan funktioita, kun
+ * kaikki tiedostot ladattu. Palauttaa suorituksen
+ * Execute-funktiota kutsuneeseen ohjelmanosaan.
+ */
+DataStruct.prototype.finish = function() {
+    const args = { heights: this.heights, minMaxH: this.minMaxH };
+    this.callbacks.map(f => f(args));
+}
+
+/*
+ * Ei käytössä!
+ */
+/*
+DataStruct.prototype.multiThreadZip = function(dataZip,file) {
+    for (var i = 0; i < this.zips.length; i++) {
+        if (file.getFileName() === this.zips[i][0]) {
+            this.zips[i][1] = dataZip;
+        }
+    }
+    console.log(file.getFileName()+" done.");
+}
+*/

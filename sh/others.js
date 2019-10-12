@@ -4,7 +4,7 @@
  * @version 12.12.2018
  */
 
-const url2 = "http://www.viewfinderpanoramas.org/dem3/";
+const others_url = "http://www.viewfinderpanoramas.org/dem3/";
 
 var S56 = ["N74E150","N75E150","N75E152"];
 var T55 = ["N76E148","N76E149"];

@@ -16,17 +16,17 @@
  *     === N00E006,N00E007,S01E006,S01E007,S02E006,S02E007
  */
 function fileTehtaat(latlng_1,latlng_2,max=200) {
-	/*
+    /*
     var askelI = (Math.abs(latlng_1[0]-latlng_2[0])*1201-1)/(max-1);
     var askelJ = (Math.abs(latlng_1[1]-latlng_2[1])*1201-1)/(max-1);
-	*/
+    */
     
     const rows = laskeRivit(latlng_1[0],latlng_2[0]).reduce(laskeSumma);
     const cols = laskeSarakkeet(latlng_1[1],latlng_2[1]).reduce(laskeSumma);
     
-	var askelI = Math.max(1, Math.floor(rows/max)); // max > 0
-	var askelJ = Math.max(1, Math.floor(cols/max)); // max > 0
-	
+    var askelI = Math.max(1, Math.floor(rows/max)); // max > 0
+    var askelJ = Math.max(1, Math.floor(cols/max)); // max > 0
+    
     const as = laskeAsteet(latlng_1,latlng_2); // js/kaavat.js
     
     var t = [];
