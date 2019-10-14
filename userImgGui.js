@@ -13,11 +13,11 @@ var layout = {
         type: 'row',
         content:[{
             type: 'component',
-            id: 'Map',
+            id: 'User input',
             width: 28,
             height: 100,
             isClosable: false,
-            componentName: 'Map',
+            componentName: 'User input',
             componentState: {  }
         },{
             type: 'column',
@@ -31,7 +31,7 @@ var layout = {
                 componentState: {  }
             },{
                 type: 'component',
-                id: 'TextureViewer',
+                id: 'Texture viewer',
                 isClosable: false,
                 componentName: 'Texture viewer',
                 componentState: {  }
@@ -60,7 +60,7 @@ var layout = {
 };
 
 /*
-// k‰yt‰ ev‰steen runkoa tai oletusta
+// k√§yt√§ ev√§steen runkoa tai oletusta
 var myLayout,savedState = localStorage.getItem('savedState');
 if(savedState !== null) {
     myLayout = new GoldenLayout(JSON.parse(savedState));
@@ -71,32 +71,34 @@ if(savedState !== null) {
 
 var myLayout = new GoldenLayout(layout, '#container3D');
 
-// tallenna muutos ev‰steisiin ja p‰ivit‰ ikkuna
+// tallenna muutos ev√§steisiin ja p√§ivit√§ ikkuna
 myLayout.on('stateChanged', function() {
+    /*
     const state = JSON.stringify(myLayout.toConfig());
     localStorage.setItem('savedState', state);
+    */
     window.dispatchEvent(new Event('resize'));
 });
 
-// p‰ivit‰ komponentit ikkunan mukaan
+// p√§ivit√§ komponentit ikkunan mukaan
 $(window).resize(function () {
     const container = document.getElementById("container3D");
     myLayout.updateSize(container.clientWidth, container.clientHeight);
 });
 
-// Map component
-myLayout.registerComponent('Map', function( container, componentState) {
-    container.getElement().html( $( createMap() ) );
+// User input component
+myLayout.registerComponent('User input', function( container, componentState) {
+    container.getElement().html( $( draggableUiComponent("User input", [0,0], createUserInputImgController()) ) );
 });
 
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
-    container.getElement().html( $( createInput3dController(0, 0, generate3DModel, true, false) ) );
+    container.getElement().html( $( createInput3dController(0, 0, draw3dModelFromUserImg, true, false) ) );
 });
 
 // Texture viewer component
 myLayout.registerComponent('Texture viewer', function( container, componentState) {
-    container.getElement().html( $( createTextureController(0, 0, generateImage) ) );
+    container.getElement().html( $( createTextureController(0, 0, drawTextureFromUserImg) ) );
 });
 
 // Texture editor component

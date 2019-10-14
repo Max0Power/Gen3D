@@ -2,35 +2,11 @@
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
+ * @version 14.10.2019, GoldenLayout
  */
 
 window.onload = function() {
-
 	textures.setSelectOption(0); // ei anna maailman mittakaavassa skaalattavia tekstuureita!
-
-	let x = 10;
-	let y = 10;
-	let add = 10;
-
-	var viewer3d = document.getElementById("container3D"); // pistetaan elementit container3d:n sisaan
-
-	// Kayttajan antama suottama kuva
-	var userInputComponent = draggableUiComponent("User input", [x,y], createUserInputImgController());
-	viewer3d.appendChild(userInputComponent);
-
-	x += userInputComponent.offsetWidth + add;
-
-	// 3D inputs & buttons
-	var controller3d = createInput3dController(x, y, draw3dModelFromUserImg, true, false);
-	viewer3d.appendChild(controller3d);
-
-	y += controller3d.offsetHeight + add;
-
-	// Draggable grayscale image
-	viewer3d.appendChild(createTextureController(x, y, drawTextureFromUserImg));
-
-	// texture editor
-	viewer3d.appendChild(createTextureEditor(1000, 10));
 }
 
 

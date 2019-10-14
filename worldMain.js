@@ -4,6 +4,7 @@
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
+ * @version 14.10.2019, GoldenLayout
  */
 
 /* Global variables */
@@ -21,17 +22,11 @@ const areaInputs = [["Latitude: ",  "inputLatitude",  -85,    85,  "any", 0.25],
                     ["Size: ",      "inputSize",      0.01,   10,  0.01,  0.2]];
 
 /**
- * Loads start page
- */
-window.onload = function() {
-    initiateSite();
-}
-
-/**
- * Adds components, leaflet map and generates a 3D model
+ * Loads start page and
+ * adds components, leaflet map and generates a 3D model
  * and texture image of the default area
  */
-function initiateSite() {
+window.onload = function() {
     createLeafletMap(mapComponent);
     
     let areaSizeInput = document.getElementById("inputSize");

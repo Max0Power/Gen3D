@@ -2,6 +2,7 @@
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
+ * @version 14.10.2019, GoldenLayout
  */
 
 "use strict"; 
@@ -10,35 +11,8 @@
  * @firstCreated 26.10.2018 by Jussi Parviainen
  * @version 12.11.2018
  */
-window.onload = function() {	
-	let x = 10;
-	let y = 10;
-	let add = 10;
-
+window.onload = function() {
 	textures.setSelectOption(0);
-	
-	//document.body.appendChild(draggableUiComponent("Texture editor", [600, 100], textureEditor_create()));
-	//document.body.appendChild(draggableUiComponent("Texture editor", [500,500], createTextureEditor()));
-	
-	var viewer3d = document.getElementById("container3D"); // pistetaan elementit container3d:n sisaan
-	
-	// raahattava noiseControlleri:
-	var noiseController = draggableUiComponent("Noise controller", [x,y], createNoiseController());
-	viewer3d.appendChild(noiseController);
-	
-	x += noiseController.offsetWidth + add;
-
-	// uiComponenteista luotava 3d controlleri
-	var controller3d = createInput3dController(x, y, draw3dModelFromNoiseInputs);
-	viewer3d.appendChild(controller3d);
-
-	y += controller3d.offsetHeight + add;
-	
-	// uiComponenteista luotava textureController
-	viewer3d.appendChild( createTextureController(x, y, drawTextureFromNoiseInputs));
-	
-	
-	viewer3d.appendChild(createTextureEditor(1000, 10));
 	
 	// aloituksessa piirrettava grayscale ja 3d malli: 
 	// width, height, scale, seed, octaves, persistance, lacunarity, offsetsXY

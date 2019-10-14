@@ -3,38 +3,38 @@
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
+ * @version 14.10.2019, GoldenLayout
  */
 -->
 
 <!DOCTYPE html>
 <html lang="fi">
-  <head>
-    <meta charset="utf-8"/>
+    <head>
+        <meta charset="utf-8"/>
+        
+        <!-- css -->
+        <link rel="stylesheet" href="css/about.css" />
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- css -->
-    <link rel="StyleSheet" href="styles/about.css" type="text/css" />
-
-    <title>3D-Gen</title>
-  </head>
-  <body id="body">
-    <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand">3D-Gen</a>
+        <title>3D-Gen</title>
+    </head>
+    
+    <body id="body">
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand">3D-Gen</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="world.html">World Map 3D</a></li>
+            <li><a href="noise.html">Noise generator</a></li>
+            <li><a href="userImg.html">Make 3D from picture</a></li>
+            <li class="active"><a href="about.html">About us</a></li>
+          </ul>
         </div>
-        <ul class="nav navbar-nav">
-          <li><a href="world.html">World Map 3D</a></li>
-          <li><a href="noise.html">Noise generator</a></li>
-          <li><a href="userImg.html">Make 3D from picture</a></li>
-          <li class="active"><a href="about.html">About us</a></li>
-        </ul>
-        </div>
-    </nav>
-
-    <div id="tekstit" class="row row-offcanvas row-offcanvas-right">
+      </nav>
+      
+      <div id="tekstit" class="row row-offcanvas row-offcanvas-right">
           <div class="col-xs-6 col-lg-4">
             <h2>3D-Gen</h2>
             <p>3D-Gen consists of three tools to create 3D models and texture images: world map, noise and user image. You can freely use the 3D models and texture images you have created with 3D-Gen. You can use these, for example, in making maps for games.</p>
@@ -43,22 +43,26 @@
           <div class="col-xs-6 col-lg-4">
             <h2>Resources &#38; Libraries</h2>
             <p><b>Resources:</b></p>
-            <p><a href="https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/">USGS SRTM</a> (Public Domain), 
-            <a href="http://viewfinderpanoramas.org/dem3.html">Jonathan de Ferranti</a> (No License)</p>
-            <p><b>Libraries:</b></p>
-            <p><a href="https://github.com/cthackers/adm-zip">ADM-ZIP</a> (MIT), 
-            <a href="https://github.com/twbs/bootstrap">Bootstrap</a> (MIT), 
-            <a href="https://github.com/davidchambers/doctest">doctest</a> (Public Domain), 
-            <a href="https://github.com/expressjs/expressjs.com">Express</a> (CC BY-SA 3.0), 
-            <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> (Apache 2.0), 
-            <a href="https://github.com/Leaflet/Leaflet">Leaflet</a> (BSD), 
-            <a href="https://github.com/openstreetmap/leaflet-osm">Leaflet OSM</a> (BSD), 
-            <a href="https://github.com/josdejong/mathjs">mathjs</a> (Apache 2.0), 
-            <a href="https://github.com/nodejs/node">Node.js</a> (MIT), 
-            <a href="https://gist.github.com/mrflix/8351020">OrbitControls.js</a> (MIT), 
-            <a href="https://github.com/mrdoob/three.js/">three.js</a> (MIT), 
-            <a href="https://github.com/pwnall/node-xhr2">XMLHttpRequest emulator</a> (MIT), 
-            <a href="https://github.com/gildas-lormeau/zip.js">zip.js</a> (BSD)</p>
+            <p>
+                <a href="https://dds.cr.usgs.gov/srtm/version2_1/SRTM3/">USGS SRTM</a> (Public Domain), 
+                <a href="http://viewfinderpanoramas.org/dem3.html">Jonathan de Ferranti</a> (No License)</p>
+                <p><b>Libraries:</b></p>
+                <!-- <p><a href="https://github.com/cthackers/adm-zip">ADM-ZIP</a> (MIT), -->
+                <a href="https://github.com/twbs/bootstrap">Bootstrap</a> (MIT), 
+                <!-- <a href="https://github.com/davidchambers/doctest">doctest</a> (Public Domain), -->
+                <!-- <a href="https://github.com/expressjs/expressjs.com">Express</a> (CC BY-SA 3.0), -->
+                <a href="http://golden-layout.com/download/">GoldenLayout</a> (MIT),
+                <a href="https://jquery.com/download/">jQuery</a> (MIT),
+                <!-- <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3</a> (Apache 2.0), -->
+                <a href="https://github.com/Leaflet/Leaflet">Leaflet</a> (BSD), 
+                <a href="https://github.com/openstreetmap/leaflet-osm">Leaflet OSM</a> (BSD), 
+                <a href="https://github.com/josdejong/mathjs">mathjs</a> (Apache 2.0), 
+                <!-- <a href="https://github.com/nodejs/node">Node.js</a> (MIT), -->
+                <a href="https://gist.github.com/mrflix/8351020">OrbitControls.js</a> (MIT), 
+                <a href="https://github.com/mrdoob/three.js/">three.js</a> (MIT), 
+                <!-- <a href="https://github.com/pwnall/node-xhr2">XMLHttpRequest emulator</a> (MIT), -->
+                <a href="https://github.com/gildas-lormeau/zip.js">zip.js</a> (BSD)
+            </p>
           </div><!--/.col-xs-6.col-lg-4-->
           <div class="col-xs-6 col-lg-4">
             <h2>License</h2>

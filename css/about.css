@@ -2,6 +2,7 @@
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
+ * @version 14.10.2019, GoldenLayout
  */
 
 html {
@@ -9,20 +10,9 @@ html {
 	height: 100%;
 }
 
-body {
-	background-color: black;
-}
-
-p {
-	color: white;
-}
-
-h2 {
-	color: white;
-}
-
 .featurette-divider {
 	margin-top: 300px;
+    margin-bottom: 75px; /* keskitys ylemmän mukaan */
 }
 
 #vali {
@@ -39,6 +29,7 @@ h2 {
 }
 
 #tekijat {
+    text-align: center; /* kuvat ja nimet kohdilleen */
 	margin: auto;
 	position: absolute;
 	left: 500px;
