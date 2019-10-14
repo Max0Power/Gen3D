@@ -127,6 +127,15 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
 
 var DRAGGABLE_Z_INDEX = 8;
 
+function fitToContainer(container){
+        // Make it visually fill the  positioned parent
+        container.style.width ='100%';
+        container.style.height='100%';
+        // ...then set the internal size to match
+        container.width  = container.offsetWidth;
+        container.height = container.offsetHeight;
+    }
+
 /**
  * Luo raahattavan komponentin, johon asetetaan paramerina annettu sisalto (contenElm)
  * Palauttaa lopuksi luodun komponentitn
@@ -134,22 +143,14 @@ var DRAGGABLE_Z_INDEX = 8;
  * position, paikka [x,y], johon ikkuna luodaan, esim [0,0];
  */
 function draggableUiComponent(headerTxt, position, contentElm) {
-	
-	// luodaan container, joka on kehys raahattavalle elementille
+    
+    // luodaan container, joka on kehys raahattavalle elementille
 	var container = document.createElement("DIV");
 	container.className="draggable"; // asetetaan tyyppi raahattavaksi
-	container.style.left = position[0] + "px"; // sijainti
-	container.style.top = position[1]+ "px";
-	container.onmousedown = function(event) { // huolehditaan, etta viimesena klikattu raahattava elementti on aina paalimmaisena
-		DRAGGABLE_Z_INDEX++;
-		if (DRAGGABLE_Z_INDEX > Number.MAX_SAFE_INTEGER - 10) DRAGGABLE_Z_INDEX = 8; // aloitetaan alusta, jos z indeks kasvanut jattimaiseksi, (kaikkien objektien z tulisi paivittaa)
-		container.style.zIndex = DRAGGABLE_Z_INDEX; // asetetaan z index
-	}
-	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; // draggaamisessa kaytettyja parametreja
+    fitToContainer(container); // käytetään koko tila
 	
 	var header = document.createElement("DIV"); // header komponentti, eli ylapalkki
 	header.className = "draggableHeader"; // asetetaan class, joka maarittelee ylapalkin tyylin
-	header.onmousedown = dragMouseDown; // raahaus tapahtuu header osasta
 	header.textContent = headerTxt; // asetetaan teksti
 	container.appendChild(header);
 	
@@ -157,6 +158,7 @@ function draggableUiComponent(headerTxt, position, contentElm) {
 	contentDiv.appendChild(contentElm);
 	contentDiv.className="draggableContainer"; // luokka, joka maarittelee sislto laatikon tyylin
 	container.appendChild(contentDiv);
+    fitToContainer(contentDiv); // käytetään koko tila
 	
 	var show_hide = true;
 	
@@ -169,8 +171,6 @@ function draggableUiComponent(headerTxt, position, contentElm) {
 		if (show_hide) {
 			tools_toggleBtn.className = "draggableToggleBtnActive";
 			container.style.display = 'block'; // show, ikkunan nakyviin
-			container.style.left = position[0] + "px"; // siirretaan oletuspaikalle
-			container.style.top = position[1]+ "px";
 		}
 		else {
 			tools_toggleBtn.className = "draggableToggleBtnInactive";
@@ -190,46 +190,113 @@ function draggableUiComponent(headerTxt, position, contentElm) {
 	};
 	header.appendChild(btn);
 	
-	// funktiot, joita kaytetaan drag tapahtumassa:
-	function dragMouseDown(e) {
-		e = e || window.event;
-		e.preventDefault();
-		// get the mouse cursor position at startup:
-		pos3 = e.clientX;
-		pos4 = e.clientY;
-		document.onmouseup = closeDragElement;
-		// call a function whenever the cursor moves:
-		document.onmousemove = elementDrag;
-	}
-
-	function elementDrag(e) {
-		e = e || window.event;
-		e.preventDefault();
-		// calculate the new cursor position:
-		pos1 = pos3 - e.clientX;
-		pos2 = pos4 - e.clientY;
-		pos3 = e.clientX;
-		pos4 = e.clientY;
-		// set the element's new position:
-		container.style.top = (container.offsetTop - pos2) + "px";
-		container.style.left = (container.offsetLeft - pos1) + "px";
-	}
-
-	function closeDragElement() {
-		// stop moving when mouse button is released:
-		document.onmouseup = null;
-		document.onmousemove = null;
-
-		// Closes element when it goes over the bounds of the 3D container
-        let c3d = document.getElementById("container3D");
-		if (container.offsetTop > c3d.offsetHeight || container.offsetLeft > c3d.offsetWidth) {
-			tools_toggleBtn.className = "draggableToggleBtnInactive";
-			container.style.display = 'none';
-			show_hide = false;
-		}
-	}
-	
 	return container;
+}
+
+function createMap() {
+    // leaflet map container
+    var mapid = document.createElement('div');
+    mapid.id = 'mapid';
+    mapComponent = draggableUiComponent("Map", [0, 0], mapid);
+    return mapComponent;
+}
+
+/**
+ * Creates a map
+ */
+function createLeafletMap(mapComponent) {
+    createLeaflet();
+    
+    // Creates a map component
+	
+	let mapComponentContent = mapComponent.firstChild.nextSibling;
+
+	// Area inputs & buttons
+    areaInputs.map(args => { addInput(mapComponentContent,...args); });
+	addGenerateButton(mapComponentContent);
+    
+    return mapComponentContent;
+    
+    function createLeaflet() {
+        mymap = L.map('mapid').setView([areaInputs[0][5], areaInputs[1][5]], 10);
+        
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            minZoom: 1,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            id: 'mapbox.streets'
+        }).addTo(mymap);
+    
+        mymap.on("click", onMapOneClick);
+    }
+    
+    /**
+     * Add input
+     * @param place   place for the input
+     * @param sign    label text
+     * @param id      id
+     * @param min     min value
+     * @param max     max value
+     * @param step    step
+     * @param value   default value
+     */
+    function addInput(place,sign,id,min,max,step,value) {
+        let spot = place.appendChild(document.createElement("span"));
+        let label = spot.appendChild(document.createElement("label"));
+        let input = spot.appendChild(document.createElement("input"));
+        label.appendChild(document.createTextNode(sign));
+    
+        const attr = [["id", id], ["name", id], ["for", id], ["min", min], ["max", max],
+                    ["step", step], ["value", value], ["defaultValue", value]];
+        attr.map(([k,v]) => { input.setAttribute(k,v); });
+        
+        input.setAttribute("type", "number");
+        input.setAttribute("class", "inputsArea");
+        input.addEventListener("change", (e) => { 
+            areaInputsListener(e);
+            isAreaChanged = true;
+        });
+        
+        /**
+         * Area inputs listener
+         * @param e   event
+         */
+        function areaInputsListener(e) {
+            const target = e.target.id;
+            const value = e.target.value;
+            
+            if (validateAreaInput(target,value)) {
+                e.target.defaultValue = value;
+            } else {
+                const max = parseFloat(e.target.max);
+                const min = parseFloat(e.target.min);
+                
+                if (value > max) {
+                    e.target.value = max;
+                } else if (value < min) {
+                    e.target.value = min;
+                } else {
+                    e.target.value = e.target.defaultValue;
+                }
+                
+                isAreaChanged = true;
+            }
+            
+            readAreaInputs();
+        }
+    }
+    
+    /**
+     * Adds a generate button
+     * @param place   DOM element
+     */
+    function addGenerateButton(place) {
+        let spot = place.appendChild(document.createElement("span"));
+        let button = spot.appendChild(document.createElement("button"));
+        button.appendChild(document.createTextNode("Generate"));
+        button.addEventListener("click", generateImageAnd3D);
+    }
 }
 
 

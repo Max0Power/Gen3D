@@ -8,25 +8,23 @@
 
 /* Global variables */
 
-var mymap;
-var clickSquare;
+var mymap; // leafletin kartta
+let mapComponent; // leaflet-goldenlayout purkka
+var clickSquare; // kartan neliö
 
+// onko kartalla liikuttu
 var isAreaChanged = true;
 
-const areaInputLat = 0.25;
-const areaInputLng = 6.50;
-					// label			id 			  min     max  step   default value
-const areaInputs = [["Latitude: ",  "inputLatitude",  -85,    85,  "any", areaInputLat],
-					["Longitude: ", "inputLongitude", -180,   180, "any", areaInputLng],
-					["Size: ", 		"inputSize", 	  0.01,   10,  0.01,  0.2]];
-                    
-//const url = "/db";
+//                   label          id                min     max  step   default value
+const areaInputs = [["Latitude: ",  "inputLatitude",  -85,    85,  "any", 0.25],
+                    ["Longitude: ", "inputLongitude", -180,   180, "any", 6.50],
+                    ["Size: ",      "inputSize",      0.01,   10,  0.01,  0.2]];
 
 /**
  * Loads start page
  */
 window.onload = function() {
-	initiateSite();
+    initiateSite();
 }
 
 /**
@@ -34,146 +32,20 @@ window.onload = function() {
  * and texture image of the default area
  */
 function initiateSite() {
-	createComponents();
-    createMap();
+    createLeafletMap(mapComponent);
+    
+    let areaSizeInput = document.getElementById("inputSize");
+    areaSizeInput.addEventListener("change", (e) => {
+        isAreaChanged = true;
+    });
+    
+    let maxVinput = document.getElementById("input_modelMaxVertices");
+    maxVinput.addEventListener("change", (e) => {
+        isAreaChanged = true;
+    });
+    
     readAreaInputs();
     generateImageAnd3D();
-}
-
-/**
- * Creates a map
- */
-function createMap() {
-	mymap = L.map('mapid').setView([areaInputLat, areaInputLng], 10);
-    
-	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		maxZoom: 18,
-        minZoom: 1,
-		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-		id: 'mapbox.streets'
-	}).addTo(mymap);
-
-	mymap.on("click", onMapOneClick);
-}
-
-/**
- * Creates components for the site
- */
-function createComponents() {
-	const ox = 10;
-	const oy = 10;
-	let x = ox;
-	let y = oy;
-	const add = 10;
-
-	let viewer3d = document.getElementById("container3D");
-
-	// Creates a map component
-	let mapComponent = draggableUiComponent("Map", [ox, oy], document.getElementById("mapid"));
-	viewer3d.appendChild(mapComponent);
-	let mapComponentContent = mapComponent.firstChild.nextSibling;
-
-	// Area inputs & buttons
-    areaInputs.map(args => { addInput(mapComponentContent,...args); });
-    let areaSizeInput = document.getElementById("inputSize");
-    areaSizeInput.addEventListener("change", (e) => { isAreaChanged = true; });
-	addGenerateButton(mapComponentContent);
-
-	mapComponent.style.left = x + 'px';
-	x += mapComponent.offsetWidth + add;
-
-	// Controller 3D component
-	let controller3dComponent = createInput3dController(ox, oy, generate3DModel, true, false);
-	viewer3d.appendChild(controller3dComponent);
-    let maxVinput = document.getElementById("input_modelMaxVertices");
-    maxVinput.addEventListener("change", (e) => { isAreaChanged = true; });
-	
-	y += controller3dComponent.offsetHeight + add;
-	controller3dComponent.style.left = x + 'px';
-	
-	// Texture viewer component
-	let texturesComponent = createTextureController(ox, oy, generateImage);
-	viewer3d.appendChild(texturesComponent);
-
-	texturesComponent.style.top = y + 'px';
-	texturesComponent.style.left = x + 'px';
-	x += texturesComponent.offsetWidth + add;
-
-	// Texture editor component
-	let textureEditorComponent = createTextureEditor(ox, oy);
-	// let textureEditorComponent = createTextureEditor((container3D.offsetWidth - 269 - add), oy);
-	viewer3d.appendChild(textureEditorComponent);
-
-	x = container3D.offsetWidth - textureEditorComponent.offsetWidth - add;
-	textureEditorComponent.style.left = x + 'px';
-}
-
-/**
- * Add input
- * @param place   place for the input
- * @param sign    label text
- * @param id      id
- * @param min     min value
- * @param max     max value
- * @param step    step
- * @param value   default value
- */
-function addInput(place,sign,id,min,max,step,value) {
-	let spot = place.appendChild(document.createElement("span"));
-	let label = spot.appendChild(document.createElement("label"));
-	let input = spot.appendChild(document.createElement("input"));
-	label.appendChild(document.createTextNode(sign));
-
-    const attr = [["id", id], ["name", id], ["for", id], ["min", min], ["max", max],
-    			  ["step", step], ["value", value], ["defaultValue", value]];
-    attr.map(([k,v]) => { input.setAttribute(k,v); });
-    
-	input.setAttribute("type", "number");
-	input.setAttribute("class", "inputsArea");
-	input.addEventListener("change", (e) => { 
-		areaInputsListener(e);
-		isAreaChanged = true;
-	});
-}
-
-/**
- * Adds a generate button
- * @param place   DOM element
- */
-function addGenerateButton(place) {
-	let spot = place.appendChild(document.createElement("span"));
-	let button = spot.appendChild(document.createElement("button"));
-	button.appendChild(document.createTextNode("Generate"));
-    button.addEventListener("click", generateImageAnd3D);
-}
-
- /**
- * Area inputs listener
- * @param e   event
- */
-function areaInputsListener(e) {
-	const target = e.target.id;
-	const value = e.target.value;
-    
-    if (validateAreaInput(target,value)) {
-        e.target.defaultValue = value;
-    } else {
-        const max = parseFloat(e.target.max);
-        const min = parseFloat(e.target.min);
-        
-        if (value > max) {
-            e.target.value = max;
-        } else if (value < min) {
-            e.target.value = min;
-        } else {
-            e.target.value = e.target.defaultValue;
-        }
-        
-        isAreaChanged = true;
-    }
-    
-    readAreaInputs();
 }
 
 /**
@@ -256,6 +128,8 @@ function generate(callbacks) {
         dataStruct.setCallbacks([function(arg) {
             var result = [arg.heights,arg.minMaxH];
             callbacks.map(f => f(...result));
+            // 3D mallin koko muuttuu vasta piirron jälkeen
+            window.dispatchEvent(new Event('resize'));
         }]);
         
         dataStruct.execute(files);
@@ -282,25 +156,28 @@ function make3DModel(heights, minmax) {
     drawMesh();
 }
 
-/**
+/*
+ * Ei käytössä!
  * Make file objects based on user's input
  */
+/*
 function makeFiles() {
-    /* Selvitetään klikattu alue ja sen koko */
+    // Selvitetään klikattu alue ja sen koko
     const input_lat = parseFloat( document.getElementById("inputLatitude").value );
     const input_lng = parseFloat( document.getElementById("inputLongitude").value );
     const size = parseFloat( document.getElementById("inputSize").value ) / 2;
     const max = parseInt ( document.getElementById("input_modelMaxVertices").value);
 
-    /* Lasketaan alueen vasen ylakulma ja oikea alakulma */
+    // Lasketaan alueen vasen ylakulma ja oikea alakulma
 	var latlng_1 = [input_lat + size, input_lng - size];
 	var latlng_2 = [input_lat - size, input_lng + size];
     
-    /* Luodaan file-oliot */
+    // Luodaan file-oliot
     var files = fileTehtaat(latlng_1, latlng_2, max, alg);
     
 	return files;
 }
+*/
 
 function getLatlngs() {
     /* Selvitetään klikattu alue ja sen koko */

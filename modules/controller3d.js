@@ -25,8 +25,6 @@ var material;
 
 var cameraPosition = [0,100,100];
 
-var initialized = false;
-
 var container;
 var scene;
 var renderer;
@@ -35,44 +33,42 @@ var controls;
 var mesh = null;
 
 function init() {
+    container = document.createElement("DIV"); // container, johon renderer lisataan
+    fitToContainer(container);
     
-	if(!initialized) {
-		container = document.getElementById('container3D'); // container, johon renderer lisataan
-		
-		scene = new THREE.Scene();
-		
-		renderer = new THREE.WebGLRenderer();
-		renderer.setSize( container.clientWidth, container.clientHeight );
-		renderer.shadowMap.enabled = true; // pistetaan shadowmappi (ei pakollinen)
-		renderer.shadowMap.type = THREE.basicShadowMap; // asetetaan varjon tyyppi (ei pakollinen)
-		container.appendChild( renderer.domElement );
-		
-		var ambientLight = new THREE.AmbientLight(0x404040, 1.0); // valo sceneen (ei pakollinen)
-		scene.add(ambientLight);
+    scene = new THREE.Scene();
+    
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize( container.clientWidth, container.clientHeight );
+    renderer.shadowMap.enabled = true; // pistetaan shadowmappi (ei pakollinen)
+    renderer.shadowMap.type = THREE.basicShadowMap; // asetetaan varjon tyyppi (ei pakollinen)
+    container.appendChild( renderer.domElement );
+    
+    var ambientLight = new THREE.AmbientLight(0x404040, 1.0); // valo sceneen (ei pakollinen)
+    scene.add(ambientLight);
 
-		var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-		//directionalLight.position.x = Math.random() - 0.5;
-		//directionalLight.position.y = Math.random() - 0.5;
-		//directionalLight.position.z = Math.random() - 0.5;
-		//directionalLight.position.normalize();
-		scene.add( directionalLight );
-		
-		// kamera
-		var maxDrawDistance = 10000; //1000;
-		camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, maxDrawDistance );
-		
-		// controllit
-		controls = new THREE.OrbitControls( camera, renderer.domElement );
-		controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
-		controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
-		controls.dampingFactor = 0;
-		controls.screenSpacePanning = false;
-		controls.minDistance = 1;
-		controls.maxDistance = 10000;
-		controls.maxPolarAngle = Math.PI / 2;
-		
-		initialized = true;
-	}
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    //directionalLight.position.x = Math.random() - 0.5;
+    //directionalLight.position.y = Math.random() - 0.5;
+    //directionalLight.position.z = Math.random() - 0.5;
+    //directionalLight.position.normalize();
+    scene.add( directionalLight );
+    
+    // kamera
+    var maxDrawDistance = 10000; //1000;
+    camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, maxDrawDistance );
+    
+    // controllit
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+    controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+    controls.dampingFactor = 0;
+    controls.screenSpacePanning = false;
+    controls.minDistance = 1;
+    controls.maxDistance = 10000;
+    controls.maxPolarAngle = Math.PI / 2;
+    
+    return draggableUiComponent("3D-model", [0, 0], container);
 }
 
 
@@ -84,7 +80,7 @@ function drawMesh() {
 	
 	// generoidun meshin piirto:
 	
-	init(); // suoritetaan tarvittavien komponenttien luonti (kutsutaan vain kerran)
+	//init(); // suoritetaan tarvittavien komponenttien luonti (kutsutaan vain kerran)
 	
 	// Tyhjennetaan scene:
 	if (mesh != null) {

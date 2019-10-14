@@ -14,14 +14,20 @@ body {
 	font-size: 14px;
 }
 
+body .lm_content{
+  overflow: auto; /* komponentin scrollbar */
+}
+
 .navbar.navbar-inverse {
 	margin-bottom: 0px;
 	border-radius: 0px;
 }
 
 #mapid { 
-	height: 500px;
-	width: 500px;
+    position: relative;
+    width: 100%;
+    height: 0; /* ultimate hack */
+    padding-bottom: 100%;
 }
 
 #container3D {
@@ -32,28 +38,21 @@ body {
 	overflow: hidden; /* samaa kuin edellinen kommentti */
 }
 
-#div3d {
-	position: absolute;
-	top: 70px;
-	left: 525px;
-	width: calc(100% - 550px);
-}
-
 input.inputsArea {
-	width: 75px;
+	width: 75px; /* latitude, longitude */
 }
 
 #inputSize {
-	width: 50px;
+	width: 50px; /* size */
 }
 
 #canv {
-	max-height: 500px;
-	max-width: 500px;
+	max-height: 100%; /* 500px */
+	max-width: 100%; /* 500px */
 }
 
 span {
-	padding-right: 5px;
+	padding-right: 5px; /* tekstiketän jälkeen tilaa */
 }
 
 /* Draggable components */
@@ -61,8 +60,12 @@ span {
 .draggable {
 	position: absolute;
     z-index: 8;
-    background-color: #f1f1f1;
-    border: 1px solid #d3d3d3;
+    background-color: transparent; /* #f1f1f1; */
+    border: 1px solid transparent;
+}
+
+label {
+     color: #D8D8D8; /* komponenttien tekstit */
 }
 
 .draggableHeader {
@@ -74,6 +77,7 @@ span {
     z-index: 10;
     background-color: #337AB7; /* #2196F3; */
     color: #fff;
+    display: none; /* piilota header rikkomatta ruksia */
 }
 
 .draggableHeaderBtn {
@@ -109,7 +113,7 @@ span {
 }
 
 .rgbInputBox {
-	width: 30px;
+	width: 3em; /* 30px */
 }
 
 /* Instructions */
