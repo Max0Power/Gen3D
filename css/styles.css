@@ -129,4 +129,5 @@ label, h3:nth-child(1), h3:nth-child(6) {
 
 #instructions {
 	width: 100%;
+    padding:1em;
 }
