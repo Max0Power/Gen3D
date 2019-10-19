@@ -128,15 +128,6 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
 
 var DRAGGABLE_Z_INDEX = 8;
 
-function fitToContainer(container){
-        // Make it visually fill the  positioned parent
-        container.style.width ='100%';
-        container.style.height='100%';
-        // ...then set the internal size to match
-        container.width  = container.offsetWidth;
-        container.height = container.offsetHeight;
-    }
-
 /**
  * Luo raahattavan komponentin, johon asetetaan paramerina annettu sisalto (contenElm)
  * Palauttaa lopuksi luodun komponentitn
@@ -192,112 +183,6 @@ function draggableUiComponent(headerTxt, position, contentElm) {
 	header.appendChild(btn);
 	
 	return container;
-}
-
-function createMap() {
-    // leaflet map container
-    var mapid = document.createElement('div');
-    mapid.id = 'mapid';
-    mapComponent = draggableUiComponent("Map", [0, 0], mapid);
-    return mapComponent;
-}
-
-/**
- * Creates a map
- */
-function createLeafletMap(mapComponent) {
-    createLeaflet();
-    
-    // Creates a map component
-	
-	let mapComponentContent = mapComponent.firstChild.nextSibling;
-
-	// Area inputs & buttons
-    areaInputs.map(args => { addInput(mapComponentContent,...args); });
-	addGenerateButton(mapComponentContent);
-    
-    return mapComponentContent;
-    
-    function createLeaflet() {
-        mymap = L.map('mapid').setView([areaInputs[0][5], areaInputs[1][5]], 10);
-        
-        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            minZoom: 1,
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-                '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-            id: 'mapbox.streets'
-        }).addTo(mymap);
-    
-        mymap.on("click", onMapOneClick);
-    }
-    
-    /**
-     * Add input
-     * @param place   place for the input
-     * @param sign    label text
-     * @param id      id
-     * @param min     min value
-     * @param max     max value
-     * @param step    step
-     * @param value   default value
-     */
-    function addInput(place,sign,id,min,max,step,value) {
-        let spot = place.appendChild(document.createElement("span"));
-        let label = spot.appendChild(document.createElement("label"));
-        let input = spot.appendChild(document.createElement("input"));
-        label.appendChild(document.createTextNode(sign));
-    
-        const attr = [["id", id], ["name", id], ["for", id], ["min", min], ["max", max],
-                    ["step", step], ["value", value], ["defaultValue", value]];
-        attr.map(([k,v]) => { input.setAttribute(k,v); });
-        
-        input.setAttribute("type", "number");
-        input.setAttribute("class", "inputsArea");
-        input.addEventListener("change", (e) => { 
-            areaInputsListener(e);
-            isAreaChanged = true;
-        });
-        
-        /**
-         * Area inputs listener
-         * @param e   event
-         */
-        function areaInputsListener(e) {
-            const target = e.target.id;
-            const value = e.target.value;
-            
-            if (validateAreaInput(target,value)) {
-                e.target.defaultValue = value;
-            } else {
-                const max = parseFloat(e.target.max);
-                const min = parseFloat(e.target.min);
-                
-                if (value > max) {
-                    e.target.value = max;
-                } else if (value < min) {
-                    e.target.value = min;
-                } else {
-                    e.target.value = e.target.defaultValue;
-                }
-                
-                isAreaChanged = true;
-            }
-            
-            readAreaInputs();
-        }
-    }
-    
-    /**
-     * Adds a generate button
-     * @param place   DOM element
-     */
-    function addGenerateButton(place) {
-        let spot = place.appendChild(document.createElement("span"));
-        let button = spot.appendChild(document.createElement("button"));
-        button.appendChild(document.createTextNode("Generate"));
-        button.addEventListener("click", generateImageAnd3D);
-    }
 }
 
 
@@ -485,4 +370,13 @@ function consoleAdd(txt) {
 	if (con != null) {
 		con.value += txt + '\n' ;
 	}
+}
+
+function fitToContainer(container){
+    // Make it visually fill the  positioned parent
+    container.style.width ='100%';
+    container.style.height='100%';
+    // ...then set the internal size to match
+    container.width  = container.offsetWidth;
+    container.height = container.offsetHeight;
 }

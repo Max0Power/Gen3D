@@ -4,6 +4,7 @@
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
+ * @version 19.10.2019, React
  */
 -->
 
@@ -11,9 +12,7 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-
-        <!-- import ensin kirjastot, sitten koodit -->
-
+        
 		<!-- css -->
 		<link rel="stylesheet" href="css/leaflet.css" />
 		<link rel="stylesheet" href="css/styles.css" type="text/css" />
@@ -32,6 +31,9 @@
 		<script src="lib/deflate.js"></script>
         <script src="lib/jquery.min.js"></script>
         <script src="lib/goldenlayout.min.js"></script>
+        <script src="lib/react.production.min.js"></script>
+        <script src="lib/react-dom.production.min.js"></script>
+        <script src="lib/babel.min.js"></script>
 
 		<!-- modules -->
 		<script src="modules/data.js"></script>
@@ -55,11 +57,11 @@
         <!-- sh -->
         <script src="sh/others.js"></script>
         <script src="sh/usgs.js"></script>
-
-		<!-- main -->
-		<script src="worldMain.js"></script>
-        <script src="worldGui.js"></script>
-		
+        
+        <!-- main -->
+        <script src="worldMain.js"></script>
+        <script src="worldGui.js" type="text/babel"></script>
+        
         <title>3D-Gen</title>
     </head>
     

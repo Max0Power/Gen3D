@@ -5,43 +5,8 @@
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
+ * @version 19.10.2019, React
  */
-
-/* Global variables */
-
-var mymap; // leafletin kartta
-let mapComponent; // leaflet-goldenlayout purkka
-var clickSquare; // kartan neliö
-
-// onko kartalla liikuttu
-var isAreaChanged = true;
-
-//                   label          id                min     max  step   default value
-const areaInputs = [["Latitude: ",  "inputLatitude",  -85,    85,  "any", 0.25],
-                    ["Longitude: ", "inputLongitude", -180,   180, "any", 6.50],
-                    ["Size: ",      "inputSize",      0.01,   10,  0.01,  0.2]];
-
-/**
- * Loads start page and
- * adds components, leaflet map and generates a 3D model
- * and texture image of the default area
- */
-window.onload = function() {
-    createLeafletMap(mapComponent);
-    
-    let areaSizeInput = document.getElementById("inputSize");
-    areaSizeInput.addEventListener("change", (e) => {
-        isAreaChanged = true;
-    });
-    
-    let maxVinput = document.getElementById("input_modelMaxVertices");
-    maxVinput.addEventListener("change", (e) => {
-        isAreaChanged = true;
-    });
-    
-    readAreaInputs();
-    generateImageAnd3D();
-}
 
 /**
  * Read area inputs
@@ -54,7 +19,10 @@ function readAreaInputs() {
 	let lng = parseFloat(lngInput.value);
 	let size = parseFloat(sizeInput.value);
     
-	makeSquareFromClicks(lat,lng,size,mymap);
+    //var files = fileTehtaat(...getLatlngs());
+    //console.log(files.map(x => x.getFileName()));
+    
+    return [lat,lng,size];
 }
 
 /**
@@ -64,14 +32,6 @@ function readAreaInputs() {
 function updateAreaInputs(lat,lng) {
 	document.getElementById("inputLatitude").value = lat;
 	document.getElementById("inputLongitude").value = lng;
-}
-
-/**
- * Validates area inputs
- * @returns valid or not
- */
-function validateAreaInput(target,value) {
-	return value ? document.getElementById(target).reportValidity() : false;
 }
 
 /**
@@ -103,21 +63,7 @@ function generateImage() {
  * @param callbacks		array of callback functions
  */
 function generate(callbacks) {
-    if (isAreaChanged) {
-        isAreaChanged = false;
-		
-		const latlngs = getLatlngs();
-		
-		const lat_1 = ["lat_1",latlngs[0][0]];
-		const lng_1 = ["lng_1",latlngs[0][1]];
-		
-		const lat_2 = ["lat_2",latlngs[1][0]];
-		const lng_2 = ["lng_2",latlngs[1][1]];
-		
-		const max = ["max",latlngs[2]];
-		
-		
-        var files = fileTehtaat([lat_1[1],lng_1[1]],[lat_2[1],lng_2[1]],max[1]);
+        var files = fileTehtaat(...getLatlngs());
         
         var dataStruct = new DataStruct();
         dataStruct.setCallbacks([function(arg) {
@@ -128,7 +74,6 @@ function generate(callbacks) {
         }]);
         
         dataStruct.execute(files);
-    }
 }
 
 /**
@@ -175,85 +120,15 @@ function makeFiles() {
 */
 
 function getLatlngs() {
-    /* Selvitetään klikattu alue ja sen koko */
+    // Selvitetään klikattu alue ja sen koko
     const input_lat = parseFloat( document.getElementById("inputLatitude").value );
     const input_lng = parseFloat( document.getElementById("inputLongitude").value );
     const size = parseFloat( document.getElementById("inputSize").value ) / 2;
     const max = parseInt ( document.getElementById("input_modelMaxVertices").value);
 
-    /* Lasketaan alueen vasen ylakulma ja oikea alakulma */
+    // Lasketaan alueen vasen ylakulma ja oikea alakulma
 	var latlng_1 = [input_lat + size, input_lng - size];
 	var latlng_2 = [input_lat - size, input_lng + size];
     
     return [latlng_1,latlng_2,max];
-}
-
-/**
- * Listener for one click to map
- * @param e   event
- */
-function onMapOneClick(e) {
-    isAreaChanged = true;
-    
-	let click = e.latlng;
-	updateAreaInputs(click.lat, click.lng);
-	readAreaInputs();
-}
-
-/**
- * Makes a square based on the clicks. Has to make corrections since originally
- * user makes a rectangle.
- * @param lat    latitude
- * @param lng    longitude
- * @param size   size
- * @param map    leaflet map
- */
-function makeSquareFromClicks(lat,lng,size,map) {
-	if (clickSquare) clickSquare.remove();
-    
-    lat = validate(lat,lng)[0];
-    lng = validate(lat,lng)[1];
-    
-	size = size / 2.0;
-	var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
-	// add rectangle passing bounds and some basic styles
-    const rectangle = L.rectangle(bounds, {color: "red", weight: 1}).addTo(map);
-    
-    /* Asetetaan neliön raahaus */
-    rectangle.on('mousedown', () => {
-        map.dragging.disable();
-        map.on('mousemove', (e) => {
-			lat = validate(e.latlng.lat,e.latlng.lng)[0];
-			lng = validate(e.latlng.lat,e.latlng.lng)[1];
-			bounds = [[lat + size, lng + size], [lat - size, lng - size]];
-            rectangle.setBounds(bounds);
-        });
-    }); 
-    rectangle.on('mouseup', (e) =>{
-        map.dragging.enable();
-        map.removeEventListener('mousemove');
-    });
-    
-    clickSquare = rectangle;
-}
-
-/**
- * Validates the coordinates
- * @param lat   latitude
- * @param lng   longitude
- * @returns [lat,lng]
- */
-function validate(lat,lng) {
-    if (lat < -85) lat = -85;
-    if (85 < lat) lat = 85;
-    
-    if (lng < -180) lng = -180;
-    if (180 < lng) lng = 180;
-
-    let latInput = document.getElementById("inputLatitude");
-	let lngInput = document.getElementById("inputLongitude");
-	latInput.value = lat;
-	lngInput.value = lng;
-    
-    return [lat,lng];
 }

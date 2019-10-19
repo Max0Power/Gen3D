@@ -12,13 +12,48 @@ var layout = {
     content: [{
         type: 'row',
         content:[{
-            type: 'component',
+            type: 'react-component',
             id: 'Map',
+            title: 'Map',
             width: 28,
             height: 100,
             isClosable: false,
-            componentName: 'Map',
-            componentState: {  }
+            component: 'Map',
+            props: {
+                latitude: {
+                    sign: 'Latitude:',
+                    id: 'inputLatitude',
+                    name: 'inputLatitude',
+                    for: 'inputLatitude',
+                    min: '-85',
+                    max: '85',
+                    step: 'any',
+                    value: '0.25',
+                    defaultValue: '0.25'
+                },
+                longitude: {
+                    sign: 'Longitude:',
+                    id: 'inputLongitude',
+                    name: 'inputLongitude',
+                    for: 'inputLongitude',
+                    min: '-180',
+                    max: '180',
+                    step: 'any',
+                    value: '6.25',
+                    defaultValue: '6.25'
+                },
+                size: {
+                    sign: 'Size:',
+                    id: 'inputSize',
+                    name: 'inputSize',
+                    for: 'inputSize',
+                    min: '0.01',
+                    max: '10',
+                    step: '0.01',
+                    value: '0.2',
+                    defaultValue: '0.2'
+                }
+            }
         },{
             type: 'column',
             width: 15,
@@ -59,24 +94,157 @@ var layout = {
     }]
 };
 
-/*
-// käytä evästeen runkoa tai oletusta
-var myLayout,savedState = localStorage.getItem('savedState');
-if(savedState !== null) {
-    myLayout = new GoldenLayout(JSON.parse(savedState));
-} else {
-    myLayout = new GoldenLayout(layout, '#container3D');
+class MapComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.handleClick = this.handleClick.bind(this);
+    }
+    
+    componentDidMount() {
+        //draggableUiComponent("Map", [0, 0], ReactDOM.findDOMNode(this));
+    }
+    
+    handleClick(e) {
+        generateImageAnd3D();
+    }
+    
+    render() {
+        return (
+            <React.Fragment>
+                <Leaflet {...this.props} />
+                <Input {...this.props.latitude} />
+                <Input {...this.props.longitude} />
+                <Input {...this.props.size} />
+                <button onClick={this.handleClick}>Generate</button>
+            </React.Fragment>
+        );
+    }
 }
-*/
+
+class Leaflet extends React.Component {
+    constructor(props) {
+        super(props);
+        this.clickSquare = null;
+        this.mymap = null;
+        
+        this.onMapOneClick = this.onMapOneClick.bind(this);
+        this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
+    }
+    
+    componentDidMount() {
+        let map = this.mymap = L.map(ReactDOM.findDOMNode(this), {
+            minZoom: 1,
+            maxZoom: 18,
+            zoom: 10,
+            center: [0.25,6.5],
+            layers: [
+                L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+                    id: 'mapbox.streets',
+                    SameSite: 'Secure'
+                }),
+            ],
+            attributionControl: true
+        });
+        map.on('click', this.onMapOneClick);
+        map.fitWorld();
+    }
+    
+    onMapOneClick(e) {
+        const click = e.latlng;
+        updateAreaInputs(click.lat, click.lng);
+        
+        const args = readAreaInputs();
+        this.makeSquareFromClicks(...args);
+    }
+    
+    makeSquareFromClicks(lat,lng,size) {
+        const map = this.mymap;
+        var square = this.clickSquare;
+        
+        if (square) square.remove();
+        
+        size = size / 2.0;
+        var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
+        // add rectangle passing bounds and some basic styles
+        const rectangle = L.rectangle(bounds, {color: "red", weight: 1}).addTo(map);
+        
+        // asetetaan neliön raahaus
+        rectangle.on('mousedown', () => {
+            map.dragging.disable();
+            map.on('mousemove', (e) => {
+                lat = e.latlng.lat;
+                lng = e.latlng.lng;
+                bounds = [[lat + size, lng + size], [lat - size, lng - size]];
+                rectangle.setBounds(bounds);
+            });
+        }); 
+        rectangle.on('mouseup', (e) =>{
+            map.dragging.enable();
+            map.removeEventListener('mousemove');
+        });
+        
+        square = this.clickSquare = rectangle;
+    }
+    
+    render() {
+        return <div id='mapid'/>
+    }
+}
+
+class Input extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: this.props.value,
+            defaultValue: this.props.defaultValue
+        };
+        
+        this.handleChange = this.handleChange.bind(this);
+    }
+    
+    render() {
+        return (
+            <React.Fragment>
+            <label>{this.props.sign}</label>
+            <input id={this.props.id}
+                name={this.props.id}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={this.state.value}
+                defaultValue={this.state.defaultValue}
+                type='number'
+                class='inputsArea'
+                onChange={this.handleChange}>
+            </input>
+            </React.Fragment>
+        );
+    }
+    
+    handleChange(e) {
+        // TODO: paranna tuntumaa
+        const target = document.getElementById(e.target.id);
+        
+        if (target.reportValidity()) {
+            this.setState({value: e.target.value});
+            this.setState({defaultValue: e.target.value});
+        } else {
+            if (e.target.value > this.props.max) {
+                this.setState({value: this.props.max});
+            } else if (e.target.value < this.props.min) {
+                this.setState({value: this.props.min});
+            }
+        }
+    }
+}
 
 var myLayout = new GoldenLayout(layout, '#container3D');
 
-// tallenna muutos evästeisiin ja päivitä ikkuna
+// päivitä komponentit ikkunan mukaan
 myLayout.on('stateChanged', function() {
-    /*
-    const state = JSON.stringify(myLayout.toConfig());
-    localStorage.setItem('savedState', state);
-    */
     window.dispatchEvent(new Event('resize'));
 });
 
@@ -87,9 +255,7 @@ $(window).resize(function () {
 });
 
 // Map component
-myLayout.registerComponent('Map', function( container, componentState) {
-    container.getElement().html( $( createMap() ) );
-});
+myLayout.registerComponent('Map', MapComponent);
 
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
