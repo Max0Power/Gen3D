@@ -11,7 +11,7 @@
  * @param tiedostot    resurssihallinnasta valitut tiedostot
  * @param callback     funktio vastaanottaa korkeusarvot
  * @example
- *   <input type="file" multiple onchange="lueTiedostot(this.files,tulosta,true)" />
+ *   <input type="file" multiple onchange="lueTiedostot(this.files,tulosta)" />
  */
 /*
 function lueTiedostot(tiedostot,callback) {
@@ -31,13 +31,13 @@ function lueTiedostot(tiedostot,callback) {
 function lueTiedosto(tiedosto,callback) {
     var lukija = new FileReader();
     lukija.onprogress = function(e) {
-        console.log(Math.floor(100 * e.loaded / e.total) + " % luettu tiedostosta " + tiedosto.name);
+        console.log(tiedosto.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
     };
     lukija.onload = function() {
-        callback(lukija.result,tiedosto);
+        callback(lukija.result);
     };
     lukija.onerror = errorListener;
-    lukija.readAsArrayBuffer(tiedosto);
+    lukija.readAsArrayBuffer();
 }
 */
 
@@ -66,13 +66,13 @@ function lueTiedostoUrl(url,file,callback) {
     request.open("GET", url);
     request.responseType = "arraybuffer";
     request.send();
-    
-    /**
-    * Ilmoittaa virheestä selaimen konsoliin
-    */
-    function errorListener() {
-        throw new Error("Virhe! Tiedostonluku epäonnistui.");
-    }
+}
+
+/**
+ * Ilmoittaa virheestä selaimen konsoliin
+ */
+function errorListener() {
+    throw new Error("Virhe! Tiedostonluku epäonnistui.");
 }
 
 /**

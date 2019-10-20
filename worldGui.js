@@ -1,7 +1,7 @@
 var layout = {
     settings:{
         showPopoutIcon: false,
-        showMaximiseIcon: true,
+        showMaximiseIcon: false,
         showCloseIcon: false
     },
     labels: {
@@ -97,8 +97,10 @@ var layout = {
 class MapComponent extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {file: ''};
         
         this.handleClick = this.handleClick.bind(this);
+        this.readFile = this.readFile.bind(this);
     }
     
     componentDidMount() {
@@ -109,14 +111,29 @@ class MapComponent extends React.Component {
         generateImageAnd3D();
     }
     
+    readFile(e) {
+        lueTiedostoZip(e.target.files[0],null,function (heights) {
+            var t = fillAllDataHoles(heights);
+            var minmax = getHeightsMatrixMinMaxH(t);
+            makeGrayscale(t,minmax);
+        });
+    }
+    
     render() {
         return (
             <React.Fragment>
                 <Leaflet {...this.props} />
+                <br />
                 <Input {...this.props.latitude} />
+                <br />
                 <Input {...this.props.longitude} />
+                <br />
                 <Input {...this.props.size} />
                 <button onClick={this.handleClick}>Generate</button>
+                <br />
+                <label>hgt.zip: (raw)</label>
+                <br />
+                <input type='file' onChange={this.readFile} />
             </React.Fragment>
         );
     }
@@ -127,16 +144,26 @@ class Leaflet extends React.Component {
         super(props);
         this.clickSquare = null;
         this.mymap = null;
+        this.state = ({mapview: 'dark'});
         
         this.onMapOneClick = this.onMapOneClick.bind(this);
         this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
-        this.switchLayer = this.switchLayer.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleFix = this.handleFix.bind(this);
     }
     
-    switchLayer(layer) {
-        var layerId = layer.target.id;
+    handleChange(e) {
+        const layerId = e.target.value;
+        this.setState({mapview: layerId});
+        
         if (this.style) this.style.remove();
-        this.style = L.mapbox.styleLayer('mapbox://styles/mapbox/' + layerId).addTo(this.mymap);
+        if (layerId !== 'default') {
+            this.style = L.mapbox.styleLayer('mapbox://styles/mapbox/' + layerId).addTo(this.mymap);
+        }
+    }
+    
+    handleFix() {
+        this.mymap.invalidateSize();
     }
     
     componentDidMount() {
@@ -147,17 +174,11 @@ class Leaflet extends React.Component {
             zoom: 10,
             center: [0.25,6.5],
             SameSite: 'None',
-            attributionControl: true
+            attributionControl: true,
+            reuseTiles: true
         });
         map.on('click', this.onMapOneClick);
         map.fitWorld();
-        
-        var layerList = document.getElementById('menu');
-        var inputs = layerList.getElementsByTagName('input');
-        document.getElementById('dark-v10').checked = true;
-        for (var i = 0; i < inputs.length; i++) {
-            inputs[i].onclick = this.switchLayer;
-        }
         
         /*
         let map = this.mymap = L.map(ReactDOM.findDOMNode(this), {
@@ -200,7 +221,6 @@ class Leaflet extends React.Component {
         size = size / 2.0;
         var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
         // add rectangle passing bounds and some basic styles
-        //const rectangle = L.rectangle(bounds, {color: "red", weight: 1}).addTo(map);
         const rectangle = L.rectangle(bounds, {color: '#2196F3', weight: 1, type: 'fill'}).addTo(map);
         
         // asetetaan neliön raahaus
@@ -225,18 +245,18 @@ class Leaflet extends React.Component {
         return(
             <React.Fragment>
             <div id='mapid' />
-            <div id='menu'>
-                <input id='streets-v11' type='radio' name='rtoggle' value='streets' />
-                <label for='streets'>Streets</label>
-                <input id='light-v10' type='radio' name='rtoggle' value='light' />
-                <label for='light'>Light</label>
-                <input id='dark-v10' type='radio' name='rtoggle' value='dark' />
-                <label for='dark'>Dark</label>
-                <input id='outdoors-v11' type='radio' name='rtoggle' value='outdoors' />
-                <label for='outdoors'>Outdoors</label>
-                <input id='satellite-v9' type='radio' name='rtoggle' value='satellite' />
-                <label for='satellite'>Satellite</label>
-            </div>
+            <label>Map view: </label>
+            <br />
+            <select onChange={this.handleChange} value={this.state.mapview}>
+                <option value='default'>Black</option>
+                <option value='streets-v11'>Streets</option>
+                <option value='light-v10'>Light</option>
+                <option value='dark-v10'>Dark</option>
+                <option value='outdoors-v11'>Outdoors</option>
+                <option value='satellite-v9'>Satellite</option>
+                <option value='satellite-streets-v11'>Satellite-Streets</option>
+            </select>
+            <button onClick={this.handleFix}>Fix</button>
             </React.Fragment>
         );
     }
@@ -257,6 +277,7 @@ class Input extends React.Component {
         return (
             <React.Fragment>
             <label>{this.props.sign}</label>
+            <br />
             <input id={this.props.id}
                 name={this.props.id}
                 min={this.props.min}
