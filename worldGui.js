@@ -130,26 +130,57 @@ class Leaflet extends React.Component {
         
         this.onMapOneClick = this.onMapOneClick.bind(this);
         this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
+        this.switchLayer = this.switchLayer.bind(this);
+    }
+    
+    switchLayer(layer) {
+        var layerId = layer.target.id;
+        if (this.style) this.style.remove();
+        this.style = L.mapbox.styleLayer('mapbox://styles/mapbox/' + layerId).addTo(this.mymap);
     }
     
     componentDidMount() {
+        L.mapbox.accessToken = 'pk.eyJ1IjoiaGFiYSIsImEiOiJjazF5eXptbG4wcTl1M21sODFwbWVnMDI1In0.RgLBJb1OFvgsqYfnREA7ig';
+        var map = this.mymap = L.mapbox.map(ReactDOM.findDOMNode(this), 'mapbox.dark', {
+            minZoom: 1,
+            maxZoom: 18,
+            zoom: 10,
+            center: [0.25,6.5],
+            SameSite: 'None',
+            attributionControl: true
+        });
+        map.on('click', this.onMapOneClick);
+        map.fitWorld();
+        
+        var layerList = document.getElementById('menu');
+        var inputs = layerList.getElementsByTagName('input');
+        document.getElementById('dark-v10').checked = true;
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].onclick = this.switchLayer;
+        }
+        
+        /*
         let map = this.mymap = L.map(ReactDOM.findDOMNode(this), {
             minZoom: 1,
             maxZoom: 18,
             zoom: 10,
             center: [0.25,6.5],
+            SameSite: 'Secure',
             layers: [
                 L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
                     '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
                     id: 'mapbox.streets',
-                    SameSite: 'Secure'
                 }),
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                })
             ],
             attributionControl: true
         });
         map.on('click', this.onMapOneClick);
         map.fitWorld();
+        */
     }
     
     onMapOneClick(e) {
@@ -169,7 +200,8 @@ class Leaflet extends React.Component {
         size = size / 2.0;
         var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
         // add rectangle passing bounds and some basic styles
-        const rectangle = L.rectangle(bounds, {color: "red", weight: 1}).addTo(map);
+        //const rectangle = L.rectangle(bounds, {color: "red", weight: 1}).addTo(map);
+        const rectangle = L.rectangle(bounds, {color: '#2196F3', weight: 1, type: 'fill'}).addTo(map);
         
         // asetetaan neliön raahaus
         rectangle.on('mousedown', () => {
@@ -190,7 +222,23 @@ class Leaflet extends React.Component {
     }
     
     render() {
-        return <div id='mapid'/>
+        return(
+            <React.Fragment>
+            <div id='mapid' />
+            <div id='menu'>
+                <input id='streets-v11' type='radio' name='rtoggle' value='streets' />
+                <label for='streets'>Streets</label>
+                <input id='light-v10' type='radio' name='rtoggle' value='light' />
+                <label for='light'>Light</label>
+                <input id='dark-v10' type='radio' name='rtoggle' value='dark' />
+                <label for='dark'>Dark</label>
+                <input id='outdoors-v11' type='radio' name='rtoggle' value='outdoors' />
+                <label for='outdoors'>Outdoors</label>
+                <input id='satellite-v9' type='radio' name='rtoggle' value='satellite' />
+                <label for='satellite'>Satellite</label>
+            </div>
+            </React.Fragment>
+        );
     }
 }
 
