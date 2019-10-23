@@ -29,6 +29,8 @@ function lueTiedostot(tiedostot,callback) {
  */
 /*
 function lueTiedosto(tiedosto,callback) {
+    var arr = base64ToArrayBuffer(tiedosto);
+    
     var lukija = new FileReader();
     lukija.onprogress = function(e) {
         console.log(tiedosto.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
@@ -37,7 +39,7 @@ function lueTiedosto(tiedosto,callback) {
         callback(lukija.result);
     };
     lukija.onerror = errorListener;
-    lukija.readAsArrayBuffer();
+    lukija.readAsArrayBuffer(arr);
 }
 */
 

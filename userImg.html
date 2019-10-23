@@ -4,6 +4,7 @@
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
+ * @version 24.10.2019, React, Zip
  */
 -->
 
@@ -11,8 +12,6 @@
 <html>
     <head>
         <meta charset="utf-8">
-        
-        <!-- import ensin kirjastot, sitten koodit -->
         
         <!-- css -->
         <link rel="stylesheet" href="css/styles.css" />
@@ -25,6 +24,13 @@
         <script src="lib/OrbitControls.js"></script> <!-- Three js trackball controllit 3d mallin katseluun -->
         <script src="lib/jquery.min.js"></script>
         <script src="lib/goldenlayout.min.js"></script>
+        <script src="lib/inflate.js"></script>
+		<script src="lib/zip.js"></script>
+		<script src="lib/z-worker.js"></script>
+		<script src="lib/deflate.js"></script>
+        <script src="lib/react.production.min.js"></script>
+        <script src="lib/react-dom.production.min.js"></script>
+        <script src="lib/babel.min.js"></script>
         
         <!-- modules -->
         <script src="modules/textures.js"></script>
@@ -34,9 +40,13 @@
         <script src="modules/DataController.js"></script>
         <script src="modules/readImg.js"></script>
         
+        <!-- js -->
+        <script src="js/tiedosto.js"></script>
+        <script src="js/kaavat.js"></script>
+        
         <!-- main -->
-        <script src="userImgGui.js"></script>
         <script src="userImgMain.js"></script>
+        <script src="userImgGui.js" type="text/babel"></script>
         
         <title>3D-Gen</title>
     </head>

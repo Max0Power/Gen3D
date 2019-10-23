@@ -1,3 +1,5 @@
+"use strict"
+
 var layout = {
     settings:{
         showPopoutIcon: false,
@@ -97,10 +99,8 @@ var layout = {
 class MapComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {file: ''};
         
         this.handleClick = this.handleClick.bind(this);
-        this.readFile = this.readFile.bind(this);
     }
     
     componentDidMount() {
@@ -109,14 +109,6 @@ class MapComponent extends React.Component {
     
     handleClick(e) {
         generateImageAnd3D();
-    }
-    
-    readFile(e) {
-        lueTiedostoZip(e.target.files[0],null,function (heights) {
-            var t = fillAllDataHoles(heights);
-            var minmax = getHeightsMatrixMinMaxH(t);
-            makeGrayscale(t,minmax);
-        });
     }
     
     render() {
@@ -130,10 +122,6 @@ class MapComponent extends React.Component {
                 <br />
                 <Input {...this.props.size} />
                 <button onClick={this.handleClick}>Generate</button>
-                <br />
-                <label>hgt.zip: (raw)</label>
-                <br />
-                <input type='file' onChange={this.readFile} />
             </React.Fragment>
         );
     }
@@ -179,29 +167,6 @@ class Leaflet extends React.Component {
         });
         map.on('click', this.onMapOneClick);
         map.fitWorld();
-        
-        /*
-        let map = this.mymap = L.map(ReactDOM.findDOMNode(this), {
-            minZoom: 1,
-            maxZoom: 18,
-            zoom: 10,
-            center: [0.25,6.5],
-            SameSite: 'Secure',
-            layers: [
-                L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-                    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-                    id: 'mapbox.streets',
-                }),
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                })
-            ],
-            attributionControl: true
-        });
-        map.on('click', this.onMapOneClick);
-        map.fitWorld();
-        */
     }
     
     onMapOneClick(e) {

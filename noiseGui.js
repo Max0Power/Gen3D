@@ -1,3 +1,5 @@
+"use strict"
+
 var layout = {
     settings:{
         showPopoutIcon: false,
