@@ -21,27 +21,26 @@ function lueTiedostot(tiedostot,callback) {
 }
 */
 
-/*
- * Ei käytössä!
- * Lukee korkeusarvot paikallisesta tiedostosta
- * @param tiedosto    resurssihallinnasta valittu tiedosto
+/**
+ * Lukee korkeusarvot paikallisesta kuvatiedostosta
+ * @param base64      resurssihallinnasta valittu tiedosto
  * @param callback    funktio vastaanottaa korkeusarvot
  */
-/*
-function lueTiedosto(tiedosto,callback) {
-    var arr = base64ToArrayBuffer(tiedosto);
-    
-    var lukija = new FileReader();
-    lukija.onprogress = function(e) {
-        console.log(tiedosto.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
+function lueTiedostoImage(file,callback) {
+    const reader = new FileReader();
+    reader.onprogress = function(e) {
+        console.log(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
     };
-    lukija.onload = function() {
-        callback(lukija.result);
+    reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result; // base64
+        img.onload = function() {
+            callback(getImageDataFromMemory(img)); // modules/readImg.js
+        };
     };
-    lukija.onerror = errorListener;
-    lukija.readAsArrayBuffer(arr);
+    reader.onerror = errorListener;
+    reader.readAsDataURL(file);
 }
-*/
 
 /**
  * Lukee korkeusarvot tiedostosta verkkoyhteyden ylitse

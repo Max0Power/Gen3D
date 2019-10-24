@@ -21,7 +21,7 @@ var layout = {
             height: 100,
             isClosable: false,
             component: 'User input',
-            props: {id: 'myImg'}
+            props: { }
         },{
             type: 'column',
             width: 15,
@@ -62,80 +62,59 @@ var layout = {
     }]
 };
 
-// käytä evästeen runkoa tai oletusta
-/*
-var myLayout,savedState = localStorage.getItem('savedState');
-if(savedState !== null) {
-    myLayout = new GoldenLayout(JSON.parse(savedState));
-} else {
-    myLayout = new GoldenLayout(layout, '#container3D');
-}
-*/
-
 class UserInput extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            src: '',
-            name: '',
-            type: '',
-            size: ''
-        };
+        this.state = {src: ''};
         
-        this.heights = null;
-        this.minmax = null;
+        this.heights;
+        this.minmaxh;
         
         this.handleUpload = this.handleUpload.bind(this);
         this.handleLoadedImg = this.handleLoadedImg.bind(this);
-        this.getHeights = this.getHeights.bind(this);
+        this.redraw = this.redraw.bind(this);
         
         window.fileInput = this;
     }
     
     render() {
-        if (this.state.src) {
-            return (
-                <React.Fragment>
-                    <input type='file' onChange={this.handleUpload} />
-                    <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
-                    <br />
-                    <label>Filename: </label>{this.state.name}<br />
-                    <label>Fileformat: </label>{this.state.type}<br />
-                    <label>Bytesize: </label>{this.state.size}
-                </React.Fragment>
-            );
-        } else {
-            return (
-                <React.Fragment>
-                    <input type='file' onChange={this.handleUpload} />
-                    <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
-                </React.Fragment>
-            );
-        }
+        return (
+            <React.Fragment>
+                <label>Supported fileformats: </label>
+                <br />
+                <p>png, jpg, gif, hgt.zip</p>
+                <input type='file' onChange={this.handleUpload} />
+                <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
+            </React.Fragment>
+        );
     }
     
     handleUpload(e) {
         if (!e.target.files[0]) return;
+        
+        const that = this;
         const file = this.file = e.target.files[0];
-        this.setState({
-            name: file['name'],
-            type: file['type'],
-            size: file['size']
-        })
         
         if (this.isFileImage(file)) {
             this.setState({src: URL.createObjectURL(file)});
+            
+            lueTiedostoImage(file,(data) => {
+                that.heights = data;
+                that.minmaxh = [0,1];
+                
+                drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+            });
         }
+        
         if (this.isFileZip(file)) {
-            const format = file.name.split('.')[1]; // TODO: entä jos ei löydy?
+            const format = file.type.split('/')[1];
             this.setState({src: 'images/icon/'+format+'.svg'});
             
-            const that = this;
-            lueTiedostoZip(file, null, function (data) {
+            lueTiedostoZip(file, null, (data) => {
                 that.heights = fillAllDataHoles(data);
-                that.minmax = getHeightsMatrixMinMaxH(that.heights);
+                that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
                 
-                drawTextureAnd3dModelFromUserImg(that.heights, that.minmax);
+                drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
             });
         }
     }
@@ -158,16 +137,10 @@ class UserInput extends React.Component {
         }
         img.width = pixelsX;
         img.height = pixelsY;
-        
-        if (this.isFileImage(this.file)) {
-            var heights = this.heights = getImageData(img.src); // modules/readImg.js
-            
-            drawTextureAnd3dModelFromUserImg(heights, this.minmax = [0,1]);
-        }
     }
     
-    getHeights() {
-        return [this.heights,this.minmax];
+    redraw(callback) {
+        callback(this.heights,this.minmaxh);
     }
     
     isFileImage(file) {
@@ -183,10 +156,6 @@ var myLayout = new GoldenLayout(layout, '#container3D');
 
 // tallenna muutos evästeisiin ja päivitä ikkuna
 myLayout.on('stateChanged', function() {
-    /*
-    const state = JSON.stringify(myLayout.toConfig());
-    localStorage.setItem('savedState', state);
-    */
     window.dispatchEvent(new Event('resize'));
 });
 
@@ -202,16 +171,14 @@ myLayout.registerComponent('User input', UserInput);
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
     container.getElement().html( $( createInput3dController(0, 0, () => {
-        var args = window.fileInput.getHeights();
-        if (args[0] && args[1]) draw3dModelFromUserImg(...args);
+        window.fileInput.redraw(draw3dModelFromUserImg);
     }), true, false) )
 });
 
 // Texture viewer component
 myLayout.registerComponent('Texture viewer', function( container, componentState) {
     container.getElement().html( $( createTextureController(0, 0, () => {
-        var args = window.fileInput.getHeights();
-        if (args[0] && args[1]) drawTextureFromUserImg(...args);
+        window.fileInput.redraw(drawTextureFromUserImg);
     }) ) );
 });
 
