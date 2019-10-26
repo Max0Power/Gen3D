@@ -1,5 +1,3 @@
-"use strict"
-
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -7,6 +5,8 @@
  * @version 14.10.2019, GoldenLayout
  * @version 24.10.2019, React, Zip
  */
+
+"use strict";
 
 window.onload = function() {
 	textures.setSelectOption(0); // ei anna maailman mittakaavassa skaalattavia tekstuureita!

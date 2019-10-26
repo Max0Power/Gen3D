@@ -1,10 +1,19 @@
-"use strict"
+"use strict";
+
+var userInputComponent = {
+	type: 'react-component',
+	title: 'User input',
+	width: 28,
+	height: 100,
+	component: 'User input',
+	props: { draggableId: 'User input' }
+};
 
 var layout = {
     settings:{
         showPopoutIcon: false,
-        showMaximiseIcon: false,
-        showCloseIcon: false
+        showMaximiseIcon: true,
+        showCloseIcon: true
     },
     labels: {
         close: 'close',
@@ -13,28 +22,19 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content:[{
-            type: 'react-component',
-            id: 'User input',
-            title: 'User input',
-            width: 28,
-            height: 100,
-            isClosable: false,
-            component: 'User input',
-            props: { }
-        },{
+        content:[
+			userInputComponent
+		,{
             type: 'column',
             width: 15,
             height: 100,
             content:[{
                 type: 'component',
-                id: 'Controller 3D',
                 isClosable: false,
                 componentName: 'Controller 3D',
                 componentState: {  }
             },{
                 type: 'component',
-                id: 'Texture viewer',
                 isClosable: false,
                 componentName: 'Texture viewer',
                 componentState: {  }
@@ -42,7 +42,6 @@ var layout = {
         },{
             type: 'component',
                 isClosable: false,
-                id: 'Texture editor',
                 width: 15,
                 height: 100,
                 componentName: 'Texture editor',
@@ -51,12 +50,11 @@ var layout = {
             type: 'column',
             content:[{
                 type: 'component',
-                id: '3D-model',
                 width: 42,
                 height: 100,
                 isClosable: false,
                 componentName: '3D-model',
-                componentState: { label: '3D-model' }
+                componentState: { text: '3D-model' }
             }]
         }]
     }]
@@ -74,17 +72,19 @@ class UserInput extends React.Component {
         this.handleLoadedImg = this.handleLoadedImg.bind(this);
         this.redraw = this.redraw.bind(this);
         
-        window.fileInput = this;
+        window._fileInput = this;
     }
     
     render() {
         return (
             <React.Fragment>
+			<div id={this.props.draggableId}>
                 <label>Supported fileformats: </label>
                 <br />
                 <p>png, jpg, gif, hgt.zip</p>
                 <input type='file' onChange={this.handleUpload} />
                 <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
+			</div>
             </React.Fragment>
         );
     }
@@ -171,14 +171,14 @@ myLayout.registerComponent('User input', UserInput);
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
     container.getElement().html( $( createInput3dController(0, 0, () => {
-        window.fileInput.redraw(draw3dModelFromUserImg);
+        window._fileInput.redraw(draw3dModelFromUserImg);
     }), true, false) )
 });
 
 // Texture viewer component
 myLayout.registerComponent('Texture viewer', function( container, componentState) {
     container.getElement().html( $( createTextureController(0, 0, () => {
-        window.fileInput.redraw(drawTextureFromUserImg);
+        window._fileInput.redraw(drawTextureFromUserImg);
     }) ) );
 });
 
@@ -191,5 +191,27 @@ myLayout.registerComponent('Texture editor', function( container, componentState
 myLayout.registerComponent('3D-model', function( container, componentState) {
     container.getElement().html( init() );
 });
+
+var addMenuItem = function( title, component ) {
+	var element = document.createElement("BUTTON");
+	element.textContent = title;
+	element.className = "draggableToggleBtnActive";
+	
+	var show_hide = true;
+	element.onclick = function(event) {
+		show_hide = !show_hide;
+		if (show_hide) {
+			element.className = "draggableToggleBtnActive"; document.getElementById(component.props.draggableId).style.display = 'block'; // show, ikkunan nakyviin
+		} else {
+			element.className = "draggableToggleBtnInactive";
+			document.getElementById(component.props.draggableId).style.display = 'none'; // show, ikkuna pois nakyvista
+		}
+	}
+	
+	$( '#tools' ).append( element );
+  	myLayout.createDragSource( element, component );
+};
+
+addMenuItem( userInputComponent.title, userInputComponent );
 
 myLayout.init();

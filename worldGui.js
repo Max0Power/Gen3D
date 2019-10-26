@@ -1,10 +1,54 @@
-"use strict"
+"use strict";
+
+var mapComponent = {
+	type: 'react-component',
+	title: 'Map',
+	width: 28,
+	height: 100,
+	component: 'Map',
+	props: {
+		draggableId: 'Map',
+		latitude: {
+			sign: 'Latitude:',
+			id: 'inputLatitude',
+			name: 'inputLatitude',
+			for: 'inputLatitude',
+			min: '-85',
+			max: '85',
+			step: 'any',
+			value: '0.25',
+			defaultValue: '0.25'
+		},
+		longitude: {
+			sign: 'Longitude:',
+			id: 'inputLongitude',
+			name: 'inputLongitude',
+			for: 'inputLongitude',
+			min: '-180',
+			max: '180',
+			step: 'any',
+			value: '6.25',
+			defaultValue: '6.25'
+		},
+		size: {
+			sign: 'Size:',
+			id: 'inputSize',
+			name: 'inputSize',
+			for: 'inputSize',
+			min: '0.01',
+			max: '10',
+			step: '0.01',
+			value: '0.2',
+			defaultValue: '0.2'
+		}
+	}
+}
 
 var layout = {
     settings:{
         showPopoutIcon: false,
-        showMaximiseIcon: false,
-        showCloseIcon: false
+        showMaximiseIcon: true,
+        showCloseIcon: true
     },
     labels: {
         close: 'close',
@@ -13,50 +57,9 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content:[{
-            type: 'react-component',
-            id: 'Map',
-            title: 'Map',
-            width: 28,
-            height: 100,
-            isClosable: false,
-            component: 'Map',
-            props: {
-                latitude: {
-                    sign: 'Latitude:',
-                    id: 'inputLatitude',
-                    name: 'inputLatitude',
-                    for: 'inputLatitude',
-                    min: '-85',
-                    max: '85',
-                    step: 'any',
-                    value: '0.25',
-                    defaultValue: '0.25'
-                },
-                longitude: {
-                    sign: 'Longitude:',
-                    id: 'inputLongitude',
-                    name: 'inputLongitude',
-                    for: 'inputLongitude',
-                    min: '-180',
-                    max: '180',
-                    step: 'any',
-                    value: '6.25',
-                    defaultValue: '6.25'
-                },
-                size: {
-                    sign: 'Size:',
-                    id: 'inputSize',
-                    name: 'inputSize',
-                    for: 'inputSize',
-                    min: '0.01',
-                    max: '10',
-                    step: '0.01',
-                    value: '0.2',
-                    defaultValue: '0.2'
-                }
-            }
-        },{
+        content:[
+			mapComponent
+			,{
             type: 'column',
             width: 15,
             height: 100,
@@ -114,6 +117,7 @@ class MapComponent extends React.Component {
     render() {
         return (
             <React.Fragment>
+			<div id={this.props.draggableId}>
                 <Leaflet {...this.props} />
                 <br />
                 <Input {...this.props.latitude} />
@@ -122,6 +126,7 @@ class MapComponent extends React.Component {
                 <br />
                 <Input {...this.props.size} />
                 <button onClick={this.handleClick}>Generate</button>
+			</div>
             </React.Fragment>
         );
     }
@@ -153,6 +158,12 @@ class Leaflet extends React.Component {
     handleFix() {
         this.mymap.invalidateSize();
     }
+	
+	handleResize() {
+		if (this.mymap) {
+			this.handleFix();	
+		}
+	}
     
     componentDidMount() {
         L.mapbox.accessToken = 'pk.eyJ1IjoiaGFiYSIsImEiOiJjazF5eXptbG4wcTl1M21sODFwbWVnMDI1In0.RgLBJb1OFvgsqYfnREA7ig';
@@ -209,7 +220,7 @@ class Leaflet extends React.Component {
     render() {
         return(
             <React.Fragment>
-            <div id='mapid' />
+            <div id='mapid' onResize={this.handleResize} />
             <label>Map view: </label>
             <br />
             <select onChange={this.handleChange} value={this.state.mapview}>
@@ -310,5 +321,39 @@ myLayout.registerComponent('Texture editor', function( container, componentState
 myLayout.registerComponent('3D-model', function( container, componentState) {
     container.getElement().html( init() );
 });
+
+var addMenuItem = function( title, component ) {
+	var element = document.createElement("BUTTON");
+	element.textContent = title;
+	element.className = "draggableToggleBtnActive";
+	
+	var show_hide = true;
+	element.onclick = function(event) {
+		show_hide = !show_hide;
+		if (show_hide) {
+			element.className = "draggableToggleBtnActive"; document.getElementById(component.props.draggableId).style.display = 'block'; // show, ikkunan nakyviin
+		} else {
+			element.className = "draggableToggleBtnInactive";
+			document.getElementById(component.props.draggableId).style.display = 'none'; // show, ikkuna pois nakyvista
+		}
+	}
+	
+	$( '#tools' ).append( element );
+  	myLayout.createDragSource( element, component );
+};
+
+addMenuItem( mapComponent.title, mapComponent );
+
+/*
+myLayout.on('componentCreated',function(component) {
+    component.container.on('resize',function() {
+		if (component.componentName === mapComponent.component) {
+			component.dispatchEvent(new Event('resize'));
+		}
+		
+        console.log('component.resize',component.componentName);
+    });
+});
+*/
 
 myLayout.init();

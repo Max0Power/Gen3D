@@ -1,12 +1,12 @@
-﻿"use strict"
-
-/**
+﻿/**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
  * @version 19.10.2019, React
  */
+
+"use strict"
 
 /**
  * Read area inputs
