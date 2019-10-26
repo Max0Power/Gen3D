@@ -2,6 +2,7 @@
 
 var mapComponent = {
 	type: 'react-component',
+	isClosable: true,
 	title: 'Map',
 	width: 28,
 	height: 100,
@@ -48,7 +49,7 @@ var layout = {
     settings:{
         showPopoutIcon: false,
         showMaximiseIcon: true,
-        showCloseIcon: true
+        showCloseIcon: true,
     },
     labels: {
         close: 'close',
@@ -66,7 +67,7 @@ var layout = {
             content:[{
                 type: 'component',
                 id: 'Controller 3D',
-                isClosable: false,
+                isClosable: true,
                 componentName: 'Controller 3D',
                 componentState: {  }
             },{
@@ -106,10 +107,6 @@ class MapComponent extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
     
-    componentDidMount() {
-        //draggableUiComponent("Map", [0, 0], ReactDOM.findDOMNode(this));
-    }
-    
     handleClick(e) {
         generateImageAnd3D();
     }
@@ -117,7 +114,7 @@ class MapComponent extends React.Component {
     render() {
         return (
             <React.Fragment>
-			<div id={this.props.draggableId}>
+			<div id={this.props.draggableId} class='draggableContainer'>
                 <Leaflet {...this.props} />
                 <br />
                 <Input {...this.props.latitude} />
@@ -143,6 +140,8 @@ class Leaflet extends React.Component {
         this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleFix = this.handleFix.bind(this);
+		
+		window._leaflet = this;
     }
     
     handleChange(e) {
@@ -156,14 +155,8 @@ class Leaflet extends React.Component {
     }
     
     handleFix() {
-        this.mymap.invalidateSize();
+		this.mymap.invalidateSize();
     }
-	
-	handleResize() {
-		if (this.mymap) {
-			this.handleFix();	
-		}
-	}
     
     componentDidMount() {
         L.mapbox.accessToken = 'pk.eyJ1IjoiaGFiYSIsImEiOiJjazF5eXptbG4wcTl1M21sODFwbWVnMDI1In0.RgLBJb1OFvgsqYfnREA7ig';
@@ -232,7 +225,9 @@ class Leaflet extends React.Component {
                 <option value='satellite-v9'>Satellite</option>
                 <option value='satellite-streets-v11'>Satellite-Streets</option>
             </select>
-            <button onClick={this.handleFix}>Fix</button>
+            {
+			//<button onClick={this.handleFix}>Fix</button>
+			}
             </React.Fragment>
         );
     }
@@ -330,12 +325,17 @@ var addMenuItem = function( title, component ) {
 	var show_hide = true;
 	element.onclick = function(event) {
 		show_hide = !show_hide;
-		if (show_hide) {
-			element.className = "draggableToggleBtnActive"; document.getElementById(component.props.draggableId).style.display = 'block'; // show, ikkunan nakyviin
-		} else {
-			element.className = "draggableToggleBtnInactive";
-			document.getElementById(component.props.draggableId).style.display = 'none'; // show, ikkuna pois nakyvista
+		var that = document.getElementById(component.props.draggableId);
+		if (that) {
+			if (show_hide) {
+				element.className = "draggableToggleBtnActive";
+				that.style.display = 'block'; // show, ikkunan nakyviin
+			} else {
+				element.className = "draggableToggleBtnInactive";
+				that.style.display = 'none'; // show, ikkuna pois nakyvista
+			}
 		}
+		
 	}
 	
 	$( '#tools' ).append( element );
@@ -344,16 +344,24 @@ var addMenuItem = function( title, component ) {
 
 addMenuItem( mapComponent.title, mapComponent );
 
-/*
 myLayout.on('componentCreated',function(component) {
-    component.container.on('resize',function() {
-		if (component.componentName === mapComponent.component) {
-			component.dispatchEvent(new Event('resize'));
-		}
-		
-        console.log('component.resize',component.componentName);
-    });
+	component.container.on('resize',function() {
+		window._leaflet.handleFix();
+	});
 });
-*/
+
+myLayout.on('stackCreated', function(stack) {
+            stack.header.controlsContainer.prepend('<li class="lm_collapse_mine" title="collapse pane"><i class="fa fa-arrow-left">&nbsp;</i></li>');
+            stack.on('activeContentItemChanged', function(contentItem) {
+                if (contentItem.componentName === "test") {
+                    contentItem.parent.header.controlsContainer.find('.lm_popout').hide();
+                    contentItem.parent.header.controlsContainer.find('.lm_maximise').hide();
+                }
+
+                $(".lm_collapse_mine").on("click", function(event) {
+                    componentItem.container.setSize(10, componentItem.container.height);
+                })
+            });
+        });
 
 myLayout.init();

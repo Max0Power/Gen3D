@@ -25,11 +25,16 @@ body .lm_content{
 	border-radius: 0px;
 }
 
-.leaflet-container, .mapboxgl-canvas-container {
+.leaflet-container {
     position: relative;
     width: 100%;
     height: 0; /* ultimate hack */
     padding-bottom: 100%;
+	z-index: 0; /* alimman tason z-indeksi */
+}
+
+.lm_maximised {
+	z-index: 1; /* piilottaa alimman tason */
 }
 
 #container3D {
@@ -66,7 +71,7 @@ span {
     border: 1px solid transparent;
 }
 
-label, h3:nth-child(1), h3:nth-child(6) {
+label, h3:nth-child(1), h3:nth-child(6), p {
      color: #D8D8D8; /* komponenttien tekstit */
 }
 
@@ -92,7 +97,7 @@ label, h3:nth-child(1), h3:nth-child(6) {
 
 .draggableToggleBtnActive {
 	background-color: #2196F3;
-	color: #fff;
+	/*color: #222222; color: #fff; */
 	text-align: center;
 	padding: 1em;
 	font-size: 12px;
@@ -102,9 +107,19 @@ label, h3:nth-child(1), h3:nth-child(6) {
 	border-radius: 4px;
 }
 
+button.draggableToggleBtnInactive:active, 
+button.draggableToggleBtnActive:active,
+button.draggableToggleBtnInactive:hover, button.draggableToggleBtnActive:hover {
+  	background-color: hotpink;
+}
+
+.draggableToggleBtnInactive:hover, .draggableToggleBtnActive:hover {
+	color: white;
+}
+
 .draggableToggleBtnInactive {
 	background-color: #1A78C2;
-	color: #fff;
+	/*color: #fff;*/
 	text-align: center;
 	padding: 1em;
 	font-size: 12px;
@@ -112,6 +127,10 @@ label, h3:nth-child(1), h3:nth-child(6) {
 	border-width: 0px;
 	margin-right: 2px;
 	border-radius: 4px;
+}
+
+.mapbox-logo {
+	opacity: 0.5; /* ei paista silmään */
 }
 
 .rgbInputBox {

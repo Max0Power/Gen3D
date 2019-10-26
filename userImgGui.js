@@ -3,6 +3,7 @@
 var userInputComponent = {
 	type: 'react-component',
 	title: 'User input',
+	id: 'User input',
 	width: 28,
 	height: 100,
 	component: 'User input',
@@ -30,11 +31,13 @@ var layout = {
             height: 100,
             content:[{
                 type: 'component',
+				id: 'Controller 3D',
                 isClosable: false,
                 componentName: 'Controller 3D',
                 componentState: {  }
             },{
                 type: 'component',
+				id: 'Texture viewer',
                 isClosable: false,
                 componentName: 'Texture viewer',
                 componentState: {  }
@@ -42,6 +45,7 @@ var layout = {
         },{
             type: 'component',
                 isClosable: false,
+				id: 'Texture editor',
                 width: 15,
                 height: 100,
                 componentName: 'Texture editor',
@@ -50,6 +54,7 @@ var layout = {
             type: 'column',
             content:[{
                 type: 'component',
+				id: '3D-model',
                 width: 42,
                 height: 100,
                 isClosable: false,
