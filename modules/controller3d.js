@@ -69,6 +69,9 @@ function init() {
     controls.maxDistance = 10000;
     controls.maxPolarAngle = Math.PI / 2;
     
+    // FPS counter for testing (https://github.com/mrdoob/stats.js/) (MIT Licence)
+    javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();stats.dom.style.position="absolute";stats.dom.style.left="10px";stats.dom.style.top="10px";stats.dom.style.zIndex ="0";container.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+	
     return draggableUiComponent("3D-model", [0, 0], container);
 }
 
