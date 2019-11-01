@@ -70,7 +70,7 @@ function init() {
     controls.maxPolarAngle = Math.PI / 2;
     
     // FPS counter for testing (https://github.com/mrdoob/stats.js/) (MIT Licence)
-    javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+    javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();container.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
 	
     return draggableUiComponent("3D-model", [0, 0], container);
 }
