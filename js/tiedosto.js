@@ -48,6 +48,7 @@ function lueTiedostoImage(file,callback) {
  * @param callback    funktio vastaanottaa korkeusarvot
  */
 function lueTiedostoUrl(url,file,callback) {
+    const proxy = 'https://cors-anywhere.herokuapp.com/';
     const filename = url.split('/').pop();
     
     const request = new XMLHttpRequest();
@@ -64,7 +65,7 @@ function lueTiedostoUrl(url,file,callback) {
         }
     };
     request.onerror = errorListener;
-    request.open("GET", url);
+    request.open("GET", proxy+url);
     request.responseType = "arraybuffer";
     request.send();
 }
