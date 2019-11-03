@@ -63,14 +63,21 @@ function generateImage() {
  * @param callbacks		array of callback functions
  */
 function generate(callbacks) {
+        // käynnistä ajastin
+        var start = Date.now();
+
         var files = fileTehtaat(...getLatlngs());
-        
         var dataStruct = new DataStruct();
         dataStruct.setCallbacks([function(arg) {
             var result = [arg.heights,arg.minMaxH];
             callbacks.map(f => f(...result));
             // 3D mallin koko muuttuu vasta piirron jälkeen
             window.dispatchEvent(new Event('resize'));
+            
+            // lopeta ajastin
+            const ms = Date.now() - start;
+	    const s = Math.floor(ms/1000);
+            console.log("Time elapsed "+ s +" second(s)");
         }]);
         
         dataStruct.execute(files);
