@@ -67,7 +67,7 @@ var layout = {
             content:[{
                 type: 'component',
                 id: 'Controller 3D',
-                isClosable: true,
+                isClosable: false,
                 componentName: 'Controller 3D',
                 componentState: {  }
             },{
@@ -114,16 +114,13 @@ class MapComponent extends React.Component {
     render() {
         return (
             <React.Fragment>
-			<div id={this.props.draggableId} class='draggableContainer'>
+		<div id={this.props.draggableId} class='draggableContainer'>
                 <Leaflet {...this.props} />
-                <br />
                 <Input {...this.props.latitude} />
-                <br />
                 <Input {...this.props.longitude} />
-                <br />
                 <Input {...this.props.size} />
-                <button onClick={this.handleClick}>Generate</button>
-			</div>
+                <button class='btn btn-gen3d' onClick={this.handleClick}>Generate</button>
+		</div>
             </React.Fragment>
         );
     }
@@ -214,9 +211,9 @@ class Leaflet extends React.Component {
         return(
             <React.Fragment>
             <div id='mapid' onResize={this.handleResize} />
-            <label>Map view: </label>
-            <br />
-            <select onChange={this.handleChange} value={this.state.mapview}>
+
+            <label class="input-group-text" for="selectMapView">Map view:</label>
+            <select class='form-control' onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
                 <option value='default'>Black</option>
                 <option value='streets-v11'>Streets</option>
                 <option value='light-v10'>Light</option>
@@ -226,8 +223,8 @@ class Leaflet extends React.Component {
                 <option value='satellite-streets-v11'>Satellite-Streets</option>
             </select>
             {
-			//<button onClick={this.handleFix}>Fix</button>
-			}
+              //<button onClick={this.handleFix}>Fix</button>
+            }
             </React.Fragment>
         );
     }
@@ -247,9 +244,10 @@ class Input extends React.Component {
     render() {
         return (
             <React.Fragment>
-            <label>{this.props.sign}</label>
-            <br />
-            <input id={this.props.id}
+              <label for={this.props.id}>{this.props.sign}</label>
+                            
+              <input id={this.props.id}
+                id={this.props.id}
                 name={this.props.id}
                 min={this.props.min}
                 max={this.props.max}
@@ -257,9 +255,9 @@ class Input extends React.Component {
                 value={this.state.value}
                 defaultValue={this.state.defaultValue}
                 type='number'
-                class='inputsArea'
+                class='inputsArea form-control'
                 onChange={this.handleChange}>
-            </input>
+              </input>
             </React.Fragment>
         );
     }
