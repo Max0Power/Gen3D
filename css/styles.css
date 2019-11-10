@@ -49,10 +49,6 @@ input.inputsArea {
 	width: 75px; /* latitude, longitude */
 }
 
-#inputSize {
-	width: 50px; /* size */
-}
-
 #canv {
 	max-height: 100%; /* 500px */
 	max-width: 100%; /* 500px */
