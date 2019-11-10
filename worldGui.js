@@ -117,7 +117,7 @@ class MapComponent extends React.Component {
                 <Input {...this.props.longitude} />
                 <Input {...this.props.size} />
 		<span class="form-group">
-                  <button id="buttonGenerate" class="btn btn-default" onClick={this.handleClick}>Generate</button>
+                  <button class="btn btn-default" onClick={this.handleClick}>Generate</button>
 		</span>
 		</div>
             </React.Fragment>
@@ -247,6 +247,7 @@ class Input extends React.Component {
 	        onInvalid={this.handleInvalid}
 	        onInput={this.handleValid}
 	        onChange={this.handleChange}
+	        id={this.props.id}
                 name={this.props.id}
                 min={this.props.min}
                 max={this.props.max}
