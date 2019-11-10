@@ -17,8 +17,7 @@ var mapComponent = {
 			min: '-85',
 			max: '85',
 			step: 'any',
-			value: '0.25',
-			defaultValue: '0.25'
+			value: '0.25'
 		},
 		longitude: {
 			sign: 'Longitude:',
@@ -28,8 +27,7 @@ var mapComponent = {
 			min: '-180',
 			max: '180',
 			step: 'any',
-			value: '6.25',
-			defaultValue: '6.25'
+			value: '6.25'
 		},
 		size: {
 			sign: 'Size:',
@@ -39,8 +37,7 @@ var mapComponent = {
 			min: '0.01',
 			max: '10',
 			step: '0.01',
-			value: '0.2',
-			defaultValue: '0.2'
+			value: '0.2'
 		}
 	}
 }
@@ -114,12 +111,14 @@ class MapComponent extends React.Component {
     render() {
         return (
             <React.Fragment>
-		<div id={this.props.draggableId} class='draggableContainer'>
+		<div id={this.props.draggableId} class='draggableContainer flexable'>
                 <Leaflet {...this.props} />
                 <Input {...this.props.latitude} />
                 <Input {...this.props.longitude} />
                 <Input {...this.props.size} />
-                <button class='btn btn-gen3d' onClick={this.handleClick}>Generate</button>
+		<span class="form-group">
+                  <button id="buttonGenerate" class="btn btn-default" onClick={this.handleClick}>Generate</button>
+		</span>
 		</div>
             </React.Fragment>
         );
@@ -137,8 +136,8 @@ class Leaflet extends React.Component {
         this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleFix = this.handleFix.bind(this);
-		
-		window._leaflet = this;
+
+	window._leaflet = this;
     }
     
     handleChange(e) {
@@ -212,8 +211,9 @@ class Leaflet extends React.Component {
             <React.Fragment>
             <div id='mapid' onResize={this.handleResize} />
 
-            <label class="input-group-text" for="selectMapView">Map view:</label>
-            <select class='form-control' onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
+	    <span class="form-group">
+            <label for="selectMapView">Map view:</label>
+            <select class="form-control" onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
                 <option value='default'>Black</option>
                 <option value='streets-v11'>Streets</option>
                 <option value='light-v10'>Light</option>
@@ -222,9 +222,7 @@ class Leaflet extends React.Component {
                 <option value='satellite-v9'>Satellite</option>
                 <option value='satellite-streets-v11'>Satellite-Streets</option>
             </select>
-            {
-              //<button onClick={this.handleFix}>Fix</button>
-            }
+	    </span>
             </React.Fragment>
         );
     }
@@ -233,49 +231,48 @@ class Leaflet extends React.Component {
 class Input extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            value: this.props.value,
-            defaultValue: this.props.defaultValue
-        };
+        this.state = {value: this.props.value};
         
-        this.handleChange = this.handleChange.bind(this);
+        this.handleInvalid = this.handleInvalid.bind(this);
+	this.handleValid = this.handleValid.bind(this);
+	this.handleChange = this.handleChange.bind(this);
     }
     
     render() {
         return (
-            <React.Fragment>
+            <React.Fragment>	
+	      <span class="form-group">
               <label for={this.props.id}>{this.props.sign}</label>
-                            
-              <input id={this.props.id}
-                id={this.props.id}
+              <input class="form-control"
+	        onInvalid={this.handleInvalid}
+	        onInput={this.handleValid}
+	        onChange={this.handleChange}
                 name={this.props.id}
                 min={this.props.min}
                 max={this.props.max}
                 step={this.props.step}
                 value={this.state.value}
-                defaultValue={this.state.defaultValue}
+                defaultValue={this.props.value}
+	        required
                 type='number'
-                class='inputsArea form-control'
                 onChange={this.handleChange}>
               </input>
+	      </span>
             </React.Fragment>
         );
     }
     
+    handleInvalid(e) {	
+        e.target.setCustomValidity("");
+    }
+    
     handleChange(e) {
-        // TODO: paranna tuntumaa
-        const target = document.getElementById(e.target.id);
-        
-        if (target.reportValidity()) {
-            this.setState({value: e.target.value});
-            this.setState({defaultValue: e.target.value});
-        } else {
-            if (e.target.value > this.props.max) {
-                this.setState({value: this.props.max});
-            } else if (e.target.value < this.props.min) {
-                this.setState({value: this.props.min});
-            }
-        }
+	e.target.reportValidity();
+    }
+
+    handleValid(e) {
+	e.target.setCustomValidity("");
+	this.setState({value: e.target.value});
     }
 }
 
