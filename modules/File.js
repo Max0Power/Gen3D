@@ -57,13 +57,13 @@ class File {
     setHeights(heights) {
         // mukaan otettavat korkeudet
         var t = rajaaMatriisi(heights,this.vasenYla,this.oikeaAla); // js/matriisi.js
-		t = kutistaMatriisi(t,this.imax,this.jmax,this.ikorjaus,this.jkorjaus);
+	t = kutistaMatriisi(t,this.imax,this.jmax,this.ikorjaus,this.jkorjaus);
         
         // interpoloi puuttuvat arvot
         //t = fillAllDataHoles(decreaseHeightsMatrix(t,this.imax,this.jmax));
-        t = fillAllDataHoles(t); // modules/DataController.js,        js/matriisi.js
+        //t = fillAllDataHoles(t); // modules/DataController.js,        js/matriisi.js
         //t = lineaari(t) // js/matriisi.js
-        t = tuplavarmistus(t);
+        //t = tuplavarmistus(t);
         
         this.heights = t;
     }

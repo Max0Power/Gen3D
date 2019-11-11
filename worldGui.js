@@ -295,7 +295,7 @@ myLayout.registerComponent('Map', MapComponent);
 
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
-    container.getElement().html( $( createInput3dController(0, 0, generate3DModel, true, false) ) );
+    container.getElement().html( $( createInput3dController(0, 0, generate3DModel, true, true) ) );
 });
 
 // Texture viewer component

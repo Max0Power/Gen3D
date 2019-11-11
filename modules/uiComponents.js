@@ -261,27 +261,29 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
         container.appendChild(maxvertices);
         maxlabel.setAttribute("for", "input_modelMaxVertices");
     }
-    
-    if (interpolate) {
-        var intlabel = document.createElement("label");
-        intlabel.textContent = "Interpolation algorithm O(n): ";
-        container.appendChild(intlabel);
-        
-        var seldiv = document.createElement("DIV");
-        container.appendChild(seldiv);
-        
-        var sel = document.createElement("SELECT");
-        sel.id = "selectedIntAlg";
-        seldiv.appendChild(sel);
-        
-        var options = ["Linear","Very slow"];
-        for (var i = 0; i < options.length; i++) {
-            var opt = document.createElement("OPTION");
-            opt.appendChild(document.createTextNode(options[i]));
-            opt.value = i;
-            sel.appendChild(opt);
-        }
-    }
+       
+        // --------------------------- InterpolationSelection
+
+        if (interpolate) {
+            var intlabel = document.createElement("label");
+            intlabel.textContent = "Interpolation algorithm: ";
+            container.appendChild(intlabel);
+            
+            var seldiv = document.createElement("DIV");
+            container.appendChild(seldiv);
+            
+            var sel = document.createElement("SELECT");
+            sel.id = "selectedIntAlg";
+            seldiv.appendChild(sel);
+            
+            var options = ["Linear","Very slow", "Normalize"];
+            for (var i = 0; i < options.length; i++) {
+		var opt = document.createElement("OPTION");
+		opt.appendChild(document.createTextNode(options[i]));
+		opt.value = i;
+		sel.appendChild(opt);
+            }
+	}
 
 	// --------------------------- TextureSelection
 

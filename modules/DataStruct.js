@@ -160,10 +160,28 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
         var t = this.files.map(x => x.getHeights()); // modules/File.js
         t = yhdistaMatriisit(t,vasYla,oikAla); // js/matriisi.js
         t = math.transpose(t); // lib/math.js
-        
-        this.heights = t;
-        this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
-        this.finish();
+
+	// interpolointi
+        var select = document.getElementById( 'selectedIntAlg' );
+        var intalg = select.options[select.selectedIndex].value;
+
+        switch(intalg) {
+            case '0':
+              t = fillAllDataHoles(t); // modules/DataController.js
+              break;
+            case '1':
+	      t = lineaariOriginal(t); // js/interpolointi.js
+              break;
+	    case '2':
+	      t = tuplavarmistus(t); // js/interpolointi.js
+	      break;
+            default:
+              throw new Error("Virhe interpoloinnissa");
+        }
+
+	this.heights = t;
+	this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
+	this.finish();
     }
     
     /**
