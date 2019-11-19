@@ -175,9 +175,9 @@ myLayout.registerComponent('User input', UserInput);
 
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
-    container.getElement().html( $( createInput3dController(0, 0, () => {
+    container.getElement().html( $( createInput3dController(0, 0, function() {
         window._fileInput.redraw(draw3dModelFromUserImg);
-    }), true, false) )
+    }, true, true) ) )
 });
 
 // Texture viewer component
