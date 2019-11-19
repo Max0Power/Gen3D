@@ -276,7 +276,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
             sel.id = "selectedIntAlg";
             seldiv.appendChild(sel);
             
-            var options = ["Linear","Very slow", "Normalize"];
+            var options = ["Linear","Very slow"];
             for (var i = 0; i < options.length; i++) {
 		var opt = document.createElement("OPTION");
 		opt.appendChild(document.createTextNode(options[i]));

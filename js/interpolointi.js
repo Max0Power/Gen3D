@@ -15,35 +15,40 @@
  *     === [[1,1,2],[1,3,2],[1,2,2]]
  */
 function lineaari(t) {
-    var ones = luoMatriisi(t.length,t.length,true); // js/matriisi.js
+    // taulukko kertoo onko indeksissä käyty aiemmin
+    var ones = luoMatriisi(t.length,t[0].length,true); // js/matriisi.js
     for (var i = 0; i < t.length; i++) {
         for (var j = 0; j < t[i].length; j++) {
-            if (t[i][j] === -32768 && ones[i][j]) {
-                var empty = [];
-                annaTyhjat(t,ones,empty,[i,j]);
-		laske(t,empty);
-            }
+            if (tarkista(t,ones,i,j)) {
+		// selvitetään interpoloitavat sijainnit
+                var empty = annaTyhjat(t,ones,i,j);
+		laske(t,empty); // interpolointi
+	    }
         }
     }
     
     return t;
 }
 
-function annaTyhjat(t,ones,empty,xs) {    
-    var queue = [xs];
-    for (var m = 0; m < queue.length; m++) {
-	var [i,j] = queue[m];
-	ones[i][j] = false; // mark as visited        
-        empty.push([i,j]);
+function annaTyhjat(t,ones,is,js) {
+    var empty = [[is,js]]; // found empty value
+    ones[is][js] = false; // mark as visited
+
+    for (var m = 0; m < empty.length; m++) {
+	var [i,j] = empty[m];
 	
 	// add to queue if not visited
         var ks = [[i-1,j],[i+1,j],[i,j-1],[i,j+1]];
 	for (var n = 0; n < ks.length; n++) {
             if (tarkista(t,ones,...ks[n])) {
-                queue.push(ks[n]);
+		var [a,b] = ks[n];
+		empty.push(ks[n]); // found empty value
+		ones[a][b] = false; // mark as visited
             }
         }
     }
+
+    return empty;
 }
 
 function tarkista(t,ones,i,j) {

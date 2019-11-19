@@ -167,21 +167,24 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
 
         switch(intalg) {
             case '0':
-              t = fillAllDataHoles(t); // modules/DataController.js
+              this.heights = t;
+	      this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
+	      this.finish();
               break;
             case '1':
-	      t = lineaariOriginal(t); // js/interpolointi.js
+	      const that = this;
+              const worker = new Worker('js/thread.js'); // js/thread.js
+              worker.addEventListener('message', function(e) {
+		  that.heights = e.data;
+		  that.minMaxH = getHeightsMatrixMinMaxH(that.heights); // modules/DataController.js
+		  that.finish();
+		  worker.terminate();
+	      });
+	      worker.postMessage(t);
               break;
-	    case '2':
-	      t = tuplavarmistus(t); // js/interpolointi.js
-	      break;
             default:
               throw new Error("Virhe interpoloinnissa");
         }
-
-	this.heights = t;
-	this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
-	this.finish();
     }
     
     /**
