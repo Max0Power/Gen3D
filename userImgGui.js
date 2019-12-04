@@ -116,8 +116,22 @@ class UserInput extends React.Component {
             this.setState({src: 'images/icon/'+format+'.svg'});
             
             lueTiedostoZip(file, null, (data) => {
-                that.heights = fillAllDataHoles(data);
-                that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		var select = document.getElementById( 'selectedIntAlg' );
+		var intalg = select.options[select.selectedIndex].value;
+		that.heights = data;
+		
+		var maxSize = parseInt(document.getElementById("input_modelMaxVertices").value, 10);
+		if (data.length > maxSize) {
+		    that.heights = decreaseHeightsMatrix(data, maxSize, maxSize);
+		}
+				
+		if (intalg === '0') {
+		    that.heights = fillAllDataHoles(that.heights);
+                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		} else {
+		    that.heights = lineaari(that.heights);
+                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		}
                 
                 drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
             });

@@ -27,7 +27,7 @@ var mapComponent = {
 			min: '-180',
 			max: '180',
 			step: 'any',
-			value: '6.25'
+			value: '6.5'
 		},
 		size: {
 			sign: 'Size:',
@@ -98,10 +98,20 @@ var layout = {
 };
 
 class MapComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        
+    constructor(props) {        
+	super(props);
         this.handleClick = this.handleClick.bind(this);
+
+	this.leaflet = React.createRef();
+    }
+
+    componentDidMount() {
+	const lat = parseFloat(document.getElementById( 'inputLatitude' ).value);
+	const lng = parseFloat(document.getElementById( 'inputLongitude' ).value);
+	const size = parseFloat(document.getElementById( 'inputSize' ).value);
+	if (lat && lng && size) {
+	    window._leaflet.makeSquareFromClicks(lat,lng,size);
+	}
     }
     
     handleClick(e) {
@@ -112,7 +122,7 @@ class MapComponent extends React.Component {
         return (
             <React.Fragment>
 		<div id={this.props.draggableId} class='draggableContainer flexable'>
-                <Leaflet {...this.props} />
+	        <Leaflet {...this.props} ref={this.leaflet}/>
                 <Input {...this.props.latitude} />
                 <Input {...this.props.longitude} />
                 <Input {...this.props.size} />
@@ -128,6 +138,7 @@ class MapComponent extends React.Component {
 class Leaflet extends React.Component {
     constructor(props) {
         super(props);
+
         this.clickSquare = null;
         this.mymap = null;
         this.state = ({mapview: 'dark'});
@@ -176,7 +187,7 @@ class Leaflet extends React.Component {
         const args = readAreaInputs();
         this.makeSquareFromClicks(...args);
     }
-    
+
     makeSquareFromClicks(lat,lng,size) {
         const map = this.mymap;
         var square = this.clickSquare;
@@ -274,6 +285,13 @@ class Input extends React.Component {
     handleValid(e) {
 	e.target.setCustomValidity("");
 	this.setState({value: e.target.value});
+	
+	const lat = parseFloat(document.getElementById( 'inputLatitude' ).value);
+	const lng = parseFloat(document.getElementById( 'inputLongitude' ).value);
+	const size = parseFloat(document.getElementById( 'inputSize' ).value);
+	if (lat && lng && size) {
+	    window._leaflet.makeSquareFromClicks(lat,lng,size);
+	}
     }
 }
 
