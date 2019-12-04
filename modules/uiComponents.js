@@ -257,7 +257,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
         var maxlabel = document.createElement("label");
         maxlabel.textContent = "Model max vertices: ";
         container.appendChild(maxlabel);
-        var maxvertices = numberBox("input_modelMaxVertices", 200, 1, 20, 1024, true);
+        var maxvertices = numberBox("input_modelMaxVertices", 200, 1, 20, 1201, true);
         container.appendChild(maxvertices);
         maxlabel.setAttribute("for", "input_modelMaxVertices");
     }

@@ -39,8 +39,8 @@ function drawTextureFromUserImg(heights,minmax=[0,1]) {
  */
 function draw3dModelFromUserImg(heights, minmax=[0,1]) {
     // Tarvittaessa heights matriisin pienennys
-    //var maxSize = parseInt(document.getElementById("input_modelMaxVertices").value, 10);
-	var maxSize = 200; // max size kanvakelle seka 3d mallille
+    	var maxSize = parseInt(document.getElementById("input_modelMaxVertices").value, 10);
+	//var maxSize = 200; // max size kanvakelle seka 3d mallille
 	var pixelsX = heights.length; // monta pikselia korkeuksiisa on
 	var pixelsY = heights[0].length;
 	// jos pixeleiden maara on suurempaa kuin sallittu maara
