@@ -5,18 +5,16 @@
  * @version 10.10.2019, gh-pages
  */
 
-/*
 importScripts('matriisi.js', 'interpolointi.js', '../lib/math.js');
 
 self.addEventListener('message', function(e) {
     self.postMessage(lineaari(e.data));
     self.close();
 });
-*/
 
-importScripts('matriisi.js','interpolointi.js','../lib/math.js');
-
+/*
 self.addEventListener('message', function(e) {
-    self.postMessage(lineaari(e.data));
+  x  self.postMessage(e.data);
     self.close();
 });
+*/

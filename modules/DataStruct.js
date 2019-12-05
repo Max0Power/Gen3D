@@ -111,8 +111,8 @@ DataStruct.prototype.generateHgtFile = function(files) {
  * @param file      zip pakettia vastaavan File-olio
  */
 DataStruct.prototype.saveZipFile = function(dataZip,file) {
-    //lueTiedostoZip(dataZip,file,this.loadHgtFile.bind(this)); // js/tiedosto.js
-    lueTiedostoZip(dataZip,file,this.multiThreadHgt.bind(this)); // js/tiedosto.js
+    lueTiedostoZip(dataZip,file,this.loadHgtFile.bind(this)); // js/tiedosto.js
+    //lueTiedostoZip(dataZip,file,this.multiThreadHgt.bind(this)); // js/tiedosto.js
 }
 
 /**
@@ -121,8 +121,8 @@ DataStruct.prototype.saveZipFile = function(dataZip,file) {
  *       siksi samaan asiaan useampi funktio
  */
 DataStruct.prototype.saveZipFiles = function(dataZip,files) {
-   //lueTiedostotZip(dataZip,files,this.loadHgtFile.bind(this)); // js/tiedosto.js
-   lueTiedostotZip(dataZip,files,this.multiThreadHgt.bind(this)); // js/tiedosto.js
+   lueTiedostotZip(dataZip,files,this.loadHgtFile.bind(this)); // js/tiedosto.js
+   //lueTiedostotZip(dataZip,files,this.multiThreadHgt.bind(this)); // js/tiedosto.js
 }
 
 /**
@@ -167,7 +167,7 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
 
         switch(intalg) {
             case '0':
-              this.heights = t;
+              this.heights = fillAllDataHoles(t);
 	      this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
 	      this.finish();
               break;
