@@ -128,12 +128,21 @@ class UserInput extends React.Component {
 		if (intalg === '0') {
 		    that.heights = fillAllDataHoles(that.heights);
                     that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		} else {
-		    that.heights = lineaari(that.heights);
-                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		}
-                
-                drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    
+		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		} else {	
+		    //that.heights = lineaari(that.heights);
+                    //that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		    
+		    const worker = new Worker('js/thread.js'); // js/thread.js
+		    worker.addEventListener('message', function(e) {
+			that.heights = e.data;
+			that.minmaxh = getHeightsMatrixMinMaxH(that.heights); // modules/DataController.js
+			drawTextureAnd3dModelFromUserImg(that.heights,that.minmaxh);
+			worker.terminate();
+		    });
+		    worker.postMessage(that.heights);
+		 }                
             });
         }
     }
