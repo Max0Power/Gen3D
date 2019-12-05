@@ -502,10 +502,10 @@ function fillDataHolesSpline(heights) {
 		
 		// taytetaan aukot:
 		var lastValidIndex = 1; // <- mika oli edellinen validi korkeus?
+		var fill = false; // <- osoittaa pitaako dataa tayttaa (oletuksena false)
+		
 		// kaydaan rivi lapi, aloitetaan kolmannesta alkiosta, koska ensimmaiset kaksi ovat aina validit
 		for (var i = 2; i < row.length; i++) {
-			
-			var fill = false; <- osoittaa pitaako dataa tayttaa (oletuksena false)
 			
 			// jos kasitetltava korkeus on NO_DATA, asetetaan taytto trueki
 			if (row[i] <= NO_DATA_VALUE) {
