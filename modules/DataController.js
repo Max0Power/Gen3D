@@ -310,9 +310,6 @@ function fillAllDataHoles(heights) {
 }
 
 
-
-
-
 /**
  * Ottaa parametrina korkeusmatriisin ja paikkaa puuttuvat arvot lineaarisesti vaakarivien suunnassa!
  * Eli kaytetaan .hgt fileen josta on tehty matriisi!
@@ -321,14 +318,27 @@ function fillAllDataHoles(heights) {
  */
 function fillDataHolesLinearHorizontal(heights) {
 	
+	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
+	var tmp = new Array(heights.length);
+	for (var i = 0; i < heights.length; i++) {
+	tmp[i] = new Array(heights[0].length);
+	}
+
+	for (var i = 0; i < heights.length; i++) {
+		for (var j = 0; j < heights[0].length; j++) {
+			tmp[i][j] = heights[i][j];
+		}
+	}
+	
+	
 	// kaydaan lapi yksi rivi kerrallaan ja paikataan noData arvot:
-	for(var y = 0; y < heights[0].length; y++) {
+	for(var y = 0; y < tmp[0].length; y++) {
 		
 		// jos eka alkio on NODATA --> etsitaan seuraava validi korkeus ja alustetaan ensimmainen arvo siksi
-		if (heights[0][y] <= NO_DATA_VALUE) {
-			for (var x = 1; x < heights.length; x++) {
-				if (heights[x][y] > NO_DATA_VALUE) {
-					heights[0][y] = heights[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
+		if (tmp[0][y] <= NO_DATA_VALUE) {
+			for (var x = 1; x < tmp.length; x++) {
+				if (tmp[x][y] > NO_DATA_VALUE) {
+					tmp[0][y] = tmp[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
 					break;
 					//x = heights.length + 1; // lopetetaan silmukka
 				}
@@ -336,10 +346,10 @@ function fillDataHolesLinearHorizontal(heights) {
 		}
 		
 		// jos vika alkio on NODATA --> etsitaan edellinen ensimmainen validi korkeus ja alustetaan viimeinen siksi
-		if (heights[heights.length-1][y] <= NO_DATA_VALUE) {
-			for (var x = heights.length-2; x >= 0; x--) {
-				if (heights[x][y] > NO_DATA_VALUE) {
-					heights[heights.length-1][y] = heights[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
+		if (tmp[tmp.length-1][y] <= NO_DATA_VALUE) {
+			for (var x = tmp.length-2; x >= 0; x--) {
+				if (tmp[x][y] > NO_DATA_VALUE) {
+					tmp[tmp.length-1][y] = tmp[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
 					break;
 					//x = heights.length + 1; // lopetetaan silmukka
 				}
@@ -349,9 +359,9 @@ function fillDataHolesLinearHorizontal(heights) {
 		// taytetaan aukot lineaarisesti:
 		var lastValidIndex = 0; // <- mika oli edellinen validi korkeus?
 		var fill = false; // <- osoittaa pitaako dataa tayttaa
-		for (var x = 0; x < heights.length; x++) { // kaydaan vaakarivi lapi
+		for (var x = 0; x < tmp.length; x++) { // kaydaan vaakarivi lapi
 			// jos kasitetltava korkeus on NO_DATA, asetetaan taytto trueki
-			if (heights[x][y] <= NO_DATA_VALUE) {
+			if (tmp[x][y] <= NO_DATA_VALUE) {
 				fill = true;
 			}
 			else { // muuten jos kasiteltava data on VALIDI
@@ -366,11 +376,11 @@ function fillDataHolesLinearHorizontal(heights) {
                         
 						// interpolointi funktion valintaehto
 						if (interpolationSetting) {
-						    heights[i][y] = ((1.0 - t) * heights[lastValidIndex][y]) + (heights[x][y] * t);
+						    tmp[i][y] = ((1.0 - t) * tmp[lastValidIndex][y]) + (tmp[x][y] * t);
 						}
 						else {
 						    var t2 = (1.0 - Math.cos(t*Math.PI))/2;
-						    heights[i][y] = ((1.0 - t2) * heights[lastValidIndex][y]) + (heights[x][y] * t2); // taytetaan rivin NODATA arvo uudella arvolla
+						    tmp[i][y] = ((1.0 - t2) * tmp[lastValidIndex][y]) + (tmp[x][y] * t2); // taytetaan rivin NODATA arvo uudella arvolla
 						}
 					}
 					fill = false; // taytto on false
@@ -380,22 +390,39 @@ function fillDataHolesLinearHorizontal(heights) {
 		}
 	}
 	
-	return heights
+	return tmp
 }
 
+
+/**
+ * Kay taulukon vertikaalisesti lapi ja tayttaa puuttuvat data-aukot lineaarisesti
+ */
 function fillDataHolesLinearVertical(heights) {
 	
-	// kaydaan matriisin rivit lapi:
+	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
+	var tmp = new Array(heights.length);
 	for (var i = 0; i < heights.length; i++) {
-		heights[i] = fill_row(heights[i]); // korjataan pystyrivin puuttuvat korkeudet 
+	tmp[i] = new Array(heights[0].length);
+	}
+
+	for (var i = 0; i < heights.length; i++) {
+		for (var j = 0; j < heights[0].length; j++) {
+			tmp[i][j] = heights[i][j];
+		}
 	}
 	
-	return heights; // palautetaan korkeudet matriisi, jonka aukot on korjattu
 	
-	/**
-	 * APUFUNKTIO:
-	 * Tayttaa yhden rivin puuttuvat datat lineaarisesti
-	 */
+	// kaydaan matriisin rivit lapi:
+	for (var i = 0; i < tmp.length; i++) {
+		tmp[i] = fill_row(tmp[i]); // korjataan pystyrivin puuttuvat korkeudet 
+	}
+	
+	return tmp; // palautetaan korkeudet matriisi, jonka aukot on korjattu
+	
+	 //
+	 // APUFUNKTIO:
+	 // Tayttaa yhden rivin puuttuvat datat lineaarisesti
+	 //
 	function fill_row(row) {
 		
 		// jos eka alkio on NODATA --> etsitaan seuraava validi korkeus ja alustetaan ensimmainen arvo siksi
@@ -457,25 +484,157 @@ function fillDataHolesLinearVertical(heights) {
 	}
 }
 
+/*
 
-/**
- * Toiminta ei ole luotettavaa! Ei ole käytössä ohjelmassa!
- * Puuttuvien aukkojen taytto kolmen pisteen spline funktiolla, kay matriisin pystyriveittain lapi
- * sivun kaavaa kaytetty: https://www.desmos.com/calculator/yvgfpq2prf 
- */
-function fillDataHolesSpline(heights) {
+//
+// Kay puuttuvat data-aukot lapi horisontaalisesti ja vertikaalisesti
+// Ottaa palautettavaan taulukkoon naiden paikkauksien keskiarvon
+// Paikkaukset toteutetaan Bezier menetelmalla
+// Toimintaa ei myoskaan olla varmistettu kunnolla!
+// Lopputulos on melko samanlainen kuin lineaarisessa paikkauksessa
+//
+function fillAllDataHolesBezier(heights) {
+	
+	// paikataan ensiksi vaakarivien suunnassa
+	var fixed1 =  fillDataHolesBezierHorizontal(heights);
+	
+	// paikataan toiseksi pystyrivien suunnassa
+	var fixed2 =  fillDataHolesBezierVertical(heights);
+	
+	// asetetaan heights matriisin paikattujen matriisien korkeuksien keskuarvot
+	for (var x = 0; x < heights.length; x++) {
+		for (var y = 0; y < heights[0].length; y++) {
+			heights[x][y] = (fixed1[x][y] + fixed2[x][y]) / 2.0; // lasketaan keskiarvo
+		}
+	}
+	
+	return heights; // palautetaan lopuksi paikattu matriisi
+}
+
+
+//
+// Toteuttaa horisontaalisen paikkauksen Bezier menetelmalla.
+// Toimintaa ei myoskaan olla varmistettu kunnolla!
+//
+function fillDataHolesBezierHorizontal(heights) {
+
+	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
+	var tmp = new Array(heights.length);
+	for (var i = 0; i < heights.length; i++) {
+	tmp[i] = new Array(heights[0].length);
+	}
+
+	for (var i = 0; i < heights.length; i++) {
+		for (var j = 0; j < heights[0].length; j++) {
+			tmp[i][j] = heights[i][j];
+		}
+	}
+	
+	
+	// kaydaan lapi yksi rivi kerrallaan ja paikataan noData arvot:
+	for(var y = 0; y < tmp[0].length; y++) {
+		
+		// jos eka alkio on NODATA --> etsitaan seuraava validi korkeus ja alustetaan ensimmainen arvo siksi
+		if (tmp[0][y] <= NO_DATA_VALUE) {
+			for (var x = 1; x < tmp.length; x++) {
+				if (tmp[x][y] > NO_DATA_VALUE) {
+					tmp[0][y] = tmp[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
+					break;
+				}
+			}
+		}
+		
+		if (tmp[1][y] <= NO_DATA_VALUE) tmp[1][y] = tmp[0][y]; // jos toka alkio on NODATA (tarvitsee aina kaksi arvoa, ennen "aukkoa")
+		
+		// jos vika alkio on NODATA --> etsitaan edellinen ensimmainen validi korkeus ja alustetaan viimeinen siksi
+		if (tmp[tmp.length-1][y] <= NO_DATA_VALUE) {
+			for (var x = tmp.length-2; x >= 0; x--) {
+				if (tmp[x][y] > NO_DATA_VALUE) {
+					tmp[tmp.length-1][y] = tmp[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
+					break;
+				}
+			}
+		}
+		
+		// taytetaan aukot:
+		var lastValidIndex = 1; // <- mika oli edellinen validi korkeus?
+		var fill = false; // <- osoittaa pitaako dataa tayttaa
+		for (var x = 2; x < tmp.length; x++) { // kaydaan vaakarivi lapi
+			// jos kasitetltava korkeus on NO_DATA, asetetaan taytto trueki
+			if (tmp[x][y] <= NO_DATA_VALUE) {
+				fill = true;
+			}
+			else { // muuten jos kasiteltava data on VALIDI
+				// jos dataa ei tarvitse tayttaa:
+				if (!fill) {
+					lastValidIndex = x; // asetetaan edellinen validi indeksi
+				}
+				if (fill) { // muuten, jos dataa tarvitsee tayttaa:
+					var h1 = tmp[lastValidIndex][y]; // bezierin vaatimat korkeudet
+					var h2 = tmp[lastValidIndex][y] - (tmp[lastValidIndex - 1][y] - tmp[lastValidIndex][y]); // saadetaan tama "kulmakertoimeksi"
+					var h3 = tmp[x][y];
+					var h4 = tmp[x][y];
+					if (x + 1 < tmp.length) {
+						if (tmp[x+1][y] > NO_DATA_VALUE) h3 = tmp[x][y] - (tmp[x+1][y] - tmp[x][y]); // saadetaan tama "kulmakertoimeksi"
+					}
+					
+					// taytetaan data viimeisesta validista korkeudesta nykyiseen validiin korkeuteen:
+					for (var j = lastValidIndex + 1; j < x; j++) {
+						var t = (j - lastValidIndex) / (x - lastValidIndex); // lasketaan t, joka on arvo valilta 0-1
+						tmp[j][y] = calcCubicBezier(h1,h2,h3,h4, t);
+					}
+					fill = false; // taytto on false oletuksena seuraavalle silmukan kierrokselle
+					lastValidIndex = x; // asetetaan viimeinen validi arvo
+				}
+			}
+		}
+	}
+	
+	return tmp
+	
+	//
+	// APUFUNKTIO
+	// Bezierin kaava sovellettu korkeuden laskentaan
+	//
+	function calcCubicBezier(h1, h2, h3, h4, t)
+    {
+        return ((1 - t) * (1 - t) * (1 - t) * h1) + (3 * (1 - t) * (1 - t) * t * h2) + (3 * (1 - t) * t * t * h3) + (t * t * t * h4);
+
+    }
+	
+	
+}
+
+
+//
+// Toteuttaa horisontaalisen paikkauksen Bezier menetelmalla.
+// Toimintaa ei myoskaan olla varmistettu kunnolla!
+//
+function fillDataHolesBezierVertical(heights) {
+	
+	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
+	var tmp = new Array(heights.length);
+	for (var i = 0; i < heights.length; i++) {
+	tmp[i] = new Array(heights[0].length);
+	}
+
+	for (var i = 0; i < heights.length; i++) {
+		for (var j = 0; j < heights[0].length; j++) {
+			tmp[i][j] = heights[i][j];
+		}
+	}
 	
 	// kaydaan matriisin rivit lapi:
 	for (var i = 0; i < heights.length; i++) {
-		heights[i] = fill_row(heights[i]); // korjataan pystyrivin puuttuvat korkeudet 
+		tmp[i] = fill_row(tmp[i]); // korjataan pystyrivin puuttuvat korkeudet 
 	}
 	
-	return heights; // palautetaan korkeudet matriisi, jonka aukot on korjattu
+	return tmp; // palautetaan korkeudet matriisi, jonka aukot on korjattu
 	
-	/**
-	 * APUFUNKTIO:
-	 * Tayttaa yhden rivin puuttuvat datat lineaarisesti
-	 */
+	//
+	// APUFUNKTIO:
+	// Tayttaa yhden rivin puuttuvat datat lineaarisesti
+	//
 	function fill_row(row) {
 		
 		// jos eka alkio on NODATA --> etsitaan seuraava validi korkeus ja alustetaan ensimmainen arvo siksi
@@ -488,7 +647,7 @@ function fillDataHolesSpline(heights) {
 			}
 		}
 		
-		if (row[1] <= NO_DATA_VALUE) row[1] = row[0]; // jos toka alkio on NODATA (SPLINE tarvitsee aina kaksi arvoa, ennen "aukkoa")
+		if (row[1] <= NO_DATA_VALUE) row[1] = row[0]; // jos toka alkio on NODATA (tarvitsee aina kaksi arvoa, ennen "aukkoa")
 		
 		// jos vika alkio on NODATA --> etsitaan edellinen ensimmainen validi korkeus ja alustetaan viimeinen siksi
 		if (row[row.length - 1] <= NO_DATA_VALUE) {
@@ -504,7 +663,7 @@ function fillDataHolesSpline(heights) {
 		var lastValidIndex = 1; // <- mika oli edellinen validi korkeus?
 		var fill = false; // <- osoittaa pitaako dataa tayttaa (oletuksena false)
 		
-		// kaydaan rivi lapi, aloitetaan kolmannesta alkiosta, koska ensimmaiset kaksi ovat aina validit
+		// kaydaan rivi lapi, aloitetaan kolmannesta, koska ensimmaiset kaksi ovat valideja
 		for (var i = 2; i < row.length; i++) {
 			
 			// jos kasitetltava korkeus on NO_DATA, asetetaan taytto trueki
@@ -518,19 +677,18 @@ function fillDataHolesSpline(heights) {
 				}
 				if (fill) { // muuten, jos dataa tarvitsee tayttaa:
 				
-					var p1 = [lastValidIndex - 1, row[lastValidIndex - 1]]; // splinen vaatimat pisteet
-					var p2 = [lastValidIndex, row[lastValidIndex]];
-					var apu = p2;
-					if (Math.abs(p2[1] - p1[1]) > 0) {
-						apu[1] = p1[1];
+					var h1 = row[lastValidIndex]; // bezierin vaatimat korkeudet
+					var h2 = row[lastValidIndex] - (row[lastValidIndex - 1] - row[lastValidIndex]); // saadetaan tama "kulmakertoimeksi"
+					var h3 = row[i];
+					var h4 = row[i];
+					if (i + 1 < row.length) {
+						if (row[i+1] > NO_DATA_VALUE) h3 = row[i] - (row[i + 1] - row[i]); // saadetaan tama "kulmakertoimeksi"
 					}
-						
-					// p2 = Math.abs(p2[1] - p1[1]) > 1 ? p1[1] + 1 : p2[1];
-					var p3 = [i, row[i]];
 					
 					// taytetaan data viimeisesta validista korkeudesta nykyiseen validiin korkeuteen:
 					for (var j = lastValidIndex + 1; j < i; j++) {
-						row[j] = spline(p1,apu,p3, j) // taytetaan rivin NODATA arvo uudella arvolla
+						var t = (j - lastValidIndex) / (i - lastValidIndex); // lasketaan t, joka on arvo valilta 0-1
+						row[j] = calcCubicBezier(h1,h2,h3,h4, t);
 					}
 					fill = false; // taytto on false oletuksena seuraavalle silmukan kierrokselle
 					lastValidIndex = i; // asetetaan viimeinen validi arvo
@@ -541,17 +699,14 @@ function fillDataHolesSpline(heights) {
 		return row; // palautetaan rivi, jonka puuttuvat arvot on paikattu
 	}
 	
-	/**
-	 * Spline funktio kolmelle pisteelle, kayttaa suoraan
-	 * sivulta https://www.desmos.com/calculator/yvgfpq2prf loytyvaa kaavaa
-	 * p1-3 on splinen kayttamat pisteet ja x --> p2.x < x < p3.x
-	 */
-	function spline(p1,p2,p3,x) {
-		var a1 = ( p1[0]*(p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1]) ) / ( 2.0*(p1[0]-p2[0])*(p1[0]-p2[0])*(p1[0]-p3[0])*(p2[0]-p3[0]) );
-		var b1 = ( p1[0]*p1[0]*(p3[1]-p2[1]) - p1[0]*(p2[0]*(-3*p1[1]+p2[1]+2*p3[1])+3*p3[0]*(p1[1]-p2[1])) + p2[0]*p2[0]*(p3[1]-p1[1]) + p2[0]*p3[0]*(p2[1]-p1[1]) + 2*p3[0]*p3[0]*(p1[1]-p2[1]) ) / ( 2*(p1[0]-p2[0])*(p1[0]-p3[0])*(p2[0]-p3[0]) );
-		var a2 = ( (p2[0]-p1[0]) / (p2[0]-p3[0])) * a1; 
-		var b2 = ( 2*p1[0]*p1[0]*(p2[1]-p3[1]) + p2[0]*(p1[0]*(p3[1]-p2[1])+p3[0]*(2*p1[1]+p2[1]-3*p3[1])) + 3*p1[0]*p3[0]*(p3[1]-p2[1]) + p2[0]*p2[0]*(p3[1]-p1[1]) + p3[0]*p3[0]*(p2[1]-p1[1]) ) / ( 2*(p1[0]-p2[0])*(p1[0]-p3[0])*(p2[0]-p3[0]) );
-		
-		return a2*(x-p3[0])*(x-p3[0])*(x-p3[0]) + b2*(x-p3[0]) + p3[1]*x;
-	}
+	//
+	// APUFUNKTIO
+	// Bezierin kaava sovellettu korkeuden laskentaan
+	//
+	function calcCubicBezier(h1, h2, h3, h4, t)
+    {
+        return ((1 - t) * (1 - t) * (1 - t) * h1) + (3 * (1 - t) * (1 - t) * t * h2) + (3 * (1 - t) * t * t * h3) + (t * t * t * h4);
+
+    }
 }
+*/
