@@ -10,6 +10,46 @@ var userInputComponent = {
 	props: { draggableId: 'User input' }
 };
 
+var controller3dComponent = {
+    type: 'component',
+    id: 'Controller 3D',
+    isClosable: true,
+    componentName: 'Controller 3D',
+    componentState: {  },
+    props: { draggableId: 'Controller 3D' }
+}
+
+var textureViewerComponent = {
+    type: 'component',
+    id: 'Texture viewer',
+    isClosable: true,
+    componentName: 'Texture viewer',
+    componentState: {  },
+    props: { draggableId: 'Texture viewer' }
+}
+
+var textureEditorComponent = {
+    type: 'component',
+    isClosable: true,
+    id: 'Texture editor',
+    width: 15,
+    height: 100,
+    componentName: 'Texture editor',
+    componentState: {  },
+    props: { draggableId: 'Texture editor' }
+}
+
+var modelComponent = {
+    type: 'component',
+    id: '3D-model',
+    width: 42,
+    height: 100,
+    isClosable: true,
+    componentName: '3D-model',
+    componentState: { text: '3D-model' },
+    props: { draggableId: '3D-model' }
+}
+
 var layout = {
     settings:{
         showPopoutIcon: false,
@@ -24,43 +64,21 @@ var layout = {
     content: [{
         type: 'row',
         content:[
-			userInputComponent
-		,{
+	    userInputComponent
+	,{
             type: 'column',
             width: 15,
             height: 100,
-            content:[{
-                type: 'component',
-				id: 'Controller 3D',
-                isClosable: false,
-                componentName: 'Controller 3D',
-                componentState: {  }
-            },{
-                type: 'component',
-				id: 'Texture viewer',
-                isClosable: false,
-                componentName: 'Texture viewer',
-                componentState: {  }
-            }]
-        },{
-            type: 'component',
-                isClosable: false,
-				id: 'Texture editor',
-                width: 15,
-                height: 100,
-                componentName: 'Texture editor',
-                componentState: {  }
-        },{
+            content:[
+		controller3dComponent,
+		textureViewerComponent
+	]},
+	    textureEditorComponent
+	,{
             type: 'column',
-            content:[{
-                type: 'component',
-				id: '3D-model',
-                width: 42,
-                height: 100,
-                isClosable: false,
-                componentName: '3D-model',
-                componentState: { text: '3D-model' }
-            }]
+            content:[
+	        modelComponent
+	    ]
         }]
     }]
 };
@@ -128,12 +146,21 @@ class UserInput extends React.Component {
 		if (intalg === '0') {
 		    that.heights = fillAllDataHoles(that.heights);
                     that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		} else {
-		    that.heights = lineaari(that.heights);
-                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		}
-                
-                drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    
+		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		} else {	
+		    //that.heights = lineaari(that.heights);
+                    //that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		    
+		    const worker = new Worker('js/thread.js'); // js/thread.js
+		    worker.addEventListener('message', function(e) {
+			that.heights = e.data;
+			that.minmaxh = getHeightsMatrixMinMaxH(that.heights); // modules/DataController.js
+			drawTextureAnd3dModelFromUserImg(that.heights,that.minmaxh);
+			worker.terminate();
+		    });
+		    worker.postMessage(that.heights);
+		 }                
             });
         }
     }
@@ -231,6 +258,12 @@ var addMenuItem = function( title, component ) {
   	myLayout.createDragSource( element, component );
 };
 
-addMenuItem( userInputComponent.title, userInputComponent );
+$(document).ready(function() {
+    addMenuItem( userInputComponent.title, userInputComponent );
+    addMenuItem( controller3dComponent.componentName, controller3dComponent );
+    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
+    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
+    addMenuItem( modelComponent.componentName, modelComponent );
+});
 
 myLayout.init();

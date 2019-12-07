@@ -182,6 +182,13 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
 	      });
 	      worker.postMessage(t);
               break;
+	    /*
+	    case '2':
+	      this.heights = interpolointi(t);
+              this.minMaxH = getHeightsMatrixMinMaxH(this.heights);
+	      this.finish();
+	      break;
+	    */
             default:
               throw new Error("Virhe interpoloinnissa");
         }

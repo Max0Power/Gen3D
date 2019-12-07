@@ -42,6 +42,46 @@ var mapComponent = {
 	}
 }
 
+var controller3dComponent = {
+    type: 'component',
+    id: 'Controller 3D',
+    isClosable: true,
+    componentName: 'Controller 3D',
+    componentState: {  },
+    props: { draggableId: 'Controller 3D' }
+}
+
+var textureViewerComponent = {
+    type: 'component',
+    id: 'Texture viewer',
+    isClosable: true,
+    componentName: 'Texture viewer',
+    componentState: {  },
+    props: { draggableId: 'Texture viewer' }
+}
+
+var textureEditorComponent = {
+    type: 'component',
+    isClosable: true,
+    id: 'Texture editor',
+    width: 15,
+    height: 100,
+    componentName: 'Texture editor',
+    componentState: {  },
+    props: { draggableId: 'Texture editor' }
+}
+
+var modelComponent = {
+    type: 'component',
+    id: '3D-model',
+    width: 42,
+    height: 100,
+    isClosable: true,
+    componentName: '3D-model',
+    componentState: { label: '3D-model' },
+    props: { draggableId: '3D-model' }
+}
+
 var layout = {
     settings:{
         showPopoutIcon: false,
@@ -56,43 +96,22 @@ var layout = {
     content: [{
         type: 'row',
         content:[
-			mapComponent
-			,{
+	    mapComponent
+	    ,{
             type: 'column',
             width: 15,
             height: 100,
-            content:[{
-                type: 'component',
-                id: 'Controller 3D',
-                isClosable: false,
-                componentName: 'Controller 3D',
-                componentState: {  }
-            },{
-                type: 'component',
-                id: 'Texture viewer',
-                isClosable: false,
-                componentName: 'Texture viewer',
-                componentState: {  }
-            }]
-        },{
-            type: 'component',
-                isClosable: false,
-                id: 'Texture editor',
-                width: 15,
-                height: 100,
-                componentName: 'Texture editor',
-                componentState: {  }
-        },{
+            content:[
+		controller3dComponent,
+		textureViewerComponent
+	    ]
+        },
+	    textureEditorComponent
+	,{
             type: 'column',
-            content:[{
-                type: 'component',
-                id: '3D-model',
-                width: 42,
-                height: 100,
-                isClosable: false,
-                componentName: '3D-model',
-                componentState: { label: '3D-model' }
-            }]
+            content:[
+		modelComponent
+	    ]
         }]
     }]
 };
@@ -332,31 +351,37 @@ myLayout.registerComponent('3D-model', function( container, componentState) {
 });
 
 var addMenuItem = function( title, component ) {
-	var element = document.createElement("BUTTON");
-	element.textContent = title;
-	element.className = "draggableToggleBtnActive";
+    var element = document.createElement("BUTTON");
+    element.textContent = title;
+    element.className = "draggableToggleBtnActive";
+    
+    var show_hide = true;
+    element.onclick = function(event) {
+	show_hide = !show_hide;
+	var that = document.getElementById(component.props.draggableId);
 	
-	var show_hide = true;
-	element.onclick = function(event) {
-		show_hide = !show_hide;
-		var that = document.getElementById(component.props.draggableId);
-		if (that) {
-			if (show_hide) {
-				element.className = "draggableToggleBtnActive";
-				that.style.display = 'block'; // show, ikkunan nakyviin
-			} else {
-				element.className = "draggableToggleBtnInactive";
-				that.style.display = 'none'; // show, ikkuna pois nakyvista
-			}
-		}
-		
-	}
-	
-	$( '#tools' ).append( element );
-  	myLayout.createDragSource( element, component );
+	if (that) {
+	    if (show_hide) {
+		element.className = "draggableToggleBtnActive";
+		that.style.display = 'block'; // show, ikkunan nakyviin
+	    } else {
+		element.className = "draggableToggleBtnInactive";
+		that.style.display = 'none'; // show, ikkuna pois nakyvista
+	    }
+	}		
+    }
+    
+    $( '#tools' ).append( element );
+    myLayout.createDragSource( element, component );
 };
 
-addMenuItem( mapComponent.title, mapComponent );
+$(document).ready(function() {
+    addMenuItem( mapComponent.title, mapComponent );
+    addMenuItem( controller3dComponent.componentName, controller3dComponent );
+    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
+    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
+    addMenuItem( modelComponent.componentName, modelComponent );
+});
 
 myLayout.on('componentCreated',function(component) {
 	component.container.on('resize',function() {

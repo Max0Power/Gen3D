@@ -1,10 +1,61 @@
 "use strict"
 
+var noiseControllerComponent = {
+    type: 'component',
+    id: 'Noise controller',
+    width: 28,
+    height: 100,
+    isClosable: true,
+    componentName: 'Noise controller',
+    componentState: {  },
+    props: { draggableId: 'Noise controller' }
+}
+
+var controller3dComponent = {
+    type: 'component',
+    id: 'Controller 3D',
+    isClosable: true,
+    componentName: 'Controller 3D',
+    componentState: {  },
+    props: { draggableId: 'Controller 3D' }
+}
+
+var textureViewerComponent = {
+    type: 'component',
+    id: 'Texture viewer',
+    isClosable: true,
+    componentName: 'Texture viewer',
+    componentState: {  },
+    props: { draggableId: 'Texture viewer' }
+}
+
+var textureEditorComponent = {
+    type: 'component',
+    isClosable: true,
+    id: 'Texture editor',
+    width: 15,
+    height: 100,
+    componentName: 'Texture editor',
+    componentState: {  },
+    props: { draggableId: 'Texture editor' }
+}
+
+var modelComponent = {
+    type: 'component',
+    id: '3D-model',
+    width: 42,
+    height: 100,
+    isClosable: true,
+    componentName: '3D-model',
+    componentState: { label: '3D-model' },
+    props: { draggableId: '3D-model' }
+} 
+
 var layout = {
     settings:{
         showPopoutIcon: false,
         showMaximiseIcon: true,
-        showCloseIcon: false
+        showCloseIcon: true
     },
     labels: {
         close: 'close',
@@ -13,50 +64,23 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content:[{
-            type: 'component',
-            id: 'Noise controller',
-            width: 28,
-            height: 100,
-            isClosable: false,
-            componentName: 'Noise controller',
-            componentState: {  }
-        },{
+        content:[
+	    noiseControllerComponent
+	,{
             type: 'column',
             width: 15,
             height: 100,
-            content:[{
-                type: 'component',
-                id: 'Controller 3D',
-                isClosable: false,
-                componentName: 'Controller 3D',
-                componentState: {  }
-            },{
-                type: 'component',
-                id: 'Texture viewer',
-                isClosable: false,
-                componentName: 'Texture viewer',
-                componentState: {  }
-            }]
-        },{
-            type: 'component',
-                isClosable: false,
-                id: 'Texture editor',
-                width: 15,
-                height: 100,
-                componentName: 'Texture editor',
-                componentState: {  }
-        },{
+            content:[
+		controller3dComponent,
+		textureViewerComponent
+	    ]
+        },
+	    textureEditorComponent
+	,{
             type: 'column',
-            content:[{
-                type: 'component',
-                id: '3D-model',
-                width: 42,
-                height: 100,
-                isClosable: false,
-                componentName: '3D-model',
-                componentState: { label: '3D-model' }
-            }]
+            content:[
+		modelComponent
+	    ]
         }]
     }]
 };
@@ -111,6 +135,39 @@ myLayout.registerComponent('Texture editor', function( container, componentState
 // 3D-model
 myLayout.registerComponent('3D-model', function( container, componentState) {
     container.getElement().html( init() );
+});
+
+var addMenuItem = function( title, component ) {
+    var element = document.createElement("BUTTON");
+    element.textContent = title;
+    element.className = "draggableToggleBtnActive";
+
+    var show_hide = true;
+    element.onclick = function(event) {
+        show_hide = !show_hide;
+        var that = document.getElementById(component.props.draggableId);
+
+        if (that) {
+            if (show_hide) {
+                element.className = "draggableToggleBtnActive";
+                that.style.display = 'block';
+            } else {
+                element.className = "draggableToggleBtnInactive";
+                that.style.display = 'none';
+            }
+        }
+    }
+
+    document.getElementById( 'tools' ).append( element );
+    myLayout.createDragSource( element, component );
+};
+
+$(document).ready(function() {
+    addMenuItem( noiseControllerComponent.componentName, noiseControllerComponent );
+    addMenuItem( controller3dComponent.componentName, controller3dComponent );
+    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
+    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
+    addMenuItem( modelComponent.componentName, modelComponent );
 });
 
 myLayout.init();

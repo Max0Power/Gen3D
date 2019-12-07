@@ -139,19 +139,23 @@ function draggableUiComponent(headerTxt, position, contentElm) {
     // luodaan container, joka on kehys raahattavalle elementille
 	var container = document.createElement("DIV");
 	container.className="draggable"; // asetetaan tyyppi raahattavaksi
-    fitToContainer(container); // käytetään koko tila
-	
+        fitToContainer(container); // käytetään koko tila
+
+        container.id = headerTxt; // löytyy dokumentista otsikolla
+        /*
 	var header = document.createElement("DIV"); // header komponentti, eli ylapalkki
 	header.className = "draggableHeader"; // asetetaan class, joka maarittelee ylapalkin tyylin
 	header.textContent = headerTxt; // asetetaan teksti
 	container.appendChild(header);
+	*/
 	
 	var contentDiv = document.createElement("DIV"); // Luodaan divi, johon tulee parametrina annettu sisalto
 	contentDiv.appendChild(contentElm);
 	contentDiv.className="draggableContainer"; // luokka, joka maarittelee sislto laatikon tyylin
 	container.appendChild(contentDiv);
-    fitToContainer(contentDiv); // käytetään koko tila
+        fitToContainer(contentDiv); // käytetään koko tila
 	
+        /*
 	var show_hide = true;
 	
 	var tools_toggleBtn = document.createElement("BUTTON");
@@ -181,6 +185,7 @@ function draggableUiComponent(headerTxt, position, contentElm) {
 		show_hide = false;
 	};
 	header.appendChild(btn);
+	*/
 	
 	return container;
 }
