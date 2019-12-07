@@ -294,10 +294,10 @@ function getHeightsMatrixMinMaxH(heights) {
 function fillAllDataHoles(heights) {
 	
 	// paikataan ensiksi vaakarivien suunnassa
-	var fixed1 =  fillDataHolesLinearHorizontal(heights);
+	var fixed1 =  fillLinearHorizontal(heights);
 	
 	// paikataan toiseksi pystyrivien suunnassa
-	var fixed2 =  fillDataHolesLinearVertical(heights);
+	var fixed2 =  fillLinearVertical(heights);
 	
 	// asetetaan heights matriisin paikattujen matriisien korkeuksien keskuarvot
 	for (var x = 0; x < heights.length; x++) {
@@ -310,14 +310,12 @@ function fillAllDataHoles(heights) {
 }
 
 
-/**
- * Ottaa parametrina korkeusmatriisin ja paikkaa puuttuvat arvot lineaarisesti vaakarivien suunnassa!
- * Eli kaytetaan .hgt fileen josta on tehty matriisi!
- * palauttaa lopuksi paikatun matriisin
- * lisatty 2.11.2018
- */
-function fillDataHolesLinearHorizontal(heights) {
-	
+///
+/// Paikkaa annetun matriisin lineaarisesti ja palauttaa paikatun matriisin
+/// Paikkaus suoritetaan horisontaalisessa suunnassa
+/// Tehty 7.12.2019
+///
+function fillLinearHorizontal(heights) {
 	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
 	var tmp = new Array(heights.length);
 	for (var i = 0; i < heights.length; i++) {
@@ -329,76 +327,50 @@ function fillDataHolesLinearHorizontal(heights) {
 			tmp[i][j] = heights[i][j];
 		}
 	}
-	
 	
 	// kaydaan lapi yksi rivi kerrallaan ja paikataan noData arvot:
 	for(var y = 0; y < tmp[0].length; y++) {
 		
 		// jos eka alkio on NODATA --> etsitaan seuraava validi korkeus ja alustetaan ensimmainen arvo siksi
-		if (tmp[0][y] <= NO_DATA_VALUE) {
-			for (var x = 1; x < tmp.length; x++) {
-				if (tmp[x][y] > NO_DATA_VALUE) {
-					tmp[0][y] = tmp[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
-					break;
-					//x = heights.length + 1; // lopetetaan silmukka
-				}
-			}
-		}
-		
+		tmp[0][y] = getClosestValidValue(0, y, tmp);	
 		// jos vika alkio on NODATA --> etsitaan edellinen ensimmainen validi korkeus ja alustetaan viimeinen siksi
-		if (tmp[tmp.length-1][y] <= NO_DATA_VALUE) {
-			for (var x = tmp.length-2; x >= 0; x--) {
-				if (tmp[x][y] > NO_DATA_VALUE) {
-					tmp[tmp.length-1][y] = tmp[x][y]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
-					break;
-					//x = heights.length + 1; // lopetetaan silmukka
-				}
-			}
-		}
+		tmp[tmp.length-1][y] = getClosestValidValue(tmp.length-1, y, tmp);
 		
-		// taytetaan aukot lineaarisesti:
-		var lastValidIndex = 0; // <- mika oli edellinen validi korkeus?
-		var fill = false; // <- osoittaa pitaako dataa tayttaa
-		for (var x = 0; x < tmp.length; x++) { // kaydaan vaakarivi lapi
-			// jos kasitetltava korkeus on NO_DATA, asetetaan taytto trueki
+		var lastValidIndex = 0;
+		var fill = false;
+		for (var x = 1; x < tmp.length; x++) {
+			
+			// jos epavalidi arvo on kohdalla, niin asetetaan fill trueksi
 			if (tmp[x][y] <= NO_DATA_VALUE) {
 				fill = true;
 			}
-			else { // muuten jos kasiteltava data on VALIDI
-				// jos dataa ei tarvitse tayttaa:
-				if (!fill) {
-					lastValidIndex = x; // asetetaan edellinen validi indeksu
-				}
-				if (fill) { // muuten, jos dataa tarvitsee tayttaa:
-					// taytetaan data viimeisesta validista korkeudesta nykyiseen validiin korkeuteen:
-					for (var i = lastValidIndex + 1; i < x; i++) {
-						var t = (i - lastValidIndex) / (x - lastValidIndex); // lasketaan t, joka on arvo valilta 0-1
-                        
-						// interpolointi funktion valintaehto
-						if (interpolationSetting) {
-						    tmp[i][y] = ((1.0 - t) * tmp[lastValidIndex][y]) + (tmp[x][y] * t);
-						}
-						else {
-						    var t2 = (1.0 - Math.cos(t*Math.PI))/2;
-						    tmp[i][y] = ((1.0 - t2) * tmp[lastValidIndex][y]) + (tmp[x][y] * t2); // taytetaan rivin NODATA arvo uudella arvolla
-						}
-					}
-					fill = false; // taytto on false
-					lastValidIndex = x; // asetetaan viimeinen validi arvo
-				}
+			// Aukon paikkaaminen, kun fill on triggeroitynyt ja validi arvo kohdataan
+			if (fill == true && tmp[x][y] > NO_DATA_VALUE) {
+				
+				for (var ix = lastValidIndex + 1; ix < x; ix++) {
+					
+					var t = (ix - lastValidIndex) / (x - lastValidIndex); // lasketaan t, joka on arvo valilta 0-1
+					tmp[ix][y] = ((1.0 - t) * tmp[lastValidIndex][y]) + (tmp[x][y] * t);
+				}			
+				fill = false;
+			}
+			// aina kun on validi arvo kohdalla, niin paivitetaan edellinen validi arvo
+			if (tmp[x][y] > NO_DATA_VALUE) {
+				lastValidIndex = x;
 			}
 		}
 	}
 	
-	return tmp
+	return tmp; // palautetaan paikatut korkeudet
 }
 
 
-/**
- * Kay taulukon vertikaalisesti lapi ja tayttaa puuttuvat data-aukot lineaarisesti
- */
-function fillDataHolesLinearVertical(heights) {
-	
+///
+/// Paikkaa annetun matriisin lineaarisesti ja palauttaa paikatun matriisin
+/// Paikkaus suoritetaan vertikaalisessa suunnassa
+/// Tehty 7.12.2019
+///
+function fillLinearVertical(heights) {
 	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
 	var tmp = new Array(heights.length);
 	for (var i = 0; i < heights.length; i++) {
@@ -411,78 +383,316 @@ function fillDataHolesLinearVertical(heights) {
 		}
 	}
 	
-	
-	// kaydaan matriisin rivit lapi:
-	for (var i = 0; i < tmp.length; i++) {
-		tmp[i] = fill_row(tmp[i]); // korjataan pystyrivin puuttuvat korkeudet 
-	}
-	
-	return tmp; // palautetaan korkeudet matriisi, jonka aukot on korjattu
-	
-	 //
-	 // APUFUNKTIO:
-	 // Tayttaa yhden rivin puuttuvat datat lineaarisesti
-	 //
-	function fill_row(row) {
+	// kaydaan lapi yksi rivi kerrallaan ja paikataan noData arvot:
+	for (var x = 0; x < tmp.length; x++) {
 		
 		// jos eka alkio on NODATA --> etsitaan seuraava validi korkeus ja alustetaan ensimmainen arvo siksi
-		if (row[0] <= NO_DATA_VALUE) {
-			for (var i = 1; i < row.length; i++) {
-				if (row[i] > NO_DATA_VALUE) {
-					row[0] = row[i]; // eka alkio on sama kuin ensimmainen validi korkeus alku paasta
-					break;
-					//i = row.length + 1; // lopetetaan silmukka
-				}
-			}
-		}
-		
+		tmp[x][0] = getClosestValidValue(x, 0, tmp);
 		// jos vika alkio on NODATA --> etsitaan edellinen ensimmainen validi korkeus ja alustetaan viimeinen siksi
-		if (row[row.length - 1] <= NO_DATA_VALUE) {
-			for(var i = row.length - 2; i >= 0; i--) {
-				if (row[i] > NO_DATA_VALUE) {
-					row[row.length-1] = row[i]; // vika alkio on sama kuin ensimmainen validi korkeus loppu paasta
-					break;
-					//i = -1; // lopetetaan silmukka
-				}
-			}
-		}
+		tmp[x][tmp[0].length-1] = getClosestValidValue(x, tmp[0].length-1, tmp);
 		
-		// taytetaan aukot lineaarisesti:
-		var lastValidIndex = 0; // <- mika oli edellinen validi korkeus?
-		var fill = false; // <- osoittaa pitaako dataa tayttaa
-		// kaydaan rivi lapi
-		for (var i = 1; i < row.length; i++) {
-			// jos kasitetltava korkeus on NO_DATA, asetetaan taytto trueki
-			if (row[i] <= NO_DATA_VALUE) {
+		var lastValidIndex = 0;
+		var fill = false;
+		for (var y = 1; y < tmp[0].length; y++) {
+			
+			// jos epavalidi arvo on kohdalla, niin asetetaan fill trueksi
+			if (tmp[x][y] <= NO_DATA_VALUE) {
 				fill = true;
 			}
-			else { // muuten jos kasiteltava data on VALIDI
-				// jos dataa ei tarvitse tayttaa:
-				if (!fill) {
-					lastValidIndex = i; // asetetaan edellinen validi indeksu
-				}
-				if (fill) { // muuten, jos dataa tarvitsee tayttaa:
-					// taytetaan data viimeisesta validista korkeudesta nykyiseen validiin korkeuteen:
-					for (var j = lastValidIndex + 1; j < i; j++) {
-						var t = (j - lastValidIndex) / (i - lastValidIndex); // lasketaan t, joka on arvo valilta 0-1
-                        
-						if (interpolationSetting) {
-						    row[j] = ((1.0 - t) * row[lastValidIndex]) + (row[i] * t); // taytetaan rivin NODATA arvo uudella arvolla
-						}
-						else {
-						    var t2 = (1.0 - Math.cos(t*Math.PI))/2;
-						    row[j] = ((1.0 - t2) * row[lastValidIndex]) + (row[i] * t2);
-						}
-				}
-					fill = false; // taytto asetetaan false
-					lastValidIndex = i; // asetetaan viimeinen validi arvo
+			// Aukon paikkaaminen, kun fill on triggeroitynyt ja validi arvo kohdataan
+			if (fill == true && tmp[x][y] > NO_DATA_VALUE) {
+				
+				for (var iy = lastValidIndex + 1; iy < y; iy++) {
+					
+					var t = (iy - lastValidIndex) / (y - lastValidIndex); // lasketaan t, joka on arvo valilta 0-1
+					tmp[x][iy] = ((1.0 - t) * tmp[x][lastValidIndex]) + (tmp[x][y] * t);
+				}			
+				fill = false;
+			}
+			// aina kun on validi arvo kohdalla, niin paivitetaan edellinen validi arvo
+			if (tmp[x][y] > NO_DATA_VALUE) {
+				lastValidIndex = y;
+			}
+		}	
+	}
+	
+	return tmp;
+}
+
+
+///
+/// Jos annettu alkio on NO_DATA_VALUE -> palauttaa lahimman validin arvon
+/// Muuten palauttaa suoraan kysytyn alkion arvon
+///
+/// Jos annettu alkio oli NO_DATA_VALUE, funktio etsii validia arvoa kahdeksaan suuntaan ja palauttaa lahimman
+/// Jos useampi alkio on samalla etaisyydella -> palauttaa niiden keskiarvon
+/// Jos yhtaan validia alkiota ei loytynyt palauttaa 0:llan
+///
+/// Tata funktiota kaytetaan lineaarisissa paikkauksissa, jossa reuna matriisin reuna-arvojen tulee
+/// olla valideja
+///
+/// Tehty 7.12.2019
+///
+function getClosestValidValue(x, y, data) {
+	
+	// if given value is NO_DATA_VALUE
+	if (data[x][y] <= NO_DATA_VALUE) {
+		
+		var values = [NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE]; // all closest valid neighbour values
+		var distances = [0, 0, 0, 0, 0, 0, 0, 0]; // distances to valid values
+		
+		// Top Left
+		var xi= x-1, yj = y-1;
+		while (xi >= 0 && yj >= 0) {
+			distances[0] = distances[0] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[0] = data[xi][yj];
+				break;
+			}
+			xi--, yj--;
+		}
+		// Top
+		xi = x, yj = y-1;
+		while (yj >= 0) {
+			distances[1] = distances[1] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[1] = data[xi][yj];
+				break;
+			}
+			yj--;
+		}
+		// Top Right
+		xi = x+1, yj = y-1;
+		while(xi < data.length && yj >= 0) {
+			distances[2] = distances[2] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[2] = data[xi][yj];
+				break;
+			}
+			xi++, yj--;
+		}
+		// Right
+		xi = x+1, yj = y;
+		while(xi < data.length) {
+			distances[3] = distances[3] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[3] = data[xi][yj];
+				break;
+			}
+			xi++;
+		}
+		// Bottom Right
+		xi = x+1, yj = y+1;
+		while(xi < data.length && yj < data[0].length) {
+			distances[4] = distances[4] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[4] = data[xi][yj];
+				break;
+			}
+			xi++, yj++;
+		}
+		// Bottom
+		xi = x, yj = y+1;
+		while(yj < data[0].length) {
+			distances[5] = distances[5] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[5] = data[xi][yj];
+				break;
+			}
+			yj++;
+		}				
+		// Bottom Left
+		xi = x-1, yj = y+1;
+		while(xi >= 0 && yj < data[0].length) {
+			distances[6] = distances[6] + 1;
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				values[6] = data[xi][yj];
+				break;
+			}
+			xi--, yj++;
+		}	
+		// Left
+		xi = x-1, yj = y;
+		while(xi >= 0) {
+			if (data[xi][yj] > NO_DATA_VALUE) {
+				distances[7] = distances[7] + 1;
+				values[7] = data[xi][yj];
+				break;
+			}
+			xi--;
+		}
+		// Find the most closest valid point
+		var closestDist = 1000000;
+		for (var i = 0; i < values.length; i++) {
+			if (values[i] > NO_DATA_VALUE) {
+				if (distances[i] < closestDist) {
+					closestDist = distances[i];
 				}
 			}
 		}
 		
-		return row; // palautetaan rivi, jonka puuttuvat arvot on paikattu
+		// Return average from closest points that share previously calculated distance
+		var sum = 0;
+		var valids = 0;
+		for (var i = 0; i < values.length; i++) {
+			if (values[i] > NO_DATA_VALUE) {
+				if (distances[i] == closestDist) {
+					sum += values[i];
+					valids++;
+				}
+			}
+		}
+		if (valids > 0) {
+			return sum / valids; // return average from closest points that share previously calculated distance
+		}
+		else {
+			return 0; // Return 0 if no valid points was found
+		}
 	}
+	
+	return data[x][y]; // Return own value if it was already valid 
 }
+
+
+///
+/// Tayttaa matriisin puuttuvat datat kayttaen painotettua keskiarvoa.
+/// Idea:
+///		- Pysahtyy NO_DATA_VALUE alkion kohdalle ja etsii valideja arvoja 8:saan suuntaan. (voi tulevaisuudessa kokeilla muitakin strategioita validien arvojen hakemiseen)
+///     - Loytyneista valideista alkioista lasketaan painotettu keskiarvo, jossa kertoimena toimii etaisyys paikattavaan alkioon:
+///     - kerroin = 1/valid_value_distance. Eli mita lahempana validi arvo on sita isompi kerroin.
+///     - Eli painotettu kerskiarvo lasketaan kertomalla kukin validi luku omalla painokertoimellaan, summaamalla tulot yhteen ja jakamalla tämä summa painokertoimien summalla
+///
+/// Tehty 7.12.2019
+///
+function fillWeightedAverage(heights) {
+	// Alustetaan tmp matriisi, johon lasketaan todelliset paikkaukset
+	var tmp = new Array(heights.length);
+	for (var i = 0; i < heights.length; i++) {
+		tmp[i] = new Array(heights[0].length);
+	}
+
+	for (var i = 0; i < heights.length; i++) {
+		for (var j = 0; j < heights[0].length; j++) {
+			tmp[i][j] = heights[i][j];
+		}
+	}
+	// Kaydaan lapi korkeudet
+	for (var x = 0; x < tmp.length; x++) {
+		for (var y = 0; y < tmp[0].length; y++) {
+			
+			// Jos kohdataan NO_DATA_VALUE alkio -> toteutetaan paikkaus painotetulla keskiarvolla
+			if (tmp[x][y] <= NO_DATA_VALUE) {
+				
+				// Etsitaan validia arvoa kahdeksaan suuntaan -> otetaan loydetyt arvot ja etaisyydet talteen
+				var values = [NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE, NO_DATA_VALUE]; // all closest valid neighbour values
+				var distances = [0, 0, 0, 0, 0, 0, 0, 0]; // distances to valid values
+				
+				// Top Left
+				var xi= x-1, yj = y-1;
+				while (xi >= 0 && yj >= 0) {
+					distances[0] = distances[0] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[0] = tmp[xi][yj];
+						break;
+					}
+					xi--, yj--;
+				}
+				// Top
+				xi = x, yj = y-1;
+				while (yj >= 0) {
+					distances[1] = distances[1] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[1] = tmp[xi][yj];
+						break;
+					}
+					yj--;
+				}
+				// Top Right
+				xi = x+1, yj = y-1;
+				while(xi < tmp.length && yj >= 0) {
+					distances[2] = distances[2] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[2] = tmp[xi][yj];
+						break;
+					}
+					xi++, yj--;
+				}
+				// Right
+				xi = x+1, yj = y;
+				while(xi < tmp.length) {
+					distances[3] = distances[3] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[3] = tmp[xi][yj];
+						break;
+					}
+					xi++;
+				}
+				// Bottom Right
+				xi = x+1, yj = y+1;
+				while(xi < tmp.length && yj < tmp[0].length) {
+					distances[4] = distances[4] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[4] = tmp[xi][yj];
+						break;
+					}
+					xi++, yj++;
+				}
+				// Bottom
+				xi = x, yj = y+1;
+				while(yj < tmp[0].length) {
+					distances[5] = distances[5] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[5] = tmp[xi][yj];
+						break;
+					}
+					yj++;
+				}				
+				// Bottom Left
+				xi = x-1, yj = y+1;
+				while(xi >= 0 && yj < tmp[0].length) {
+					distances[6] = distances[6] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[6] = tmp[xi][yj];
+						break;
+					}
+					xi--, yj++;
+				}	
+				// Left
+				xi = x-1, yj = y;
+				while(xi >= 0) {
+					distances[7] = distances[7] + 1
+					if (tmp[xi][yj] > NO_DATA_VALUE) {
+						values[7] = tmp[xi][yj];
+						break;
+					}
+					xi--;
+				}
+
+				// Lasketaan painotettu keskiarvo validien arvojen valilla
+				var weighted_sum = 0; // Tahan summataan validit arvot kerrottuna omilla painokertoimilla
+				var multipliers_sum = 0; // Tahan summataan lasketut painokertoimet
+				for (var i = 0; i < values.length; i++) {
+					// Jos arvo on validi:
+					if (values[i] > NO_DATA_VALUE) {
+						weighted_sum += values[i] * (1 / distances[i]); // Summataan validi arvo kerrottuna omalla painokertoimella
+						multipliers_sum += (1 / distances[i]); // Summataan laskettu painokerroin
+					}
+				}
+				
+				// Jos valideja arvoja loytyi: lasketaan alkioon niiden painotettu keskiarvo
+				if (multipliers_sum > 0) {
+					tmp[x][y] = weighted_sum / multipliers_sum; // painotettu keskiarvo
+				}
+				else {
+					tmp[x][y] = 0; // Muuten, jos yhtaan validia arvoa ei loytynyt -> asetetaan arvo 0:llaksi
+				}
+			}
+		}
+	}
+	
+	return tmp;	// Palautetaan paikattu matriisi
+}
+
 
 /*
 
