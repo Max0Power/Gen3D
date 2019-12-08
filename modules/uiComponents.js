@@ -246,92 +246,139 @@ function createTextureController(top, left, callback) {
  * Kaikissa ikkunoissa kaytettava raahattava komponentti, jolla voi vaikuttaa 3d mallin piirtymiseen
  */
 function createInput3dController(top, left, callback, isMax=false, interpolate=false) {
-	var container = document.createElement("DIV");
-	
-	var quadSizeTxt = document.createElement("LABEL"); // quadSize
-	quadSizeTxt.textContent = "Quad size:";
-	container.appendChild(quadSizeTxt);
-	var quadSizeInp = numberBox("input_modelQuadSize", 1, 0.5, 0.1, 1000, false);
-	container.appendChild(quadSizeInp);
-	quadSizeTxt.setAttribute("for", "input_modelQuadSize");
-	
-	var modelHTxt = document.createElement("LABEL"); // mallin maksimi korkeus
-	modelHTxt.textContent = "Model max height:";
-	container.appendChild(modelHTxt);
-	var modelHInp = numberBox("input_modelMaxHeight", 20, 1, 0, 10000, false);
-	container.appendChild(modelHInp);
-	modelHTxt.setAttribute("for", "input_modelMaxHeight");
+    var fstSpan = document.createElement("DIV");
+    fstSpan.className = "flexable form-group";
+    var sndSpan = document.createElement("DIV");
+    sndSpan.className ="flexable form-group";
+
+    var container = document.createElement("DIV");
+    container.appendChild(fstSpan);
+    container.appendChild(sndSpan);
     
+    // Quad Size ------------------------------
+
+    var quadSizeSpan = document.createElement("SPAN");
+    quadSizeSpan.className = "form-group"
+
+    var quadSizeTxt = document.createElement("LABEL"); // quadSize
+    quadSizeTxt.textContent = "Quad size:";
+    quadSizeTxt.setAttribute("for", "input_modelQuadSize");
+    quadSizeSpan.appendChild(quadSizeTxt);
+
+    var quadSizeInp = numberBox("input_modelQuadSize", 1, 0.5, 0.1, 1000, false);
+    quadSizeSpan.appendChild(quadSizeInp);
+    fstSpan.appendChild(quadSizeSpan);
+	
+    // Model max height ------------------------------
+    
+    var modelHSpan = document.createElement("SPAN");
+    modelHSpan.className = "form-group"
+    
+    var modelHTxt = document.createElement("LABEL"); // mallin maksimi korkeus
+    modelHTxt.setAttribute("for", "input_modelMaxHeight");
+    modelHTxt.textContent = "Model max height:";
+    modelHSpan.appendChild(modelHTxt);
+
+    var modelHInp = numberBox("input_modelMaxHeight", 20, 1, 0, 10000, false);
+    modelHSpan.appendChild(modelHInp);
+    fstSpan.appendChild(modelHSpan);
+    
+    // Model max vertices ------------------------------
+
     if (isMax) {
+	var maxSpan = document.createElement("SPAN");
+	maxSpan.className = "form-group";
+
         var maxlabel = document.createElement("label");
         maxlabel.textContent = "Model max vertices: ";
-        container.appendChild(maxlabel);
+	maxlabel.setAttribute("for", "input_modelMaxVertices");
+        maxSpan.appendChild(maxlabel);
+
         var maxvertices = numberBox("input_modelMaxVertices", 200, 1, 20, 1201, true);
-        container.appendChild(maxvertices);
-        maxlabel.setAttribute("for", "input_modelMaxVertices");
+	maxSpan.appendChild(maxvertices);
+        fstSpan.appendChild(maxSpan);
     }
-       
-        // --------------------------- InterpolationSelection
+    
+    // ------------------------------ InterpolationSelection
+    
+    if (interpolate) {
+	var intSpan = document.createElement("SPAN");
+	intSpan.className = "form-group";
 
-        if (interpolate) {
-            var intlabel = document.createElement("label");
-            intlabel.textContent = "Interpolation algorithm: ";
-            container.appendChild(intlabel);
-            
-            var seldiv = document.createElement("DIV");
-            container.appendChild(seldiv);
-            
-            var sel = document.createElement("SELECT");
-            sel.id = "selectedIntAlg";
-            seldiv.appendChild(sel);
-            
-            var options = ["Linear","Very slow"];
-            for (var i = 0; i < options.length; i++) {
-		var opt = document.createElement("OPTION");
-		opt.appendChild(document.createTextNode(options[i]));
-		opt.value = i;
-		sel.appendChild(opt);
-            }
-	}
+        var intlabel = document.createElement("label");
+        intlabel.textContent = "Interpolation algorithm: ";
+	intlabel.setAttribute("for", "selectedIntAlg");
+        intSpan.appendChild(intlabel);
+        
+        var sel = document.createElement("SELECT");
+	sel.className = "form-control btn-default";
+        sel.id = "selectedIntAlg";
+	intSpan.appendChild(sel);
+	sndSpan.appendChild(intSpan);
+        
+        var options = ["Linear","Very slow"];
+        for (var i = 0; i < options.length; i++) {
+	    var opt = document.createElement("OPTION");
+	    opt.appendChild(document.createTextNode(options[i]));
+	    opt.value = i;
+	    sel.appendChild(opt);
+        }
+    }
 
-	// --------------------------- TextureSelection
+    // ------------------------------ TextureSelection
 
-	let label = container.appendChild(document.createElement("label"));
-	label.appendChild(document.createTextNode("Texture: "));
-	
-	var selectDiv = document.createElement("DIV");
-	container.appendChild(selectDiv);
-	var selectElm = document.createElement("SELECT");
-	selectElm.id = "selectedTexture3D";
-	selectDiv.appendChild(selectElm);
-	
-	var names = textures.getTextureNamesFor3d();
-	for (var i = 0; i < names.length; i++) {
-		var opt = document.createElement("OPTION");
-		opt.appendChild(document.createTextNode(names[i]));
-		opt.value = names[i];
-		selectElm.appendChild(opt);
-	}
+    var textureSpan = document.createElement("SPAN");
+    textureSpan.className = "form-group";
 
-	selectElm.selectedIndex = "1";
+    let label = textureSpan.appendChild(document.createElement("label"));
+    label.appendChild(document.createTextNode("Texture: "));
+    label.setAttribute("for", "selectedTexture3D");
+    
+    var selectElm = document.createElement("SELECT");
+    selectElm.className = "form-control btn-default";
+    selectElm.id = "selectedTexture3D";
+    textureSpan.appendChild(selectElm);
+    sndSpan.appendChild(textureSpan);
+    
+    var names = textures.getTextureNamesFor3d();
+    for (var i = 0; i < names.length; i++) {
+	var opt = document.createElement("OPTION");
+	opt.appendChild(document.createTextNode(names[i]));
+	opt.value = names[i];
+	selectElm.appendChild(opt);
+    }
 
-	// ---------------------------
-	
-	var btn_drawModel = document.createElement("BUTTON");
-	btn_drawModel.appendChild(document.createTextNode("Update model"));
-	btn_drawModel.onclick = function(event) {
-		callback();
-	};
-	container.appendChild(btn_drawModel);
-	
-	var btn_download = document.createElement("BUTTON"); 
-	btn_download.appendChild(document.createTextNode("Download .obj file"));
-	btn_download.onclick = function(event) {
-		downloadObj(); // funktio, jolla paivitetaan 3d malli
-	};
-	container.appendChild(btn_download);
+    selectElm.selectedIndex = "1";
 
-	return draggableUiComponent("Controller 3D", [top, left], container);
+    // ------------------------------ Update model
+    
+    var drawModelSpan = document.createElement("SPAN");
+    drawModelSpan.className = "form-group";
+
+    var btn_drawModel = document.createElement("BUTTON");
+    btn_drawModel.className = "form-control btn btn-default";
+    btn_drawModel.appendChild(document.createTextNode("Update model"));
+    btn_drawModel.onclick = function(event) {
+	callback();
+    };
+    drawModelSpan.appendChild(btn_drawModel);
+    sndSpan.appendChild(drawModelSpan);
+    
+    // ------------------------------ Download .obj file
+
+    var downloadSpan = document.createElement("SPAN"); 
+    downloadSpan.className = "form-group";
+
+    var btn_download = document.createElement("BUTTON"); 
+    btn_download.appendChild(document.createTextNode("Download .obj file"));
+    btn_download.className = "form-control btn btn-default";
+    btn_download.onclick = function(event) {
+	downloadObj(); // funktio, jolla paivitetaan 3d malli
+    };
+    downloadSpan.appendChild(btn_download);
+    sndSpan.appendChild(downloadSpan);
+
+    return draggableUiComponent("Controller 3D", [top, left], container);
 }
 
 /*
