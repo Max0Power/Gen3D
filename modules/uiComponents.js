@@ -196,49 +196,58 @@ function draggableUiComponent(headerTxt, position, contentElm) {
  * Se on raahattava elementti, joka generoi annetuista korkeuksista katseltavan/ladattavan tekstuurin
  */
 function createTextureController(top, left, callback) {
-	var container = document.createElement("DIV");
-	
-	// --------------------------- TextureSelection
-	
-	let label = container.appendChild(document.createElement("label"));
-	label.appendChild(document.createTextNode("Texture: "));
-	
-	var selectDiv = document.createElement("DIV");
-	container.appendChild(selectDiv);
-	var selectElm = document.createElement("SELECT");
-	selectElm.id = "selectTextureImg";
-	selectDiv.appendChild(selectElm);
-	
-	// vaihtoehtoiset tekstuurit, jotka voidaan piirtaa
-	var names = textures.getTextureNamesForImg(); // antaa option mukaiset tekstuurit, esim pelkastaan valille 0-1 skaalautuvat | selectOption = 0
-	for (var i = 0; i < names.length; i++) {
-		var opt = document.createElement("OPTION");
-		opt.appendChild(document.createTextNode(names[i]));
-		opt.value = names[i];
-		selectElm.appendChild(opt); // lisataan luotu valintas
-	}
-	
-	// ---------------------------
-	
-        var canvasSpan = document.createElement("SPAN");
-        canvasSpan.className = "form-group";
-	var canvas = document.createElement("CANVAS");
-	canvas.id = "canv";
-        canvas.className = "form-control";
-	canvasSpan.appendChild(canvas);
-        container.appendChild(canvasSpan);
-	
-	var btn_container = document.createElement("DIV");
-	container.appendChild(btn_container);
-	
-	var btn_drawModel = document.createElement("BUTTON"); // buttoni, joka piirtaa grayscalen ja 3d mallin
-	btn_drawModel.appendChild(document.createTextNode("Update image"));
-	btn_drawModel.onclick = function(event) {
-		callback(); // funktio, jolla piirretaan grayscale
-	};
-	btn_container.appendChild(btn_drawModel);
+    var container = document.createElement("DIV");
+    
+    // ------------------------------ TextureSelection
+    
+    var textureSpan = document.createElement("SPAN");
+    textureSpan.className = "form-group";
+    
+    let label = container.appendChild(document.createElement("label"));
+    label.appendChild(document.createTextNode("Texture: "));
+    label.setAttribute("for", "selectTextureImg");
+    textureSpan.appendChild(label);
+    
+    var selectElm = document.createElement("SELECT");
+    selectElm.className = "form-control btn-default";
+    selectElm.id = "selectTextureImg";
+    textureSpan.appendChild(selectElm);
+    container.appendChild(textureSpan);
+    
+    // vaihtoehtoiset tekstuurit, jotka voidaan piirtaa
+    var names = textures.getTextureNamesForImg(); // antaa option mukaiset tekstuurit, esim pelkastaan valille 0-1 skaalautuvat | selectOption = 0
+    for (var i = 0; i < names.length; i++) {
+	var opt = document.createElement("OPTION");
+	opt.appendChild(document.createTextNode(names[i]));
+	opt.value = names[i];
+	selectElm.appendChild(opt); // lisataan luotu valintas
+    }
+    
+    // ------------------------------ Canvas
+    
+    var canvasSpan = document.createElement("DIV");
+    canvasSpan.className = "flexable form-group";
+    
+    var canvas = document.createElement("CANVAS");
+    canvas.id = "canv";
+    canvasSpan.appendChild(canvas);
+    container.appendChild(canvasSpan);
+    
+    // ------------------------------ Update Image
+    
+    var btn_container = document.createElement("SPAN");
+    btn_container.className = "form-group";
+    
+    var btn_drawModel = document.createElement("BUTTON"); // buttoni, joka piirtaa grayscalen ja 3d mallin
+    btn_drawModel.className = "form-control btn btn-default";
+    btn_drawModel.appendChild(document.createTextNode("Update image"));
+    btn_drawModel.onclick = function(event) {
+	callback(); // funktio, jolla piirretaan grayscale
+    };
+    btn_container.appendChild(btn_drawModel);
+    container. appendChild(btn_container);
 
-	return draggableUiComponent("Texture viewer", [top, left], container);
+    return draggableUiComponent("Texture viewer", [top, left], container);
 }
 
 
