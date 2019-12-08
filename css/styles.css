@@ -49,9 +49,12 @@ input.inputsArea {
     width: 75px; /* latitude, longitude */
 }
 
-#canv {
+#canv, #colpic {
     max-height: 100%; /* 500px */
     max-width: 100%; /* 500px */
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 span {

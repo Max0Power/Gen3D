@@ -10,44 +10,46 @@
  * Luo tekstuuri editor komponentin ja lisaa sen samalla raahattavaan ikkunaan.
  */
 function createTextureEditor(posLeft, posTop) {
-	
-	var textureNames = textures.getAllTextureNamesForImg();
-	var selectedTextureIndex = 0;
-	
-	var gradientColor = textures.getGradientColorFromName(textureNames[selectedTextureIndex]);
-	var isBetween0And1 = textures.getIsBetween0And1FromName(textureNames[selectedTextureIndex]);
-	
-	var knobs = gradientColor.getRangeValues();
-	var colors = gradientColor.getColors();
-	
-	var notMovableIndex1 = 0;
-	var notMovableIndex2 = colors.length - 1;
-	
-	var rangeMin = 0;
-	var rangeMax = 1;
-	if (!isBetween0And1) {
-		rangeMin = 0;
-		rangeMax = 10000;
-	}
-	
-	var knobWidth = 8;
-	var selectedKnobIndex = 0;
-	
-	// ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI
-	
-	var container = document.createElement("DIV");
-	
-	var label1 = container.appendChild(document.createElement("label"));
-	label1.appendChild(document.createTextNode("Texture:"));
-	
-	var selectDivTexture = document.createElement("DIV");
-	container.appendChild(selectDivTexture);
-	var selectElmTexture = document.createElement("SELECT");
-	selectDivTexture.appendChild(selectElmTexture);
-	var addTextureBtn = document.createElement("BUTTON");
-	addTextureBtn.appendChild(document.createTextNode("New texture"));
-	selectDivTexture.appendChild(addTextureBtn);
-	
+    
+    var textureNames = textures.getAllTextureNamesForImg();
+    var selectedTextureIndex = 0;
+    
+    var gradientColor = textures.getGradientColorFromName(textureNames[selectedTextureIndex]);
+    var isBetween0And1 = textures.getIsBetween0And1FromName(textureNames[selectedTextureIndex]);
+    
+    var knobs = gradientColor.getRangeValues();
+    var colors = gradientColor.getColors();
+    
+    var notMovableIndex1 = 0;
+    var notMovableIndex2 = colors.length - 1;
+    
+    var rangeMin = 0;
+    var rangeMax = 1;
+    if (!isBetween0And1) {
+	rangeMin = 0;
+	rangeMax = 10000;
+    }
+    
+    var knobWidth = 8;
+    var selectedKnobIndex = 0;
+    
+    // ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI
+    
+    var container = document.createElement("DIV");
+    
+    var label1 = container.appendChild(document.createElement("label"));
+    label1.appendChild(document.createTextNode("Texture:"));
+    
+    var selectDivTexture = document.createElement("DIV");
+    container.appendChild(selectDivTexture);
+    var selectElmTexture = document.createElement("SELECT");
+    selectDivTexture.appendChild(selectElmTexture);
+    var addTextureBtn = document.createElement("BUTTON");
+    addTextureBtn.appendChild(document.createTextNode("New texture"));
+    selectDivTexture.appendChild(addTextureBtn);
+    
+    // ------------------------------ Range to world scale
+
 	var isScaledToWorldDiv = document.createElement("DIV");
 	container.appendChild(isScaledToWorldDiv);
 	var isScaledToWorldLabel = document.createElement("LABEL");

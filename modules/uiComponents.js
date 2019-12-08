@@ -18,112 +18,126 @@
   * Palauttaa komponentin, jossa on syottolaatikko ja painikkeet arvojen muunteluun
   */
 function numberBox(id, value, step, min, max, isOnlyInteger) {
-	// jos sallii vain integerit, muutetaan annetut arvot integereiksi
-	if (isOnlyInteger) {
-		value = parseInt(value, 10);
-		step = parseInt(step, 10);
-		min = parseInt(min, 10);
-		max = parseInt(max, 10);
-	}
-	
-	var div = document.createElement("DIV"); // komponentin container
-	div.className = "numberBoxComponent";
-	
-	var inputBox =  document.createElement("INPUT"); // syotelaatikko
-	inputBox.className = "userInputBox form-control";
-	inputBox.id = id; // asetetaan id
-	inputBox.value = value; // oletus arvo
-	inputBox.onblur = function(){increaseInputVal(0)}; // kun kayttaja poistuu laatikosta -> validointi
-	div.appendChild(inputBox);
-	
-	var timer; // <- timer olio
-	var timerRunning = false; // <- kertoo onko timer kaynnissa, joka kasvattaa automaattisesti inputin sisaltoa, jos hiiri on pohjassa
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	var btnMinus = document.createElement("BUTTON");
-	btnMinus.appendChild(document.createTextNode("-"));
-	btnMinus.className = "decreaseBtn btn btn-default";
-	// Kun kayttaja klikkaa increase buttonia:
-	btnMinus.onmousedown = function(event) {
-		increaseInputVal(-step); // normaali tapahtuma: vahennetaan laatikon arvoa
-		// jos timer ei ole kaynnissa, niin silloin voidaan aloittaa timer, joka vahentaa input arvoa
-		if (!timerRunning) {
-			timerRunning = true; // asetetaan timer kayntiin
-			timer_increase_input(200, -step); // kutsutaan timerin functiota, joka kasvasttaa kiihtyen valueta annetulla stepilla
-		}
-	};
-	// jos hiiri nousee ylos -> lopetetaan timer
-	btnMinus.onmouseup = function(event) {
-		timerRunning = false;
-		clearTimeout(timer);
-	};
-	// jos hiiri lahtee laatikon alueelta -> lopetetaan timer
-	btnMinus.onmouseleave = function(event) {
-		timerRunning = false;
-		clearTimeout(timer);
-	};
-	
-	div.appendChild(btnMinus);
-	/////////////////////////////////////////////////////////////////////////////////////////////////	
-	var btnPlus = document.createElement("BUTTON");
-	btnPlus.appendChild(document.createTextNode("+"));
-	btnPlus.className = "increaseBtn btn btn-default";
-	btnPlus.onmousedown = function(event) {
-		increaseInputVal(step);
-		if (!timerRunning) {
-			timerRunning = true;
-			timer_increase_input(200, step);
-		}
-	};
-	btnPlus.onmouseup = function(event) {
-		timerRunning = false;
-		clearTimeout(timer);
-	};
-	btnPlus.onmouseleave = function(event) {
-		timerRunning = false;
-		clearTimeout(timer);
-	};
-	div.appendChild(btnPlus);
-	/////////////////////////////////////////////////////////////////////////////////////////////////
+    // jos sallii vain integerit, muutetaan annetut arvot integereiksi
+    if (isOnlyInteger) {
+	value = parseInt(value, 10);
+	step = parseInt(step, 10);
+	min = parseInt(min, 10);
+	max = parseInt(max, 10);
+    }
+    
+    var div = document.createElement("DIV"); // komponentin container
+    div.className = "numberBoxComponent";
+    
+    var inputBox =  document.createElement("INPUT"); // syotelaatikko
+    inputBox.setAttribute("type", "number");
+    inputBox.className = "userInputBox form-control";
+    inputBox.id = id; // asetetaan id
+    inputBox.value = value; // oletus arvo
+    inputBox.min = min;
+    inputBox.max = max;
+    //inputBox.step = step; // valittaa askelesta
+    inputBox.step = step;
+    inputBox.required = true;
 
-	return div;
-	
-	
-	/**
-	 * Kasvatetaan input laatikon arvoa annetulla num parametrilla
-	 * huolehtii samalla, etta arvo on validi
-	 */
-	function increaseInputVal(num) {
-		var val = parseFloat(inputBox.value.replace(',', '.')); // otetaan arvo, muutetaan tarvittessa pilkut pisteiksi
-		if (isOnlyInteger) val = parseInt(inputBox.value.replace(',', '.'), 10); // laatikon arvo integerina, jos pelkka integer
-		// jos arvo on Nan, niin asetetaan laatikon arvo suoraan perusarvoon
-		if (isNaN(val)) {
-			val = value;
-			num = 0;
-		}
-		val += num; // kasvatetaan lukua kayttajan antamalla parametrilla
-		if (val < min) val = min;
-		if (val > max) val = max;
-		inputBox.value = val; // asetetaan uusi arvo
+    inputBox.oninput = function(e) {
+	e.target.reportValidity();
+    }
+
+    div.appendChild(inputBox);
+
+    /*
+    inputBox.onblur = function(){increaseInputVal(0)}; // kun kayttaja poistuu laatikosta -> validointi
+    
+    var timer; // <- timer olio
+    var timerRunning = false; // <- kertoo onko timer kaynnissa, joka kasvattaa automaattisesti inputin sisaltoa, jos hiiri on pohjassa
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    var btnMinus = document.createElement("BUTTON");
+    btnMinus.appendChild(document.createTextNode("-"));
+    btnMinus.className = "decreaseBtn btn btn-default";
+    // Kun kayttaja klikkaa increase buttonia:
+    btnMinus.onmousedown = function(event) {
+	increaseInputVal(-step); // normaali tapahtuma: vahennetaan laatikon arvoa
+	// jos timer ei ole kaynnissa, niin silloin voidaan aloittaa timer, joka vahentaa input arvoa
+	if (!timerRunning) {
+	    timerRunning = true; // asetetaan timer kayntiin
+	    timer_increase_input(200, -step); // kutsutaan timerin functiota, joka kasvasttaa kiihtyen valueta annetulla stepilla
 	}
-	
-	
-	/**
-	 * Muuttaa input laatikon arvoa kiihtyvalla vauhdilla, kun timer on kaynnissa
-	 * eli, kun kayttaja painaa pohjassa kasvata nappia
-	 */
-	function timer_increase_input(interval, num_to_increase) {
-		// asetetaan timeOut, joka triggeroi seuraavan funktion, intervallin saavuttessa 0:
-		timer = setTimeout(function(){
-			// jos, timer on viela kaynnissa, intervallin saavuttaessa 0
-			if (timerRunning) {
-				interval -= 10; // nopeutetaan intervallia
-				if (interval < 50) interval = 50; // minimi interval, eli suurin mahdollinen nopeus
-				increaseInputVal(num_to_increase); // kasvatetaan inputlaatikon lukua
-				timer_increase_input(interval, num_to_increase); // kutsutaan funktiota uudestaan
-			}
-		}, interval);
+    };
+    // jos hiiri nousee ylos -> lopetetaan timer
+    btnMinus.onmouseup = function(event) {
+	timerRunning = false;
+	clearTimeout(timer);
+    };
+    // jos hiiri lahtee laatikon alueelta -> lopetetaan timer
+    btnMinus.onmouseleave = function(event) {
+	timerRunning = false;
+	clearTimeout(timer);
+    };
+    
+    div.appendChild(btnMinus);
+    /////////////////////////////////////////////////////////////////////////////////////////////////	
+    var btnPlus = document.createElement("BUTTON");
+    btnPlus.appendChild(document.createTextNode("+"));
+    btnPlus.className = "increaseBtn btn btn-default";
+    btnPlus.onmousedown = function(event) {
+	increaseInputVal(step);
+	if (!timerRunning) {
+	    timerRunning = true;
+	    timer_increase_input(200, step);
 	}
+    };
+    btnPlus.onmouseup = function(event) {
+	timerRunning = false;
+	clearTimeout(timer);
+    };
+    btnPlus.onmouseleave = function(event) {
+	timerRunning = false;
+	clearTimeout(timer);
+    };
+    div.appendChild(btnPlus);
+    */
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+    return div;
+    
+    
+    /**
+     * Kasvatetaan input laatikon arvoa annetulla num parametrilla
+     * huolehtii samalla, etta arvo on validi
+     */
+    function increaseInputVal(num) {
+	var val = parseFloat(inputBox.value.replace(',', '.')); // otetaan arvo, muutetaan tarvittessa pilkut pisteiksi
+	if (isOnlyInteger) val = parseInt(inputBox.value.replace(',', '.'), 10); // laatikon arvo integerina, jos pelkka integer
+	// jos arvo on Nan, niin asetetaan laatikon arvo suoraan perusarvoon
+	if (isNaN(val)) {
+	    val = value;
+	    num = 0;
+	}
+	val += num; // kasvatetaan lukua kayttajan antamalla parametrilla
+	if (val < min) val = min;
+	if (val > max) val = max;
+	inputBox.value = val; // asetetaan uusi arvo
+    }
+    
+    
+    /**
+     * Muuttaa input laatikon arvoa kiihtyvalla vauhdilla, kun timer on kaynnissa
+     * eli, kun kayttaja painaa pohjassa kasvata nappia
+     */
+    function timer_increase_input(interval, num_to_increase) {
+	// asetetaan timeOut, joka triggeroi seuraavan funktion, intervallin saavuttessa 0:
+	timer = setTimeout(function(){
+	    // jos, timer on viela kaynnissa, intervallin saavuttaessa 0
+	    if (timerRunning) {
+		interval -= 10; // nopeutetaan intervallia
+		if (interval < 50) interval = 50; // minimi interval, eli suurin mahdollinen nopeus
+		increaseInputVal(num_to_increase); // kasvatetaan inputlaatikon lukua
+		timer_increase_input(interval, num_to_increase); // kutsutaan funktiota uudestaan
+	    }
+	}, interval);
+    }
 }
 
 var DRAGGABLE_Z_INDEX = 8;
@@ -255,14 +269,8 @@ function createTextureController(top, left, callback) {
  * Kaikissa ikkunoissa kaytettava raahattava komponentti, jolla voi vaikuttaa 3d mallin piirtymiseen
  */
 function createInput3dController(top, left, callback, isMax=false, interpolate=false) {
-    var fstSpan = document.createElement("DIV");
-    fstSpan.className = "flexable form-group";
-    var sndSpan = document.createElement("DIV");
-    sndSpan.className ="flexable form-group";
-
     var container = document.createElement("DIV");
-    container.appendChild(fstSpan);
-    container.appendChild(sndSpan);
+    container.className = "flexable"
     
     // Quad Size ------------------------------
 
@@ -276,7 +284,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 
     var quadSizeInp = numberBox("input_modelQuadSize", 1, 0.5, 0.1, 1000, false);
     quadSizeSpan.appendChild(quadSizeInp);
-    fstSpan.appendChild(quadSizeSpan);
+    container.appendChild(quadSizeSpan);
 	
     // Model max height ------------------------------
     
@@ -290,7 +298,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 
     var modelHInp = numberBox("input_modelMaxHeight", 20, 1, 0, 10000, false);
     modelHSpan.appendChild(modelHInp);
-    fstSpan.appendChild(modelHSpan);
+    container.appendChild(modelHSpan);
     
     // Model max vertices ------------------------------
 
@@ -305,7 +313,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 
         var maxvertices = numberBox("input_modelMaxVertices", 200, 1, 20, 1201, true);
 	maxSpan.appendChild(maxvertices);
-        fstSpan.appendChild(maxSpan);
+        container.appendChild(maxSpan);
     }
     
     // ------------------------------ InterpolationSelection
@@ -323,7 +331,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	sel.className = "form-control btn-default";
         sel.id = "selectedIntAlg";
 	intSpan.appendChild(sel);
-	sndSpan.appendChild(intSpan);
+	container.appendChild(intSpan);
         
         var options = ["Linear","Very slow"];
         for (var i = 0; i < options.length; i++) {
@@ -347,7 +355,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     selectElm.className = "form-control btn-default";
     selectElm.id = "selectedTexture3D";
     textureSpan.appendChild(selectElm);
-    sndSpan.appendChild(textureSpan);
+    container.appendChild(textureSpan);
     
     var names = textures.getTextureNamesFor3d();
     for (var i = 0; i < names.length; i++) {
@@ -371,7 +379,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	callback();
     };
     drawModelSpan.appendChild(btn_drawModel);
-    sndSpan.appendChild(drawModelSpan);
+    container.appendChild(drawModelSpan);
     
     // ------------------------------ Download .obj file
 
@@ -385,7 +393,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	downloadObj(); // funktio, jolla paivitetaan 3d malli
     };
     downloadSpan.appendChild(btn_download);
-    sndSpan.appendChild(downloadSpan);
+    container.appendChild(downloadSpan);
 
     return draggableUiComponent("Controller 3D", [top, left], container);
 }
