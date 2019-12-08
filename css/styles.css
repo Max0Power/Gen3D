@@ -30,11 +30,11 @@ body .lm_content{
     width: 100%;
     height: 0; /* ultimate hack */
     padding-bottom: 100%;
-	z-index: 0; /* alimman tason z-indeksi */
+    z-index: 0; /* alimman tason z-indeksi */
 }
 
 .lm_maximised {
-	z-index: 1; /* piilottaa alimman tason */
+    z-index: 1; /* piilottaa alimman tason */
 }
 
 #container3D {
@@ -49,12 +49,14 @@ input.inputsArea {
 	width: 75px; /* latitude, longitude */
 }
 
+/*
 #canv {
-	max-height: 100%; /* 500px */
-	max-width: 100%; /* 500px */
+	max-height: 100%; /* 500px 
+	max-width: 100%; /* 500px 
 }
+*/
 
-span {
+span, canv {
 	padding-right: 5px; /* tekstiketän jälkeen tilaa */
 }
 

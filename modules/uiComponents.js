@@ -30,7 +30,7 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
 	div.className = "numberBoxComponent";
 	
 	var inputBox =  document.createElement("INPUT"); // syotelaatikko
-	inputBox.className = "userInputBox";
+	inputBox.className = "userInputBox form-control";
 	inputBox.id = id; // asetetaan id
 	inputBox.value = value; // oletus arvo
 	inputBox.onblur = function(){increaseInputVal(0)}; // kun kayttaja poistuu laatikosta -> validointi
@@ -42,7 +42,7 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	var btnMinus = document.createElement("BUTTON");
 	btnMinus.appendChild(document.createTextNode("-"));
-	btnMinus.className = "decreaseBtn";
+	btnMinus.className = "decreaseBtn btn btn-default";
 	// Kun kayttaja klikkaa increase buttonia:
 	btnMinus.onmousedown = function(event) {
 		increaseInputVal(-step); // normaali tapahtuma: vahennetaan laatikon arvoa
@@ -67,7 +67,7 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////	
 	var btnPlus = document.createElement("BUTTON");
 	btnPlus.appendChild(document.createTextNode("+"));
-	btnPlus.className = "increaseBtn";
+	btnPlus.className = "increaseBtn btn btn-default";
 	btnPlus.onmousedown = function(event) {
 		increaseInputVal(step);
 		if (!timerRunning) {
@@ -220,9 +220,13 @@ function createTextureController(top, left, callback) {
 	
 	// ---------------------------
 	
+        var canvasSpan = document.createElement("SPAN");
+        canvasSpan.className = "form-group";
 	var canvas = document.createElement("CANVAS");
 	canvas.id = "canv";
-	container.appendChild(canvas);
+        canvas.className = "form-control";
+	canvasSpan.appendChild(canvas);
+        container.appendChild(canvasSpan);
 	
 	var btn_container = document.createElement("DIV");
 	container.appendChild(btn_container);

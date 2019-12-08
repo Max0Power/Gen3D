@@ -86,7 +86,7 @@ var layout = {
     settings:{
         showPopoutIcon: false,
         showMaximiseIcon: true,
-        showCloseIcon: true,
+        showCloseIcon: true
     },
     labels: {
         close: 'close',
@@ -145,8 +145,8 @@ class MapComponent extends React.Component {
                 <Input {...this.props.latitude} />
                 <Input {...this.props.longitude} />
                 <Input {...this.props.size} />
-		<span class="form-group">
-                  <button class="btn btn-default" onClick={this.handleClick}>Generate</button>
+		<span class="form-group flexable">
+                  <button class="form-control btn btn-default" onClick={this.handleClick}>Generate</button>
 		</span>
 		</div>
             </React.Fragment>
@@ -243,7 +243,7 @@ class Leaflet extends React.Component {
 
 	    <span class="form-group">
             <label for="selectMapView">Map view:</label>
-            <select class="form-control" onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
+            <select class="form-control btn-default" onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
                 <option value='default'>Black</option>
                 <option value='streets-v11'>Streets</option>
                 <option value='light-v10'>Light</option>
@@ -263,7 +263,6 @@ class Input extends React.Component {
         super(props);
         this.state = {value: this.props.value};
         
-        this.handleInvalid = this.handleInvalid.bind(this);
 	this.handleValid = this.handleValid.bind(this);
 	this.handleChange = this.handleChange.bind(this);
     }
@@ -274,7 +273,6 @@ class Input extends React.Component {
 	      <span class="form-group">
               <label for={this.props.id}>{this.props.sign}</label>
               <input class="form-control"
-	        onInvalid={this.handleInvalid}
 	        onInput={this.handleValid}
 	        onChange={this.handleChange}
 	        id={this.props.id}
@@ -285,16 +283,11 @@ class Input extends React.Component {
                 value={this.state.value}
                 defaultValue={this.props.value}
 	        required
-                type='number'
-                onChange={this.handleChange}>
+                type='number'>
               </input>
 	      </span>
             </React.Fragment>
         );
-    }
-    
-    handleInvalid(e) {	
-        e.target.setCustomValidity("");
     }
     
     handleChange(e) {
@@ -302,7 +295,6 @@ class Input extends React.Component {
     }
 
     handleValid(e) {
-	e.target.setCustomValidity("");
 	this.setState({value: e.target.value});
 	
 	const lat = parseFloat(document.getElementById( 'inputLatitude' ).value);
