@@ -187,6 +187,11 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
 	      });
 	      worker.postMessage(t);
               break;
+	    case '3':
+	      this.heights = kaanteinenEtaisyys(t); // js/interpolointi.js
+	      this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
+	      this.finish();
+	      break;
 	    /*
 	    case '2':
 	      this.heights = interpolointi(t);

@@ -17,7 +17,7 @@
   * isOnlyInteger -> bool arvo, joka maarittelee kayttaako laatikko pelkastaan Integer arvoja
   * Palauttaa komponentin, jossa on syottolaatikko ja painikkeet arvojen muunteluun
   */
-function numberBox(id, value, step, min, max, isOnlyInteger) {
+
     // jos sallii vain integerit, muutetaan annetut arvot integereiksi
     if (isOnlyInteger) {
 	value = parseInt(value, 10);
@@ -333,7 +333,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	intSpan.appendChild(sel);
 	container.appendChild(intSpan);
         
-        var options = ["Weighted average","Linear","Very slow"];
+        var options = ["Weighted average","Linear","Very slow","Inverse distance weighting"];
         for (var i = 0; i < options.length; i++) {
 	    var opt = document.createElement("OPTION");
 	    opt.appendChild(document.createTextNode(options[i]));
