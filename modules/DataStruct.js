@@ -166,12 +166,17 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
         var intalg = select.options[select.selectedIndex].value;
 
         switch(intalg) {
-            case '0':
-              this.heights = fillAllDataHoles(t);
+	    case '0':
+	      this.heights = fillWeightedAverage(t); // modules/DataController.js
+	      this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
+	      this.finish();
+	    break;
+            case '1':
+              this.heights = fillAllDataHoles(t); // modules/DataController.js
 	      this.minMaxH = getHeightsMatrixMinMaxH(this.heights); // modules/DataController.js
 	      this.finish();
               break;
-            case '1':
+            case '2':
 	      const that = this;
               const worker = new Worker('js/thread.js'); // js/thread.js
               worker.addEventListener('message', function(e) {

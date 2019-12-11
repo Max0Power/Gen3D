@@ -292,9 +292,6 @@ function getHeightsMatrixMinMaxH(heights) {
  * Ottaa palautettavaan taulukkoon naiden paikkauksien keskiarvon
  */
 function fillAllDataHoles(heights) {
-	/*
-	Pistetty kommentteihin testaamista varten
-	Tama on siis alkuperainen fillAllDataHoles!
 	
 	// paikataan ensiksi vaakarivien suunnassa
 	var fixed1 =  fillLinearHorizontal(heights);
@@ -310,10 +307,6 @@ function fillAllDataHoles(heights) {
 	}
 	
 	return heights; // palautetaan lopuksi paikattu matriisi
-	*/
-	
-	// Testaamista varten kutsutaan painotettua keskiarvoa hyodyntavaa paikkausta
-	return fillWeightedAverage(heights);
 }
 
 

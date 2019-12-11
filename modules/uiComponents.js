@@ -31,7 +31,7 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
     
     var inputBox =  document.createElement("INPUT"); // syotelaatikko
     inputBox.setAttribute("type", "number");
-    inputBox.className = "userInputBox form-control";
+    inputBox.className = "userInputBox form-control btn-default";
     inputBox.id = id; // asetetaan id
     inputBox.value = value; // oletus arvo
     inputBox.min = min;
@@ -333,13 +333,14 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	intSpan.appendChild(sel);
 	container.appendChild(intSpan);
         
-        var options = ["Linear","Very slow"];
+        var options = ["Weighted average","Linear","Very slow"];
         for (var i = 0; i < options.length; i++) {
 	    var opt = document.createElement("OPTION");
 	    opt.appendChild(document.createTextNode(options[i]));
 	    opt.value = i;
 	    sel.appendChild(opt);
         }
+	sel.selectedIndex = "0";
     }
 
     // ------------------------------ TextureSelection

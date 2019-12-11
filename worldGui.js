@@ -272,7 +272,7 @@ class Input extends React.Component {
             <React.Fragment>	
 	      <span class="form-group">
               <label for={this.props.id}>{this.props.sign}</label>
-              <input class="form-control"
+              <input class="form-control btn-default"
 	        onInput={this.handleValid}
 	        onChange={this.handleChange}
 	        id={this.props.id}
