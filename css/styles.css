@@ -141,8 +141,12 @@ label, h3:nth-child(1), #Noise\ controller > div > div > h3:nth-child(6) {
     align-self: flex-end;
 }
 
-/* Map */
+input:invalid {
+    background-color: pink;
+}
 
+/* Map */
+OB
 .mapbox-logo {
     opacity: 0.5; /* ei paista silmään */
 }

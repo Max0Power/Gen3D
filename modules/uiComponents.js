@@ -37,7 +37,7 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
     inputBox.min = min;
     inputBox.max = max;
     //inputBox.step = step; // valittaa askelesta
-    inputBox.step = step;
+    inputBox.step = 'any';
     inputBox.required = true;
 
     inputBox.oninput = function(e) {

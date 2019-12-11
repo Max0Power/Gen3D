@@ -346,7 +346,7 @@ var addMenuItem = function( title, component ) {
     var element = document.createElement("BUTTON");
     element.textContent = title;
     element.className = "draggableToggleBtnActive";
-    
+
     var show_hide = true;
     element.onclick = function(event) {
 	show_hide = !show_hide;
@@ -376,23 +376,9 @@ $(document).ready(function() {
 });
 
 myLayout.on('componentCreated',function(component) {
-	component.container.on('resize',function() {
-		window._leaflet.handleFix();
-	});
+    component.container.on('resize',function() {
+	window._leaflet.handleFix();
+    });
 });
-
-myLayout.on('stackCreated', function(stack) {
-            stack.header.controlsContainer.prepend('<li class="lm_collapse_mine" title="collapse pane"><i class="fa fa-arrow-left">&nbsp;</i></li>');
-            stack.on('activeContentItemChanged', function(contentItem) {
-                if (contentItem.componentName === "test") {
-                    contentItem.parent.header.controlsContainer.find('.lm_popout').hide();
-                    contentItem.parent.header.controlsContainer.find('.lm_maximise').hide();
-                }
-
-                $(".lm_collapse_mine").on("click", function(event) {
-                    componentItem.container.setSize(10, componentItem.container.height);
-                })
-            });
-        });
 
 myLayout.init();
