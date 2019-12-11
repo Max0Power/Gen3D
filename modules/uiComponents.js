@@ -17,7 +17,7 @@
   * isOnlyInteger -> bool arvo, joka maarittelee kayttaako laatikko pelkastaan Integer arvoja
   * Palauttaa komponentin, jossa on syottolaatikko ja painikkeet arvojen muunteluun
   */
-
+function numberBox(id, value, step, min, max, isOnlyInteger) {
     // jos sallii vain integerit, muutetaan annetut arvot integereiksi
     if (isOnlyInteger) {
 	value = parseInt(value, 10);
