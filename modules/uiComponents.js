@@ -212,21 +212,35 @@ function draggableUiComponent(headerTxt, position, contentElm) {
 function createTextureController(top, left, callback) {
     var container = document.createElement("DIV");
     
+    // ------------------------------ Canvas
+    
+    var canvasSpan = document.createElement("DIV");
+    canvasSpan.className = "form-group";
+    
+    var canvas = document.createElement("CANVAS");
+    canvas.id = "canv";
+    canvasSpan.appendChild(canvas);
+    container.appendChild(canvasSpan);
+
     // ------------------------------ TextureSelection
     
+    var all = document.createElement("DIV");
+    all.className = "flexable";
+
     var textureSpan = document.createElement("SPAN");
-    textureSpan.className = "form-group";
+    textureSpan.className = "flexable form-group";
     
-    let label = container.appendChild(document.createElement("label"));
+    //let label = container.appendChild(document.createElement("label"));
+    let label = textureSpan.appendChild(document.createElement("label"));
     label.appendChild(document.createTextNode("Texture: "));
     label.setAttribute("for", "selectTextureImg");
-    textureSpan.appendChild(label);
     
     var selectElm = document.createElement("SELECT");
     selectElm.className = "form-control btn-default";
     selectElm.id = "selectTextureImg";
     textureSpan.appendChild(selectElm);
-    container.appendChild(textureSpan);
+    //container.appendChild(textureSpan);
+    all.appendChild(textureSpan);
     
     // vaihtoehtoiset tekstuurit, jotka voidaan piirtaa
     var names = textures.getTextureNamesForImg(); // antaa option mukaiset tekstuurit, esim pelkastaan valille 0-1 skaalautuvat | selectOption = 0
@@ -236,16 +250,6 @@ function createTextureController(top, left, callback) {
 	opt.value = names[i];
 	selectElm.appendChild(opt); // lisataan luotu valintas
     }
-    
-    // ------------------------------ Canvas
-    
-    var canvasSpan = document.createElement("DIV");
-    canvasSpan.className = "flexable form-group";
-    
-    var canvas = document.createElement("CANVAS");
-    canvas.id = "canv";
-    canvasSpan.appendChild(canvas);
-    container.appendChild(canvasSpan);
     
     // ------------------------------ Update Image
     
@@ -259,7 +263,9 @@ function createTextureController(top, left, callback) {
 	callback(); // funktio, jolla piirretaan grayscale
     };
     btn_container.appendChild(btn_drawModel);
-    container. appendChild(btn_container);
+    all.appendChild(btn_container);
+    //container.appendChild(btn_container);
+    container.appendChild(all);
 
     return draggableUiComponent("Texture viewer", [top, left], container);
 }
@@ -270,12 +276,12 @@ function createTextureController(top, left, callback) {
  */
 function createInput3dController(top, left, callback, isMax=false, interpolate=false) {
     var container = document.createElement("DIV");
-    container.className = "flexable"
+    container.className = "flexable";
     
     // Quad Size ------------------------------
 
     var quadSizeSpan = document.createElement("SPAN");
-    quadSizeSpan.className = "form-group"
+    quadSizeSpan.className = "form-group";
 
     var quadSizeTxt = document.createElement("LABEL"); // quadSize
     quadSizeTxt.textContent = "Quad size:";
@@ -289,7 +295,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     // Model max height ------------------------------
     
     var modelHSpan = document.createElement("SPAN");
-    modelHSpan.className = "form-group"
+    modelHSpan.className = "form-group";
     
     var modelHTxt = document.createElement("LABEL"); // mallin maksimi korkeus
     modelHTxt.setAttribute("for", "input_modelMaxHeight");

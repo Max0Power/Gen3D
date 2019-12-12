@@ -101,13 +101,17 @@ class UserInput extends React.Component {
     render() {
         return (
             <React.Fragment>
-			<div id={this.props.draggableId}>
+		<div id={this.props.draggableId} class="draggableContainer">
+		<span class="form-group">
                 <label>Supported fileformats: </label>
                 <br />
-                <p>png, jpg, gif, hgt.zip</p>
-                <input type='file' onChange={this.handleUpload} />
+                <p class="deftext">png, jpg, gif, hgt.zip</p>
+                <input type='file' onChange={this.handleUpload} class="btn-default"/>
+		</span>
+		<span class="flexable form-group">
                 <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
-			</div>
+		</span>
+		</div>
             </React.Fragment>
         );
     }

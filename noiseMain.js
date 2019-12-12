@@ -31,85 +31,164 @@ window.onload = function() {
  * inputit
  */
 function createNoiseController() {
-	var container = document.createElement("DIV"); // container, johon komoponentit
-	
-	var h_1 = document.createElement("H3"); // otsikko Leveydelle ja korkeudelle
-	h_1.textContent = "Img size / 3d model vertices:";
-	container.appendChild(h_1);
-	
-	var widthTxt = document.createElement("LABEL"); // Leveys
-	widthTxt.textContent = "Width:";
-	container.appendChild(widthTxt);
-	var widthInp = numberBox("input_imgWidth", 128, 1, 2, 1024, true);
-	container.appendChild(widthInp);
-	
-	var heightTxt = document.createElement("LABEL"); // Korkeus
-	heightTxt.textContent = "Height:";
-	container.appendChild(heightTxt);
-	var heightInp = numberBox("input_imgHeight", 128, 1, 2, 1024, true);
-	container.appendChild(heightInp);
-	
-	var h_2 = document.createElement("H3"); // Otsikko noisen parametreille:
-	h_2.textContent = "Noise parameters:";
-	container.appendChild(h_2);
-	
-	var scaleTxt = document.createElement("LABEL"); // scale
-	scaleTxt.textContent = "Scale:";
-	container.appendChild(scaleTxt);
-	var scaleInp = numberBox("input_noiseScale", 100, 0.1, 0.00000001, 10000000, false);
-	container.appendChild(scaleInp);
-	
-	var seedTxt = document.createElement("LABEL"); // seed
-	seedTxt.textContent = "Seed:";
-	container.appendChild(seedTxt);	
-	var seedInp = numberBox("input_noiseSeed", 0, 1, 0, 9999999, true);
-	container.appendChild(seedInp);
-	
-	var octavesTxt = document.createElement("LABEL"); // oktaavit
-	octavesTxt.textContent = "Octaves:";
-	container.appendChild(octavesTxt);
-	var octavesInp = numberBox("input_noiseOctaves", 4, 1, 1, 32, true);
-	container.appendChild(octavesInp);
-	
-	var persistanceTxt = document.createElement("LABEL"); // persistance
-	persistanceTxt.textContent = "Persistence:";
-	container.appendChild(persistanceTxt);
-	var persistanceInp = numberBox("input_noisePersistance", 0.5, 0.1, 0, 9999, false);
-	container.appendChild(persistanceInp);
-	
-	var lacunarityTxt = document.createElement("LABEL"); // lacunarity
-	lacunarityTxt.textContent = "Lacunarity:";
-	container.appendChild(lacunarityTxt);
-	var lacunarityInp = numberBox("input_noiseLacunarity", 2.0, 0.1, 0, 9999, false);
-	container.appendChild(lacunarityInp);
-	
-	var offsetXTxt = document.createElement("LABEL"); // offset X
-	offsetXTxt.textContent = "Offset X:";
-	container.appendChild(offsetXTxt);
-	var offsetXInp = numberBox("input_noiseOffsetX", 0, 0.1, -10000000, 10000000, false);
-	container.appendChild(offsetXInp);
-	
-	var offsetYTxt = document.createElement("LABEL"); // offsetY
-	offsetYTxt.textContent = "Offset Y:";
-	container.appendChild(offsetYTxt);
-	var offsetYInp = numberBox("input_noiseOffsetY", 0, 0.1, -10000000, 10000000, false);
-	container.appendChild(offsetYInp);
-	
-	var randomSeedBtn = document.createElement("BUTTON");
-	randomSeedBtn.textContent = "Random seed";
-	randomSeedBtn.onclick = function(event) {
-		rnd_seed();
-	}
-	container.appendChild(randomSeedBtn);
-	
-	var randomOffsetsBtn = document.createElement("BUTTON");
-	randomOffsetsBtn.textContent = "Random offsets";
-	randomOffsetsBtn.onclick = function(event) {
-		rnd_offsets();
-	}
-	container.appendChild(randomOffsetsBtn);
+    var container = document.createElement("DIV"); // container, johon komoponentit	
+    var h_1 = document.createElement("H3"); // otsikko Leveydelle ja korkeudelle
+    h_1.className = "deftext";
+    h_1.textContent = "Img size / 3d model vertices:";
+    container.appendChild(h_1);
+    
+    var div1 = document.createElement("DIV");
+    div1.className = "flexable";
+    container.appendChild(div1);
 
-	return container;
+    var span1 = document.createElement("SPAN");
+    span1.className = "form-group";
+    div1.appendChild(span1);
+
+    var widthTxt = document.createElement("LABEL"); // Leveys
+    widthTxt.textContent = "Width:";
+    //container.appendChild(widthTxt);
+    span1.appendChild(widthTxt);
+    var widthInp = numberBox("input_imgWidth", 128, 1, 2, 1024, true);
+    //container.appendChild(widthInp);
+    span1.appendChild(widthInp);
+    
+    var span2 = document.createElement("SPAN");
+    span2.className ="form-group";
+    div1.appendChild(span2);
+    
+    var heightTxt = document.createElement("LABEL"); // Korkeus
+    heightTxt.textContent = "Height:";
+    //container.appendChild(heightTxt);
+    span2.appendChild(heightTxt);
+    var heightInp = numberBox("input_imgHeight", 128, 1, 2, 1024, true);
+    //container.appendChild(heightInp);
+    span2.appendChild(heightInp);
+    
+    var h_2 = document.createElement("H3"); // Otsikko noisen parametreille:
+    h_2.className = "deftext";
+    h_2.textContent = "Noise parameters:";
+    container.appendChild(h_2);
+    
+    var div2 = document.createElement("DIV");
+    div2.className = "flexable";
+    container.appendChild(div2);
+
+    var span3 = document.createElement("SPAN");
+    span3.className = "form-group";
+    div2.appendChild(span3);
+    
+    var scaleTxt = document.createElement("LABEL"); // scale
+    scaleTxt.textContent = "Scale:";
+    //container.appendChild(scaleTxt);
+    span3.appendChild(scaleTxt);
+    var scaleInp = numberBox("input_noiseScale", 100, 0.1, 0.00000001, 10000000, false);
+    //container.appendChild(scaleInp);
+    span3.appendChild(scaleInp);
+    
+    var span4 = document.createElement("SPAN");
+    span4.className = "form-group";
+    div2.appendChild(span4);
+
+    var seedTxt = document.createElement("LABEL"); // seed
+    seedTxt.textContent = "Seed:";
+    //container.appendChild(seedTxt);	
+    span4.appendChild(seedTxt);	
+    var seedInp = numberBox("input_noiseSeed", 0, 1, 0, 9999999, true);
+    //container.appendChild(seedInp);
+    span4.appendChild(seedInp);
+    
+    var span5 = document.createElement("SPAN");
+    span5.className = "form-group";
+    div2.appendChild(span5);
+
+    var octavesTxt = document.createElement("LABEL"); // oktaavit
+    octavesTxt.textContent = "Octaves:";
+    //container.appendChild(octavesTxt);
+    span5.appendChild(octavesTxt);
+    var octavesInp = numberBox("input_noiseOctaves", 4, 1, 1, 32, true);
+    //container.appendChild(octavesInp);
+    span5.appendChild(octavesInp);
+    
+    var span6 = document.createElement("SPAN");
+    span6.className = "form-group";
+    div2.appendChild(span6);
+    
+    var persistanceTxt = document.createElement("LABEL"); // persistance
+    persistanceTxt.textContent = "Persistence:";
+    //container.appendChild(persistanceTxt);
+    span6.appendChild(persistanceTxt);
+    var persistanceInp = numberBox("input_noisePersistance", 0.5, 0.1, 0, 9999, false);
+    //container.appendChild(persistanceInp);
+    span6.appendChild(persistanceInp);
+
+    var span7 = document.createElement("SPAN");
+    span7.className = "form-group";
+    div2.appendChild(span7);
+    
+    var lacunarityTxt = document.createElement("LABEL"); // lacunarity
+    lacunarityTxt.textContent = "Lacunarity:";
+    //container.appendChild(lacunarityTxt);
+    span7.appendChild(lacunarityTxt);
+    var lacunarityInp = numberBox("input_noiseLacunarity", 2.0, 0.1, 0, 9999, false);
+    //container.appendChild(lacunarityInp);
+    span7.appendChild(lacunarityInp);
+    
+    var span8 = document.createElement("SPAN");
+    span8.className = "form-group";
+    div2.appendChild(span8);
+    
+    var offsetXTxt = document.createElement("LABEL"); // offset X
+    offsetXTxt.textContent = "Offset X:";
+    //container.appendChild(offsetXTxt);
+    span8.appendChild(offsetXTxt);
+    var offsetXInp = numberBox("input_noiseOffsetX", 0, 0.1, -10000000, 10000000, false);
+    //container.appendChild(offsetXInp);
+    span8.appendChild(offsetXInp);
+    
+    var span9 = document.createElement("SPAN");
+    span9.className = "form-group";
+    div2.appendChild(span9);
+    
+    var offsetYTxt = document.createElement("LABEL"); // offsetY
+    offsetYTxt.textContent = "Offset Y:";
+    //container.appendChild(offsetYTxt);
+    span9.appendChild(offsetYTxt);
+    var offsetYInp = numberBox("input_noiseOffsetY", 0, 0.1, -10000000, 10000000, false);
+    //container.appendChild(offsetYInp);
+    span9.appendChild(offsetYInp);
+
+    var div3 = document.createElement("DIV");
+    div3.className = "flexable";
+    container.appendChild(div3);
+    
+    var span10 = document.createElement("SPAN");
+    span10.className = "form-group";
+    div3.appendChild(span10);
+
+    var randomSeedBtn = document.createElement("BUTTON");
+    randomSeedBtn.className = "form-control btn btn-default";
+    randomSeedBtn.textContent = "Random seed";
+    randomSeedBtn.onclick = function(event) {
+	rnd_seed();
+    }
+    //container.appendChild(randomSeedBtn);
+    span10.appendChild(randomSeedBtn);
+    
+    var span11 = document.createElement("SPAN");
+    span11.className = "form-group";
+    div3.appendChild(span11);
+
+    var randomOffsetsBtn = document.createElement("BUTTON");
+    randomOffsetsBtn.className = "form-control btn btn-default";
+    randomOffsetsBtn.textContent = "Random offsets";
+    randomOffsetsBtn.onclick = function(event) {
+	rnd_offsets();
+    }
+    //container.appendChild(randomOffsetsBtn);
+    span11.appendChild(randomOffsetsBtn);
+    
+    return container;
 }
 
 

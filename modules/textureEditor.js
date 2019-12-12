@@ -36,81 +36,158 @@ function createTextureEditor(posLeft, posTop) {
     // ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI
     
     var container = document.createElement("DIV");
+    container.className = "flexable";
     
-    var label1 = container.appendChild(document.createElement("label"));
+    var span1 = document.createElement("SPAN");
+    span1.className = "form-group";
+
+    //var label1 = container.appendChild(document.createElement("label"));
+    var label1 = span1.appendChild(document.createElement("label"));
     label1.appendChild(document.createTextNode("Texture:"));
-    
-    var selectDivTexture = document.createElement("DIV");
-    container.appendChild(selectDivTexture);
+
+    //var selectDivTexture = document.createElement("DIV");
+    //container.appendChild(selectDivTexture);
     var selectElmTexture = document.createElement("SELECT");
-    selectDivTexture.appendChild(selectElmTexture);
+    selectElmTexture.className = "form-control btn-default";
+    //selectDivTexture.appendChild(selectElmTexture);
+    span1.appendChild(selectElmTexture);
+    container.appendChild(span1);
+
+    var span11 = document.createElement("SPAN");
+    span11.className = "form-group";
+
     var addTextureBtn = document.createElement("BUTTON");
+    addTextureBtn.className = "form-control btn-default";
     addTextureBtn.appendChild(document.createTextNode("New texture"));
-    selectDivTexture.appendChild(addTextureBtn);
+    //selectDivTexture.appendChild(addTextureBtn);
+    span11.appendChild(addTextureBtn);
+    container.appendChild(span11);
     
     // ------------------------------ Range to world scale
+    
+    var span2 = document.createElement("SPAN");
+    span2.className = "form-group flexable";
+    
+    //var isScaledToWorldDiv = document.createElement("DIV");
+    //isScaledToWorldDiv.className = "form-check";
+    //container.appendChild(isScaledToWorldDiv);
+    var isScaledToWorldLabel = document.createElement("LABEL");
+    isScaledToWorldLabel.id = "crange";
+    //isScaledToWorldLabel.setAttribute("for", "worldScale");
+    isScaledToWorldLabel.appendChild(document.createTextNode("Range to world scale: "));
+    //isScaledToWorldDiv.appendChild(isScaledToWorldLabel);
+    span2.appendChild(isScaledToWorldLabel);
+    var isScaledToWorldInput = document.createElement("INPUT");
+    isScaledToWorldInput.className = "form-control";
+    isScaledToWorldInput.setAttribute("type", "checkbox");
+    //isScaledToWorldDiv.appendChild(isScaledToWorldInput);
+    span2.appendChild(isScaledToWorldInput);
+    container.appendChild(span2);
+    
+    // ------------------------------ Slider
+    
+    var canvasDiv = document.createElement("DIV");
+    canvasDiv.id = "cslider";
+    canvasDiv.style.marginTop = "10px";
+    canvasDiv.style.marginBottom = "10px";
+    container.appendChild(canvasDiv);
+    var canvas = document.createElement("CANVAS");
+    canvas.className = "cslider";
+    var ctx = canvas.getContext("2d");
+    canvas.width= 255;
+    canvas.height = 20;
+    canvasDiv.appendChild(canvas);
+    
+    var sliderArea = [knobWidth/2, canvas.width - (knobWidth/2)];
+    
+    // ------------------------------ AddColorPane
 
-	var isScaledToWorldDiv = document.createElement("DIV");
-	container.appendChild(isScaledToWorldDiv);
-	var isScaledToWorldLabel = document.createElement("LABEL");
-	isScaledToWorldLabel.appendChild(document.createTextNode("Range to world scale: "));
-	isScaledToWorldDiv.appendChild(isScaledToWorldLabel);
-	var isScaledToWorldInput = document.createElement("INPUT");
-	isScaledToWorldInput.setAttribute("type", "checkbox");
-	isScaledToWorldDiv.appendChild(isScaledToWorldInput);
+    var inputDiv = document.createElement("SPAN");
+    inputDiv.className = "form-group";
+    
+    //var selectDivColor = document.createElement("DIV");
+    //selectDivColor.className = "form-group";
+    //inputDiv.appendChild(selectDivColor);
+    var selectElmColor = document.createElement("SELECT");
+    selectElmColor.className = "form-control btn-default";
+    //selectDivColor.appendChild(selectElmColor);
+    inputDiv.appendChild(selectElmColor);
+    container.appendChild(inputDiv);
+
+    var inputDiv2 = document.createElement("SPAN");
+    inputDiv2.className = "form-group";
+
+    var addColorBtn = document.createElement("BUTTON");
+    addColorBtn.className = "form-control btn-default";
+    addColorBtn.appendChild(document.createTextNode("Add"));
+    //selectDivColor.appendChild(addColorBtn);
+    inputDiv2.appendChild(addColorBtn);
+    container.appendChild(inputDiv2);
+
+    var inputDiv3 = document.createElement("SPAN");
+    inputDiv3.className = "form-group";
+
+    var removeColorBtn = document.createElement("BUTTON");
+    removeColorBtn.className = "form-control btn btn-default";
+    removeColorBtn.appendChild(document.createTextNode("Remove"));
+    //selectDivColor.appendChild(removeColorBtn);
+    inputDiv3.appendChild(removeColorBtn);
+    container.appendChild(inputDiv3);
+    
+    var inputDiv4 = document.createElement("SPAN");
+    inputDiv4.className = "form-group";
+
+    var inputboxRange = document.createElement("INPUT");
+    inputboxRange.className = "form-control btn-default";
+    inputboxRange.value = 0;
+    //inputDiv.appendChild(inputboxRange);
+    inputDiv4.appendChild(inputboxRange);
+    container.appendChild(inputDiv4);
+    
+    // ------------------------------ Color RGB
+    
+    var span3 = document.createElement("SPAN");
+    span3.className = "form-group";
+
+    //var label2 = container.appendChild(document.createElement("label"));
+    var label2 = span3.appendChild(document.createElement("label"));
+    label2.appendChild(document.createTextNode("Color RGB: "));
+    
+    //var inputDiv2 = document.createElement("DIV");
+    //container.appendChild(inputDiv2);
+    var inputboxColorR = document.createElement("INPUT");
+    inputboxColorR.className = "rgbInputBox form-control btn-default"
+    //inputDiv2.appendChild(inputboxColorR);
+    span3.appendChild(inputboxColorR);
+    container.appendChild(span3);
+
+    var span4 = document.createElement("SPAN");
+    span4.className = "form-group";
+    
+    //var labelComma1 = inputDiv2.appendChild(document.createElement("label"));
+    //var labelComma1 = span3.appendChild(document.createElement("label"));
+    //labelComma1.appendChild(document.createTextNode(","));
+    var inputboxColorG = document.createElement("INPUT");
+    inputboxColorG.className = "rgbInputBox form-control btn-default";
+    //inputDiv2.appendChild(inputboxColorG);
+    span4.appendChild(inputboxColorG);
+    container.appendChild(span4);
+
+    var span5 = document.createElement("SPAN");
+    span5.className = "form-group";
+
+    //var labelComma2 = inputDiv2.appendChild(document.createElement("label"));
+    //var labelComma2 = span3.appendChild(document.createElement("label"));
+    //labelComma2.appendChild(document.createTextNode(","));
+    var inputboxColorB = document.createElement("INPUT");
+    inputboxColorB.className = "rgbInputBox form-control btn-default";
+    //inputDiv2.appendChild(inputboxColorB);
+    span5.appendChild(inputboxColorB);
+    container.appendChild(span5);
+    
+    container.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
 	
-	var canvasDiv = document.createElement("DIV");
-	canvasDiv.style.marginTop = "10px";
-	canvasDiv.style.marginBottom = "10px";
-	container.appendChild(canvasDiv);	
-	var canvas = document.createElement("CANVAS");
-	var ctx = canvas.getContext("2d");
-	canvas.width= 255;
-	canvas.height = 20;
-	canvasDiv.appendChild(canvas);
-	
-	var sliderArea = [knobWidth/2, canvas.width - (knobWidth/2)];
-	
-	var inputDiv = document.createElement("DIV");
-	container.appendChild(inputDiv);
-	
-	var selectDivColor = document.createElement("DIV");
-	inputDiv.appendChild(selectDivColor);
-	var selectElmColor = document.createElement("SELECT");
-	selectDivColor.appendChild(selectElmColor);
-	var addColorBtn = document.createElement("BUTTON");
-	addColorBtn.appendChild(document.createTextNode("Add"));
-	selectDivColor.appendChild(addColorBtn);
-	var removeColorBtn = document.createElement("BUTTON");
-	removeColorBtn.appendChild(document.createTextNode("Remove"));
-	selectDivColor.appendChild(removeColorBtn);
-	
-	var inputboxRange = document.createElement("INPUT");
-	inputboxRange.value = 0;
-	inputDiv.appendChild(inputboxRange);
-	
-	var label2 = container.appendChild(document.createElement("label"));
-	label2.appendChild(document.createTextNode("Color RGB: "));
-	
-	var inputDiv2 = document.createElement("DIV");
-	container.appendChild(inputDiv2);
-	var inputboxColorR = document.createElement("INPUT");
-	inputboxColorR.className = "rgbInputBox"
-	inputDiv2.appendChild(inputboxColorR);
-	var labelComma1 = inputDiv2.appendChild(document.createElement("label"));
-	labelComma1.appendChild(document.createTextNode(","));
-	var inputboxColorG = document.createElement("INPUT");
-	inputboxColorG.className = "rgbInputBox"
-	inputDiv2.appendChild(inputboxColorG);
-	var labelComma2 = inputDiv2.appendChild(document.createElement("label"));
-	labelComma2.appendChild(document.createTextNode(","));
-	var inputboxColorB = document.createElement("INPUT");
-	inputboxColorB.className = "rgbInputBox"
-	inputDiv2.appendChild(inputboxColorB);
-	
-	container.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
-	
-	// ONCLICK JA ONCHANGE TAPAHTUMAT || ONCLICK JA ONCHANGE TAPAHTUMAT || ONCLICK JA ONCHANGE TAPAHTUMAT
+    // ONCLICK JA ONCHANGE TAPAHTUMAT || ONCLICK JA ONCHANGE TAPAHTUMAT || ONCLICK JA ONCHANGE TAPAHTUMAT
 	
 	selectElmTexture.onchange = function(event) { // tekstuurin vaihto
 		gradientColor.sort();
