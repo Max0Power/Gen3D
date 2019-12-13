@@ -35,8 +35,11 @@ function createTextureEditor(posLeft, posTop) {
     
     // ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI || ELEMENTTIEN LUONTI
     
+    var all = document.createElement("DIV");
+
     var container = document.createElement("DIV");
     container.className = "flexable";
+    all.appendChild(container);
     
     var span1 = document.createElement("SPAN");
     span1.className = "form-group";
@@ -86,11 +89,16 @@ function createTextureEditor(posLeft, posTop) {
     
     // ------------------------------ Slider
     
+    var canvasSpan = document.createElement("SPAN");
+    canvasSpan.className = "form-group";
+
     var canvasDiv = document.createElement("DIV");
     canvasDiv.id = "cslider";
-    canvasDiv.style.marginTop = "10px";
-    canvasDiv.style.marginBottom = "10px";
-    container.appendChild(canvasDiv);
+    //canvasDiv.style.marginTop = "10px";
+    //canvasDiv.style.marginBottom = "10px";
+    //container.appendChild(canvasDiv);
+    canvasSpan.appendChild(canvasDiv);
+    container.appendChild(canvasSpan);
     var canvas = document.createElement("CANVAS");
     canvas.className = "cslider";
     var ctx = canvas.getContext("2d");
@@ -138,6 +146,15 @@ function createTextureEditor(posLeft, posTop) {
     inputDiv4.className = "form-group";
 
     var inputboxRange = document.createElement("INPUT");
+    inputboxRange.id = "inputrange";
+    inputboxRange.type = "number";
+    inputboxRange.step = "any";
+    inputboxRange.min = 0;
+    inputboxRange.max = 1;
+    inputboxRange.required = true;
+    inputboxRange.oninput = function(e) {
+        e.target.reportValidity();
+    }
     inputboxRange.className = "form-control btn-default";
     inputboxRange.value = 0;
     //inputDiv.appendChild(inputboxRange);
@@ -156,6 +173,14 @@ function createTextureEditor(posLeft, posTop) {
     //var inputDiv2 = document.createElement("DIV");
     //container.appendChild(inputDiv2);
     var inputboxColorR = document.createElement("INPUT");
+    inputboxColorR.type = "number";
+    inputboxColorR.step = 1;
+    inputboxColorR.min = 0;
+    inputboxColorR.max = 255;
+    inputboxColorR.required = true;
+    inputboxColorR.oninput = function(e) {
+        e.target.reportValidity();
+    }
     inputboxColorR.className = "rgbInputBox form-control btn-default"
     //inputDiv2.appendChild(inputboxColorR);
     span3.appendChild(inputboxColorR);
@@ -168,6 +193,14 @@ function createTextureEditor(posLeft, posTop) {
     //var labelComma1 = span3.appendChild(document.createElement("label"));
     //labelComma1.appendChild(document.createTextNode(","));
     var inputboxColorG = document.createElement("INPUT");
+    inputboxColorG.type = "number";
+    inputboxColorG.step = 1;
+    inputboxColorG.min = 0;
+    inputboxColorG.max = 255;
+    inputboxColorG.required = true;
+    inputboxColorG.oninput = function(e) {
+        e.target.reportValidity();
+    }
     inputboxColorG.className = "rgbInputBox form-control btn-default";
     //inputDiv2.appendChild(inputboxColorG);
     span4.appendChild(inputboxColorG);
@@ -180,12 +213,24 @@ function createTextureEditor(posLeft, posTop) {
     //var labelComma2 = span3.appendChild(document.createElement("label"));
     //labelComma2.appendChild(document.createTextNode(","));
     var inputboxColorB = document.createElement("INPUT");
+    inputboxColorB.type = "number";
+    inputboxColorB.step = 1;
+    inputboxColorB.min = 0;
+    inputboxColorB.max = 255;
+    inputboxColorB.required = true;
+    inputboxColorB.oninput = function(e) {
+        e.target.reportValidity();
+    }
     inputboxColorB.className = "rgbInputBox form-control btn-default";
     //inputDiv2.appendChild(inputboxColorB);
     span5.appendChild(inputboxColorB);
     container.appendChild(span5);
     
-    container.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
+    var cspan = document.createElement("SPAN");
+    cspan.className = "form-group";
+    //container.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
+    cspan.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
+    all.appendChild(cspan);
 	
     // ONCLICK JA ONCHANGE TAPAHTUMAT || ONCLICK JA ONCHANGE TAPAHTUMAT || ONCLICK JA ONCHANGE TAPAHTUMAT
 	
@@ -388,7 +433,7 @@ function createTextureEditor(posLeft, posTop) {
 	setIsScaledToWorld();
 	updateColorSlider();
 	
-	return draggableUiComponent("Texture editor", [posLeft, posTop], container);
+	return draggableUiComponent("Texture editor", [posLeft, posTop], all);
 	
 	// FUNKTIOT || FUNKTIOT || FUNKTIOT || FUNKTIOT || FUNKTIOT
 	// funktiot, joilla kontrolloidaan elementteja

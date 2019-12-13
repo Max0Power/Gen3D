@@ -65,6 +65,18 @@ label, h3:nth-child(1), .deftext {
     color: #D8D8D8; /* komponenttien tekstit */
 }
 
+#inputrange::-webkit-outer-spin-button,
+#inputrange::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+#inputrange {
+  -moz-appearance:textfield;
+}
+
+
 /* Draggable components */
 
 .draggable {
