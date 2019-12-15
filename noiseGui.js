@@ -3,8 +3,6 @@
 var noiseControllerComponent = {
     type: 'component',
     id: 'Noise controller',
-    width: 28,
-    height: 100,
     isClosable: true,
     componentName: 'Noise controller',
     componentState: {  },
@@ -33,8 +31,6 @@ var textureEditorComponent = {
     type: 'component',
     isClosable: true,
     id: 'Texture editor',
-    width: 15,
-    height: 100,
     componentName: 'Texture editor',
     componentState: {  },
     props: { draggableId: 'Texture editor' }
@@ -43,8 +39,6 @@ var textureEditorComponent = {
 var modelComponent = {
     type: 'component',
     id: '3D-model',
-    width: 42,
-    height: 100,
     isClosable: true,
     componentName: '3D-model',
     componentState: { label: '3D-model' },
@@ -64,24 +58,41 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content:[
-	    noiseControllerComponent
+        content:[{
+	    type: 'column',
+	    width: 27,
+	    height: 100,
+	    content: [{
+		type: 'stack',
+		width: 100,
+		height: 70,
+		content: [
+		    noiseControllerComponent
+		]}
+	    ,{
+		type: 'stack',
+		width: 100,
+		height: 30,
+		content: [
+		    controller3dComponent
+		]}
+	    ]}
 	,{
-            type: 'column',
-            width: 15,
+	    type: 'stack',
+	    width: 56,
+	    height: 100,
+	    content: [
+		modelComponent,
+		textureViewerComponent
+	    ]}
+	,{
+            type: 'stack',
+            width: 17,
             height: 100,
             content:[
-		controller3dComponent,
-		textureViewerComponent
-	    ]
-        },
-	    textureEditorComponent
-	,{
-            type: 'column',
-            content:[
-		modelComponent
-	    ]
-        }]
+		textureEditorComponent
+	    ]}
+        ]
     }]
 };
 

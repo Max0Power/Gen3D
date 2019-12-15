@@ -4,8 +4,6 @@ var mapComponent = {
 	type: 'react-component',
 	isClosable: true,
 	title: 'Map',
-	width: 28,
-	height: 100,
 	component: 'Map',
 	props: {
 		draggableId: 'Map',
@@ -64,8 +62,6 @@ var textureEditorComponent = {
     type: 'component',
     isClosable: true,
     id: 'Texture editor',
-    width: 15,
-    height: 100,
     componentName: 'Texture editor',
     componentState: {  },
     props: { draggableId: 'Texture editor' }
@@ -74,8 +70,6 @@ var textureEditorComponent = {
 var modelComponent = {
     type: 'component',
     id: '3D-model',
-    width: 42,
-    height: 100,
     isClosable: true,
     componentName: '3D-model',
     componentState: { label: '3D-model' },
@@ -95,22 +89,28 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content:[
-	    mapComponent
-	    ,{
-            type: 'column',
-            width: 15,
-            height: 100,
-            content:[
-		controller3dComponent,
-		textureViewerComponent
-	    ]
-        },
-	    textureEditorComponent
+        content:[{
+	    type: 'stack',
+	    width: 27,
+	    height: 100,
+	    content: [
+		mapComponent,
+		controller3dComponent
+	    ]}
 	,{
-            type: 'column',
-            content:[
-		modelComponent
+	    type: 'stack',
+	    width: 56,
+	    height: 100,
+	    content: [
+		modelComponent,
+		textureViewerComponent
+	    ]}
+	,{
+            type: 'stack',
+            width: 17,
+            height: 100,
+            content: [
+		textureEditorComponent
 	    ]
         }]
     }]
@@ -181,7 +181,7 @@ class Leaflet extends React.Component {
     }
     
     handleFix() {
-		this.mymap.invalidateSize();
+	this.mymap.invalidateSize();
     }
     
     componentDidMount() {
@@ -252,6 +252,9 @@ class Leaflet extends React.Component {
                 <option value='satellite-v9'>Satellite</option>
                 <option value='satellite-streets-v11'>Satellite-Streets</option>
             </select>
+	    </span>
+	    <span class="form-group">
+	    <button onClick={this.handleFix} class="form-control btn btn-default">Fix</button>
 	    </span>
             </React.Fragment>
         );

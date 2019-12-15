@@ -4,8 +4,6 @@ var userInputComponent = {
 	type: 'react-component',
 	title: 'User input',
 	id: 'User input',
-	width: 28,
-	height: 100,
 	component: 'User input',
 	props: { draggableId: 'User input' }
 };
@@ -32,8 +30,6 @@ var textureEditorComponent = {
     type: 'component',
     isClosable: true,
     id: 'Texture editor',
-    width: 15,
-    height: 100,
     componentName: 'Texture editor',
     componentState: {  },
     props: { draggableId: 'Texture editor' }
@@ -42,8 +38,6 @@ var textureEditorComponent = {
 var modelComponent = {
     type: 'component',
     id: '3D-model',
-    width: 42,
-    height: 100,
     isClosable: true,
     componentName: '3D-model',
     componentState: { text: '3D-model' },
@@ -63,24 +57,30 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content:[
-	    userInputComponent
+        content: [{
+	    type: 'column',
+	    width: 27,
+	    height: 100,
+	    content: [
+		userInputComponent,
+		controller3dComponent
+	    ]}
 	,{
-            type: 'column',
-            width: 15,
+            type: 'stack',
+            width: 56,
             height: 100,
-            content:[
-		controller3dComponent,
-		textureViewerComponent
-	]},
-	    textureEditorComponent
+            content: [
+		modelComponent
+	    ]}
 	,{
-            type: 'column',
-            content:[
-	        modelComponent
-	    ]
-        }]
-    }]
+            type: 'stack',
+	    width: 17,
+	    height: 100,
+            content: [
+	        textureEditorComponent
+	    ]}
+        ]}
+    ]
 };
 
 class UserInput extends React.Component {
@@ -146,16 +146,21 @@ class UserInput extends React.Component {
 		if (data.length > maxSize) {
 		    that.heights = decreaseHeightsMatrix(data, maxSize, maxSize);
 		}
-				
-		if (intalg === '0') {
+		
+		switch (intalg) {
+		  case '0':
+		    that.heights = fillWeightedAverage(that.heights);
+                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		    
+		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    break;
+		  case '1':
 		    that.heights = fillAllDataHoles(that.heights);
                     that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
 		    
 		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
-		} else {	
-		    //that.heights = lineaari(that.heights);
-                    //that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		    
+		    break;
+		  case '2':
 		    const worker = new Worker('js/thread.js'); // js/thread.js
 		    worker.addEventListener('message', function(e) {
 			that.heights = e.data;
@@ -164,7 +169,16 @@ class UserInput extends React.Component {
 			worker.terminate();
 		    });
 		    worker.postMessage(that.heights);
-		 }                
+		    break;
+		  case '3':
+		    that.heights = kaanteinenEtaisyys(that.heights);
+                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
+		    
+		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    break;
+		  default:
+		    throw new Error("Virhe interpoloinnissa");
+		}
             });
         }
     }

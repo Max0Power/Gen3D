@@ -90,7 +90,7 @@ function createTextureEditor(posLeft, posTop) {
     // ------------------------------ Slider
     
     var canvasSpan = document.createElement("SPAN");
-    canvasSpan.className = "form-group";
+    canvasSpan.className = "form-group flexable";
 
     var canvasDiv = document.createElement("DIV");
     canvasDiv.id = "cslider";
@@ -100,7 +100,6 @@ function createTextureEditor(posLeft, posTop) {
     canvasSpan.appendChild(canvasDiv);
     container.appendChild(canvasSpan);
     var canvas = document.createElement("CANVAS");
-    canvas.className = "cslider";
     var ctx = canvas.getContext("2d");
     canvas.width= 255;
     canvas.height = 20;
@@ -226,8 +225,10 @@ function createTextureEditor(posLeft, posTop) {
     span5.appendChild(inputboxColorB);
     container.appendChild(span5);
     
+    // ------------------------------ Color Picker
+
     var cspan = document.createElement("SPAN");
-    cspan.className = "form-group";
+    cspan.className = "form-group flexable";
     //container.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
     cspan.appendChild(colorpicker_create("colpic", [255,255,20], colors[selectedKnobIndex], onColorChanged));
     all.appendChild(cspan);
