@@ -6,6 +6,7 @@
  * @version 14.10.2019, GoldenLayout
  * @version 19.10.2019, React
  * @version 20.10.2019, Mapbox
+ * @version 23.04.2020, jquery.i18n
  */
 -->
 
@@ -66,13 +67,14 @@
 		<script src="modules/File.js"></script>
 		
         <!-- js -->
-		<script src="js/mallit.js"></script>
+	<script src="js/mallit.js"></script>
         <script src="js/matriisi.js"></script>
         <script src="js/apufunktiot.js"></script>
         <script src="js/kaavat.js"></script>
         <script src="js/tiedosto.js"></script>
         <script src="js/mjonot.js"></script>
         <script src="js/interpolointi.js"></script>
+	<script src="js/lang.js"></script>
 	<!-- <script src="js/newton.js"></script> -->
         
         <!-- sh -->
@@ -90,13 +92,17 @@
       <nav class="navbar navbar-inverse">
         <div class="container-fluid">
           <div class="navbar-header">
-            <a class="navbar-brand" data-i18n="appname-title">3D-Gen</a>
+            <a class="navbar-brand" data-i18n="app-title">3D-Gen</a>
           </div>
           <ul class="nav navbar-nav">
-            <li class="active"><a href="world.html">World Map 3D</a></li>
-            <li><a href="noise.html">Noise generator</a></li>
-            <li><a href="userImg.html">Make 3D from picture</a></li>
-            <li><a href="about.html">About us</a></li>
+            <li class="active"><a href="world.html" data-i18n="app-nav-world">World Map 3D</a></li>
+            <li><a href="noise.html" data-i18n="app-nav-noise">Noise generator</a></li>
+            <li><a href="userImg.html" data-i18n="app-nav-userImg">Make 3D from picture</a></li>
+            <li><a href="about.html" data-i18n="app-nav-about">About us</a></li>
+	    <li><ul class="nav navbar-nav switch-locale">
+	      <li><a href="#" data-locale="en">English</a></li>
+	      <li><a href="#" data-locale="ja">日本語</a></li>
+	    </ul></li>
           </ul>
         </div>
         <div id="tools"></div>

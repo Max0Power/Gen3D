@@ -2,6 +2,7 @@
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
+ * @version 24.04.2020, jquery.i18n
  */
 
 "use strict";
@@ -47,6 +48,7 @@ function createTextureEditor(posLeft, posTop) {
     //var label1 = container.appendChild(document.createElement("label"));
     var label1 = span1.appendChild(document.createElement("label"));
     label1.appendChild(document.createTextNode("Texture:"));
+    label1.setAttribute("data-i18n", "Texture:");
 
     //var selectDivTexture = document.createElement("DIV");
     //container.appendChild(selectDivTexture);
@@ -62,6 +64,7 @@ function createTextureEditor(posLeft, posTop) {
     var addTextureBtn = document.createElement("BUTTON");
     addTextureBtn.className = "form-control btn-default";
     addTextureBtn.appendChild(document.createTextNode("New texture"));
+    addTextureBtn.setAttribute("data-i18n", "texture-btn-new-texture");
     //selectDivTexture.appendChild(addTextureBtn);
     span11.appendChild(addTextureBtn);
     container.appendChild(span11);
@@ -78,6 +81,7 @@ function createTextureEditor(posLeft, posTop) {
     isScaledToWorldLabel.id = "crange";
     //isScaledToWorldLabel.setAttribute("for", "worldScale");
     isScaledToWorldLabel.appendChild(document.createTextNode("Range to world scale: "));
+    isScaledToWorldLabel.setAttribute("data-i18n", "texture-checkbox-range-to-world");
     //isScaledToWorldDiv.appendChild(isScaledToWorldLabel);
     span2.appendChild(isScaledToWorldLabel);
     var isScaledToWorldInput = document.createElement("INPUT");
@@ -127,6 +131,7 @@ function createTextureEditor(posLeft, posTop) {
     var addColorBtn = document.createElement("BUTTON");
     addColorBtn.className = "form-control btn-default";
     addColorBtn.appendChild(document.createTextNode("Add"));
+    addColorBtn.setAttribute("data-i18n", "texture-btn-add");
     //selectDivColor.appendChild(addColorBtn);
     inputDiv2.appendChild(addColorBtn);
     container.appendChild(inputDiv2);
@@ -137,6 +142,7 @@ function createTextureEditor(posLeft, posTop) {
     var removeColorBtn = document.createElement("BUTTON");
     removeColorBtn.className = "form-control btn btn-default";
     removeColorBtn.appendChild(document.createTextNode("Remove"));
+    removeColorBtn.setAttribute("data-i18n", "texture-btn-remove");
     //selectDivColor.appendChild(removeColorBtn);
     inputDiv3.appendChild(removeColorBtn);
     container.appendChild(inputDiv3);
@@ -168,6 +174,7 @@ function createTextureEditor(posLeft, posTop) {
     //var label2 = container.appendChild(document.createElement("label"));
     var label2 = span3.appendChild(document.createElement("label"));
     label2.appendChild(document.createTextNode("Color RGB: "));
+    label2.setAttribute("data-i18n", "texture-lbl-color-rgb");
     
     //var inputDiv2 = document.createElement("DIV");
     //container.appendChild(inputDiv2);
@@ -480,6 +487,7 @@ function createTextureEditor(posLeft, posTop) {
 		for (var i = 0; i < textureNames.length; i++) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode(textureNames[i]));
+		        opt.setAttribute("data-i18n", textureNames[i]);
 			opt.value = i; //textureNames[i];
 			selectElmTexture.appendChild(opt); // lisataan luotu valintas
 		}
@@ -574,6 +582,8 @@ function createTextureEditor(posLeft, posTop) {
 		for (var i = 0; i < namesNew1.length; i++) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode(namesNew1[i]));
+		        opt.setAttribute("data-i18n", namesNew1[i]);
+		        $('body').i18n(); // HUOM! Lokalisoi tekstit kun tehty muutoksia
 			opt.value = namesNew1[i];
 			textureViewerOptions.appendChild(opt); // lisataan luotu valintas
 		}
@@ -589,6 +599,8 @@ function createTextureEditor(posLeft, posTop) {
 		for (var i = 0; i < namesNew2.length; i++) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode(namesNew2[i]));
+		        opt.setAttribute("data-i18n", namesNew2[i]);
+		        $('body').i18n(); // HUOM! Lokalisoi tekstit kun tehty muutoksia
 			opt.value = namesNew2[i];
 			texture3DOptions.appendChild(opt); // lisataan luotu valintas
 		}

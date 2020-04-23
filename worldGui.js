@@ -146,7 +146,7 @@ class MapComponent extends React.Component {
                 <Input {...this.props.longitude} />
                 <Input {...this.props.size} />
 		<span class="form-group flexable">
-                  <button class="form-control btn btn-default" onClick={this.handleClick}>Generate</button>
+                  <button class="form-control btn btn-default" onClick={this.handleClick} data-i18n="map-btn-gen">Generate</button>
 		</span>
 		</div>
             </React.Fragment>
@@ -242,19 +242,19 @@ class Leaflet extends React.Component {
             <div id='mapid' onResize={this.handleResize} />
 
 	    <span class="form-group">
-            <label for="selectMapView">Map view:</label>
+            <label for="selectMapView" data-i18n="map-lbl-view">Map view:</label>
             <select class="form-control btn-default" onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
-                <option value='default'>Black</option>
-                <option value='streets-v11'>Streets</option>
-                <option value='light-v10'>Light</option>
-                <option value='dark-v10'>Dark</option>
-                <option value='outdoors-v11'>Outdoors</option>
-                <option value='satellite-v9'>Satellite</option>
-                <option value='satellite-streets-v11'>Satellite-Streets</option>
+                <option value='default' data-i18n="map-opt-black">Black</option>
+                <option value='streets-v11' data-i18n="map-opt-streets">Streets</option>
+                <option value='light-v10' data-i18n="map-opt-light">Light</option>
+                <option value='dark-v10' data-i18n="map-opt-dark">Dark</option>
+                <option value='outdoors-v11' data-i18n="map-opt-outdoors">Outdoors</option>
+                <option value='satellite-v9' data-i18n="map-opt-satellite">Satellite</option>
+                <option value='satellite-streets-v11' data-i18n="map-opt-satellite-streets">Satellite-Streets</option>
             </select>
 	    </span>
 	    <span class="form-group">
-	    <button onClick={this.handleFix} class="form-control btn btn-default">Fix</button>
+	    <button onClick={this.handleFix} class="form-control btn btn-default" data-i18n="map-btn-fix">Fix</button>
 	    </span>
             </React.Fragment>
         );
@@ -274,7 +274,7 @@ class Input extends React.Component {
         return (
             <React.Fragment>	
 	      <span class="form-group">
-              <label for={this.props.id}>{this.props.sign}</label>
+              <label for={this.props.id} data-i18n={this.props.sign}>{this.props.sign}</label>
               <input class="form-control btn-default"
 	        onInput={this.handleValid}
 	        onChange={this.handleChange}
@@ -348,6 +348,7 @@ myLayout.registerComponent('3D-model', function( container, componentState) {
 var addMenuItem = function( title, component ) {
     var element = document.createElement("BUTTON");
     element.textContent = title;
+    element.setAttribute("data-i18n", title);
     element.className = "draggableToggleBtnActive";
 
     var show_hide = true;

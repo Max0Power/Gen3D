@@ -3,6 +3,7 @@
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
+ * @version 24.04.2020, jquery.i18n
  */
 
 "use strict";
@@ -233,6 +234,7 @@ function createTextureController(top, left, callback) {
     //let label = container.appendChild(document.createElement("label"));
     let label = textureSpan.appendChild(document.createElement("label"));
     label.appendChild(document.createTextNode("Texture: "));
+    label.setAttribute("data-i18n", "Texture:");
     label.setAttribute("for", "selectTextureImg");
     
     var selectElm = document.createElement("SELECT");
@@ -248,6 +250,7 @@ function createTextureController(top, left, callback) {
 	var opt = document.createElement("OPTION");
 	opt.appendChild(document.createTextNode(names[i]));
 	opt.value = names[i];
+	opt.setAttribute("data-i18n", names[i]);
 	selectElm.appendChild(opt); // lisataan luotu valintas
     }
     
@@ -259,6 +262,7 @@ function createTextureController(top, left, callback) {
     var btn_drawModel = document.createElement("BUTTON"); // buttoni, joka piirtaa grayscalen ja 3d mallin
     btn_drawModel.className = "form-control btn btn-default";
     btn_drawModel.appendChild(document.createTextNode("Update image"));
+    btn_drawModel.setAttribute("data-i18n", "texture-btn-update");
     btn_drawModel.onclick = function(event) {
 	callback(); // funktio, jolla piirretaan grayscale
     };
@@ -286,6 +290,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     var quadSizeTxt = document.createElement("LABEL"); // quadSize
     quadSizeTxt.textContent = "Quad size:";
     quadSizeTxt.setAttribute("for", "input_modelQuadSize");
+    quadSizeTxt.setAttribute("data-i18n", "controller-lbl-quad-size");
     quadSizeSpan.appendChild(quadSizeTxt);
 
     var quadSizeInp = numberBox("input_modelQuadSize", 1, 0.5, 0.1, 1000, false);
@@ -300,6 +305,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     var modelHTxt = document.createElement("LABEL"); // mallin maksimi korkeus
     modelHTxt.setAttribute("for", "input_modelMaxHeight");
     modelHTxt.textContent = "Model max height:";
+    modelHTxt.setAttribute("data-i18n", "controller-lbl-model-max-height");
     modelHSpan.appendChild(modelHTxt);
 
     var modelHInp = numberBox("input_modelMaxHeight", 20, 1, 0, 10000, false);
@@ -315,6 +321,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
         var maxlabel = document.createElement("label");
         maxlabel.textContent = "Model max vertices: ";
 	maxlabel.setAttribute("for", "input_modelMaxVertices");
+	maxlabel.setAttribute("data-i18n", "controller-lbl-model-max-vertices");
         maxSpan.appendChild(maxlabel);
 
         var maxvertices = numberBox("input_modelMaxVertices", 200, 1, 20, 1201, true);
@@ -331,6 +338,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
         var intlabel = document.createElement("label");
         intlabel.textContent = "Interpolation algorithm: ";
 	intlabel.setAttribute("for", "selectedIntAlg");
+	intlabel.setAttribute("data-i18n", "controller-lbl-int-alg");
         intSpan.appendChild(intlabel);
         
         var sel = document.createElement("SELECT");
@@ -344,6 +352,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	    var opt = document.createElement("OPTION");
 	    opt.appendChild(document.createTextNode(options[i]));
 	    opt.value = i;
+	    opt.setAttribute("data-i18n", options[i]);
 	    sel.appendChild(opt);
         }
 	sel.selectedIndex = "0";
@@ -357,6 +366,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     let label = textureSpan.appendChild(document.createElement("label"));
     label.appendChild(document.createTextNode("Texture: "));
     label.setAttribute("for", "selectedTexture3D");
+    label.setAttribute("data-i18n", "Texture:");
     
     var selectElm = document.createElement("SELECT");
     selectElm.className = "form-control btn-default";
@@ -369,6 +379,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 	var opt = document.createElement("OPTION");
 	opt.appendChild(document.createTextNode(names[i]));
 	opt.value = names[i];
+	opt.setAttribute("data-i18n", names[i]);
 	selectElm.appendChild(opt);
     }
 
@@ -382,6 +393,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     var btn_drawModel = document.createElement("BUTTON");
     btn_drawModel.className = "form-control btn btn-default";
     btn_drawModel.appendChild(document.createTextNode("Update model"));
+    btn_drawModel.setAttribute("data-i18n", "controller-btn-update");
     btn_drawModel.onclick = function(event) {
 	callback();
     };
@@ -395,6 +407,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 
     var btn_download = document.createElement("BUTTON"); 
     btn_download.appendChild(document.createTextNode("Download .obj file"));
+    btn_download.setAttribute("data-i18n", "controller-btn-download");
     btn_download.className = "form-control btn btn-default";
     btn_download.onclick = function(event) {
 	downloadObj(); // funktio, jolla paivitetaan 3d malli
