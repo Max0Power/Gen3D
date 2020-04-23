@@ -8,6 +8,23 @@
 
 "use strict"
 
+$( document ).ready( function ( $ ) {
+    var i18n = $.i18n();
+    
+    i18n.locale = 'ja';
+    /*i18n.load( {
+	'ja': {
+	    'appname-title': 'moi moi'
+	}
+    } ).done( function() { console.log('done!') } );*/
+    i18n.load( { "ja": 'jquery.i18n/languages/ja.json' } )
+	.done( function() { 
+	    console.log(i18n.locale + ' locale done!');
+	    var update_texts = function() { $('body').i18n() };
+	    update_texts();
+	} );
+} );
+
 /**
  * Read area inputs
  */
