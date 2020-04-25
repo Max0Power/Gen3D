@@ -300,6 +300,8 @@ function createTextureEditor(posLeft, posTop) {
 		updateColorSlider();	
 		setColorRGBInputs();
 		colorpicker_setColor("colpic", colors[selectedKnobIndex], onColorChanged);
+	        
+	        updateLocales();
 	};
 	
 	isScaledToWorldInput.onclick = function(event) {
@@ -413,6 +415,8 @@ function createTextureEditor(posLeft, posTop) {
 		updateColorSlider();
 		setColorRGBInputs();
 		colorpicker_setColor("colpic", colors[selectedKnobIndex], onColorChanged)
+	        
+	        updateLocales();
 	};
 	
 	removeColorBtn.onclick = function(event) {
@@ -431,6 +435,8 @@ function createTextureEditor(posLeft, posTop) {
 		updateColorSlider();	
 		setColorRGBInputs();
 		colorpicker_setColor("colpic", colors[selectedKnobIndex], onColorChanged)
+	        
+	        updateLocales();
 	};
 	
 	// KOMPONENTTIEN ALUSTUS FUNKTIOILLA:
@@ -487,10 +493,22 @@ function createTextureEditor(posLeft, posTop) {
 		for (var i = 0; i < textureNames.length; i++) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode(textureNames[i]));
-		        opt.setAttribute("data-i18n", textureNames[i]);
+		        kaannos(opt,textureNames[i]);
 			opt.value = i; //textureNames[i];
 			selectElmTexture.appendChild(opt); // lisataan luotu valintas
 		}
+	}
+
+        function kaannos(opt,text) {
+	    if (text.includes("Custom")) {
+		// tarvitsee dynaamisen käännöstekstin
+		opt.setAttribute("class", "custom");
+	    } else if (text.includes("Color")) {
+		opt.setAttribute("class", "color");
+	    } else {
+		// käännös löytyy valmiina tiedostosta
+		opt.setAttribute("data-i18n", text);
+	    }
 	}
 	
 	// paivittaa color selectionin valinnat
@@ -503,6 +521,7 @@ function createTextureEditor(posLeft, posTop) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode("Color" + (i+1)));
 			opt.value = i;
+		        kaannos(opt,"Color" + (i+1));
 			selectElmColor.appendChild(opt); // lisataan luotu valintas
 		}
 	}
@@ -582,8 +601,7 @@ function createTextureEditor(posLeft, posTop) {
 		for (var i = 0; i < namesNew1.length; i++) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode(namesNew1[i]));
-		        opt.setAttribute("data-i18n", namesNew1[i]);
-		        $('body').i18n(); // HUOM! Lokalisoi tekstit kun tehty muutoksia
+		        kaannos(opt,namesNew1[i]);
 			opt.value = namesNew1[i];
 			textureViewerOptions.appendChild(opt); // lisataan luotu valintas
 		}
@@ -599,8 +617,7 @@ function createTextureEditor(posLeft, posTop) {
 		for (var i = 0; i < namesNew2.length; i++) {
 			var opt = document.createElement("OPTION");
 			opt.appendChild(document.createTextNode(namesNew2[i]));
-		        opt.setAttribute("data-i18n", namesNew2[i]);
-		        $('body').i18n(); // HUOM! Lokalisoi tekstit kun tehty muutoksia
+		        kaannos(opt,namesNew2[i]);
 			opt.value = namesNew2[i];
 			texture3DOptions.appendChild(opt); // lisataan luotu valintas
 		}

@@ -12,6 +12,8 @@
     "app-nav-noise": "雑音生成器",
     "app-nav-userImg": "絵から作る３Ｄ",
     "app-nav-about": "約私達",
+    "app-nav-help": "助けて",
+    "app-nav-help-url": "instructions/ja/world.html",
     "map-btn-gen": "ジェネレート",
     "map-lbl-view": "地図の連結網表示：",
     "map-opt-black": "黒い",
@@ -43,7 +45,7 @@
     "controller-lbl-int-alg": "内挿アルゴリズム：",
     "Weighted average": "加重平均",
     "Linear": "直線補間",
-    "Very slow": "ＷＡＲＮＩＮＧ",
+    "Very slow": "遅い！",
     "Inverse distance weighting": "不距離の加重",
     "controller-btn-update": "アップデート",
     "controller-btn-download": "ダウンロード",
@@ -51,5 +53,7 @@
     "texture-checkbox-range-to-world": "世界的範囲：",
     "texture-btn-add": "足す",
     "texture-btn-remove": "外す",
-    "texture-lbl-color-rgb": "色・ＲＧＢ："
+    "texture-lbl-color-rgb": "ＲＧＢ：",
+    "texture-opt-color-n": "色$1",
+    "texture-opt-custom-n": "特装$1"
 }

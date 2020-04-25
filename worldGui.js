@@ -254,7 +254,7 @@ class Leaflet extends React.Component {
             </select>
 	    </span>
 	    <span class="form-group">
-	    <button onClick={this.handleFix} class="form-control btn btn-default" data-i18n="map-btn-fix">Fix</button>
+	    <button disabled="true" onClick={this.handleFix} class="form-control btn btn-default" data-i18n="map-btn-fix">Fix</button>
 	    </span>
             </React.Fragment>
         );
@@ -380,9 +380,15 @@ $(document).ready(function() {
 });
 
 myLayout.on('componentCreated',function(component) {
-    component.container.on('resize',function() {
-	window._leaflet.handleFix();
-    });
+    if (component.type.includes("component")) {
+	if (component.componentName.includes("-react-")) {
+	    if (component.config.component.includes("Map")) {
+		component.container.on('resize',function() {
+		    window._leaflet.handleFix();
+		});
+	    }
+	}
+    }
 });
 
 myLayout.init();
