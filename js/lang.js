@@ -47,4 +47,11 @@ function updateLocales() {
 	    component.setTitle($.i18n(component.componentName));
 	}
     }
+    
+    // päivitä raahattavien komponenttien otsikot
+    mapComponent.title = $.i18n(mapComponent.component);
+    controller3dComponent.title = $.i18n(controller3dComponent.componentName);
+    textureViewerComponent.title = $.i18n(textureViewerComponent.componentName);
+    textureEditorComponent.title = $.i18n(textureEditorComponent.componentName);
+    modelComponent.title = $.i18n(modelComponent.componentName);
 }

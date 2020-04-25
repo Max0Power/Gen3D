@@ -254,7 +254,7 @@ class Leaflet extends React.Component {
             </select>
 	    </span>
 	    <span class="form-group">
-	    <button disabled="true" onClick={this.handleFix} class="form-control btn btn-default" data-i18n="map-btn-fix">Fix</button>
+	    <button onClick={this.handleFix} class="form-control btn btn-default" data-i18n="map-btn-fix">Fix</button>
 	    </span>
             </React.Fragment>
         );
@@ -310,11 +310,6 @@ class Input extends React.Component {
 }
 
 var myLayout = new GoldenLayout(layout, '#container3D');
-
-// päivitä komponentit ikkunan mukaan
-myLayout.on('stateChanged', function() {
-    window.dispatchEvent(new Event('resize'));
-});
 
 // päivitä komponentit ikkunan mukaan
 $(window).resize(function () {
@@ -380,15 +375,27 @@ $(document).ready(function() {
 });
 
 myLayout.on('componentCreated',function(component) {
-    if (component.type.includes("component")) {
-	if (component.componentName.includes("-react-")) {
-	    if (component.config.component.includes("Map")) {
-		component.container.on('resize',function() {
-		    window._leaflet.handleFix();
-		});
-	    }
-	}
+    if (component.config.component && component.config.component.includes("Map")) {
+	component.container.on('resize',function() {
+	    window._leaflet.handleFix();
+	});
     }
+});
+
+myLayout.on('initialised',function() {
+    myLayout.on('itemCreated',function(component) {
+	updateLocales();
+    });
+});
+
+myLayout.on( 'stackCreated', function( stack ){
+    stack
+	.header
+	.controlsContainer
+	.find( '.lm_maximise' ) //get the maximise icon
+	.click(function(){
+	    window.dispatchEvent(new Event('resize'));
+	});
 });
 
 myLayout.init();
