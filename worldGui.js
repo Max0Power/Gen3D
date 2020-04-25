@@ -165,7 +165,6 @@ class Leaflet extends React.Component {
         this.onMapOneClick = this.onMapOneClick.bind(this);
         this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleFix = this.handleFix.bind(this);
 
 	window._leaflet = this;
     }
@@ -178,10 +177,6 @@ class Leaflet extends React.Component {
         if (layerId !== 'default') {
             this.style = L.mapbox.styleLayer('mapbox://styles/mapbox/' + layerId).addTo(this.mymap);
         }
-    }
-    
-    handleFix() {
-	this.mymap.invalidateSize();
     }
     
     componentDidMount() {
@@ -197,6 +192,11 @@ class Leaflet extends React.Component {
         });
         map.on('click', this.onMapOneClick);
         map.fitWorld();
+
+	function outputsize() {
+	    map.invalidateSize();
+	}
+	new ResizeObserver(outputsize).observe(ReactDOM.findDOMNode(this));
     }
     
     onMapOneClick(e) {
@@ -239,7 +239,7 @@ class Leaflet extends React.Component {
     render() {
         return(
             <React.Fragment>
-            <div id='mapid' onResize={this.handleResize} />
+            <div id='mapid' />
 
 	    <span class="form-group">
             <label for="selectMapView" data-i18n="map-lbl-view">Map view:</label>
@@ -252,9 +252,6 @@ class Leaflet extends React.Component {
                 <option value='satellite-v9' data-i18n="map-opt-satellite">Satellite</option>
                 <option value='satellite-streets-v11' data-i18n="map-opt-satellite-streets">Satellite-Streets</option>
             </select>
-	    </span>
-	    <span class="form-group">
-	    <button onClick={this.handleFix} class="form-control btn btn-default" data-i18n="map-btn-fix">Fix</button>
 	    </span>
             </React.Fragment>
         );
@@ -310,12 +307,6 @@ class Input extends React.Component {
 }
 
 var myLayout = new GoldenLayout(layout, '#container3D');
-
-// päivitä komponentit ikkunan mukaan
-$(window).resize(function () {
-    const container = document.getElementById("container3D");
-    myLayout.updateSize(container.clientWidth, container.clientHeight);
-});
 
 // Map component
 myLayout.registerComponent('Map', MapComponent);
@@ -374,28 +365,14 @@ $(document).ready(function() {
     addMenuItem( modelComponent.componentName, modelComponent );
 });
 
-myLayout.on('componentCreated',function(component) {
-    if (component.config.component && component.config.component.includes("Map")) {
-	component.container.on('resize',function() {
-	    window._leaflet.handleFix();
-	});
-    }
+$(window).resize(function () {
+    myLayout.updateSize();
 });
 
 myLayout.on('initialised',function() {
     myLayout.on('itemCreated',function(component) {
 	updateLocales();
     });
-});
-
-myLayout.on( 'stackCreated', function( stack ){
-    stack
-	.header
-	.controlsContainer
-	.find( '.lm_maximise' ) //get the maximise icon
-	.click(function(){
-	    window.dispatchEvent(new Event('resize'));
-	});
 });
 
 myLayout.init();

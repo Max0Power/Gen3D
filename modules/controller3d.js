@@ -34,9 +34,7 @@ var controls;
 var mesh = null;
 
 function init() {
-    container = document.createElement("DIV"); // container, johon renderer lisataan
-    fitToContainer(container);
-    
+    container = document.createElement("DIV"); // container, johon renderer lisataan  
     scene = new THREE.Scene();
     
     renderer = new THREE.WebGLRenderer();
@@ -129,6 +127,7 @@ function drawMesh() {
 	
 	render();
 	
+        /*
 	// paivittaa 3d piirtoikkunan tarvittaessa uuteen kokoon
 	window.onresize = function(event) {
 		camera.aspect = container.clientWidth / container.clientHeight;
@@ -136,6 +135,16 @@ function drawMesh() {
 		renderer.setSize( container.clientWidth, container.clientHeight );
 		render();
 	};
+	*/
+
+    function outputsize() {
+	camera.aspect = container.clientWidth / container.clientHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize( container.clientWidth, container.clientHeight );
+	render();
+    }
+    fitToContainer(container); // vapaa tila käyttöön
+    new ResizeObserver(outputsize).observe(container);
 	
 	/*
 	// animoi, eli kuuntelee controllit
