@@ -76,6 +76,10 @@ label, h3:nth-child(1), .deftext {
   -moz-appearance:textfield;
 }
 
+/* Custom Input File */
+#file_input {
+    display: none;
+}
 
 /* Draggable components */
 

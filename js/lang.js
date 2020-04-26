@@ -49,7 +49,15 @@ function updateLocales() {
     }
     
     // päivitä raahattavien komponenttien otsikot
-    mapComponent.title = $.i18n(mapComponent.component);
+    if (typeof mapComponent !== 'undefined') {
+	mapComponent.title = $.i18n(mapComponent.component);
+    }
+    if (typeof noiseControllerComponent !== 'undefined') {
+	noiseControllerComponent.title = $.i18n(noiseControllerComponent.componentName);
+    }
+    if (typeof userInputComponent !== 'undefined') {
+	userInputComponent.title = $.i18n(userInputComponent.componentName);
+    }	
     controller3dComponent.title = $.i18n(controller3dComponent.componentName);
     textureViewerComponent.title = $.i18n(textureViewerComponent.componentName);
     textureEditorComponent.title = $.i18n(textureEditorComponent.componentName);

@@ -108,20 +108,14 @@ if(savedState !== null) {
 
 var myLayout = new GoldenLayout(layout, '#container3D');
 
+/*
 // tallenna muutos evästeisiin ja päivitä ikkuna
 myLayout.on('stateChanged', function() {
-    /*
     const state = JSON.stringify(myLayout.toConfig());
     localStorage.setItem('savedState', state);
-    */
     window.dispatchEvent(new Event('resize'));
 });
-
-// päivitä komponentit ikkunan mukaan
-$(window).resize(function () {
-    const container = document.getElementById("container3D");
-    myLayout.updateSize(container.clientWidth, container.clientHeight);
-});
+*/
 
 // Noise Controller component
 myLayout.registerComponent('Noise controller', function( container, componentState) {
@@ -151,6 +145,7 @@ myLayout.registerComponent('3D-model', function( container, componentState) {
 var addMenuItem = function( title, component ) {
     var element = document.createElement("BUTTON");
     element.textContent = title;
+    element.setAttribute("data-i18n", title);
     element.className = "draggableToggleBtnActive";
 
     var show_hide = true;
@@ -179,6 +174,16 @@ $(document).ready(function() {
     addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
     addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
     addMenuItem( modelComponent.componentName, modelComponent );
+});
+
+$(window).resize(function () {
+    myLayout.updateSize();
+});
+
+myLayout.on('initialised',function() {
+    myLayout.on('itemCreated',function(component) {
+        updateLocales();
+    });
 });
 
 myLayout.init();

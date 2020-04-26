@@ -4,13 +4,14 @@
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
+ * @version 26.04.2020, jquery.i18n
  */
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-    	<meta charset="utf-8"/>
+    	<meta charset="utf-8">
         
         <!-- icon -->
         <link rel="shortcut icon" href="images/icon/favicon.jpg" />
@@ -21,10 +22,20 @@
         <link rel="stylesheet" href="css/goldenlayout-dark-theme.css" />
         <link rel="stylesheet" href="css/bootstrap.min.css" /> <!-- Bootstrap -->
         
+	<!-- i18n -->
+        <script src="jquery.i18n/jquery-3.2.1.min.js"></script>
+        <script src="jquery.i18n/CLDRPluralRuleParser.js"></script>
+        <script src="jquery.i18n/jquery.i18n.js"></script>
+        <script src="jquery.i18n/jquery.i18n.messagestore.js"></script>
+        <script src="jquery.i18n/jquery.i18n.fallbacks.js"></script>
+        <script src="jquery.i18n/jquery.i18n.parser.js"></script>
+        <script src="jquery.i18n/jquery.i18n.emitter.js"></script>
+        <script src="jquery.i18n/jquery.i18n.language.js"></script>
+
         <!-- lib -->
         <script src="lib/three.js"></script> <!-- 3d mallien luonnin lisa kirjasto -->
         <script src="lib/OrbitControls.js"></script> <!-- Three js trackball controllit 3d mallin katseluun -->
-        <script src="lib/jquery.min.js"></script>
+        <!-- <script src="lib/jquery.min.js"></script> --> <!-- käytössä 3.2.1 -->
         <script src="lib/goldenlayout.min.js"></script>
         
         <!-- modules -->
@@ -33,6 +44,9 @@
         <script src="modules/uiComponents.js"></script> <!-- Paaohjelma -->
         <script src="modules/textureEditor.js"></script> <!-- Luo textureEditorin -->	
         <script src="modules/simplex.js"></script> <!-- Luo 3d mallin -->
+
+	<!-- js -->
+	<script src="js/lang.js"></script> <!-- lokalisointi -->
         
         <!-- main -->
         <script src="noiseGui.js"></script>
@@ -45,20 +59,25 @@
       <nav class="navbar navbar-inverse">
         <div class="container-fluid">
           <div class="navbar-header">
-            <a class="navbar-brand">3D-Gen</a>
+            <a class="navbar-brand" data-i18n="app-title">3D-Gen</a>
           </div>
           <ul class="nav navbar-nav">
-            <li><a href="world.html">World Map 3D</a></li>
-            <li class="active"><a href="noise.html">Noise generator</a></li>
-            <li><a href="userImg.html">Make 3D from picture</a></li>
-            <li><a href="about.html">About us</a></li>
+            <li><a href="world.html" data-i18n="app-nav-world">World Map 3D</a></li>
+            <li class="active"><a href="noise.html" data-i18n="app-nav-noise">Noise generator</a></li>
+            <li><a href="userImg.html" data-i18n="app-nav-userImg">Make 3D from picture</a></li>
+            <li><a href="about.html" data-i18n="app-nav-about">About us</a></li>
+	    <li><ul class="nav navbar-nav switch-locale">
+		<li class="active"><a href="#" target="_blank" data-locale="en">English</a></li>
+		<li><a href="#" target="_blank" data-locale="ja">日本語</a></li>
+            </ul></li>
+	    <li><a href="instructions/noise.html" target="_blank" class="help" data-i18n="app-nav-help">Help</a></li>
           </ul>
         </div>
         <div id="tools"></div>  <!-- <label>Show/hide</label> -->
       </nav>
       <div id="container3D"></div> <!-- div, johon 3D malli luodaan -->
-      <a href="instructions/noise.html" target="_blank">
+      <!--<a href="instructions/noise.html" target="_blank">
         <img id="help" src="instructions/help.png" />
-      </a>
+      </a>-->
     </body>
 </html>

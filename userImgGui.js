@@ -102,13 +102,19 @@ class UserInput extends React.Component {
         return (
             <React.Fragment>
 		<div id={this.props.draggableId} class="draggableContainer">
+		<div class="flexable">
 		<span class="form-group">
-                <label>Supported fileformats: </label>
+                <label data-i18n="usr-in-lbl-fileformats">Supported fileformats: </label>
                 <br />
-                <p class="deftext">png, jpg, gif, hgt.zip</p>
-                <input type='file' onChange={this.handleUpload} class="btn-default"/>
+                <p class="deftext" data-i18n="usr-in-p-fileformats">png, jpg, gif, hgt.zip</p>
 		</span>
-		<span class="flexable form-group">
+		<span class="form-group">
+		<label data-i18n="usr-in-lbl-filesystem">File system explorer: </label>
+		<label for="file_input" class="form-control btn btn-default" data-i18n="usr-in-btn-fileformats">Choose File</label>
+                <input id="file_input" type="file" onChange={this.handleUpload}/>
+		</span>
+		</div>
+		<span class="form-group">
                 <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
 		</span>
 		</div>
@@ -218,17 +224,6 @@ class UserInput extends React.Component {
 
 var myLayout = new GoldenLayout(layout, '#container3D');
 
-// tallenna muutos evästeisiin ja päivitä ikkuna
-myLayout.on('stateChanged', function() {
-    window.dispatchEvent(new Event('resize'));
-});
-
-// päivitä komponentit ikkunan mukaan
-$(window).resize(function () {
-    const container = document.getElementById("container3D");
-    myLayout.updateSize(container.clientWidth, container.clientHeight);
-});
-
 // User input component
 myLayout.registerComponent('User input', UserInput);
 
@@ -259,6 +254,7 @@ myLayout.registerComponent('3D-model', function( container, componentState) {
 var addMenuItem = function( title, component ) {
 	var element = document.createElement("BUTTON");
 	element.textContent = title;
+        element.setAttribute("data-i18n", title);
 	element.className = "draggableToggleBtnActive";
 	
 	var show_hide = true;
@@ -282,6 +278,16 @@ $(document).ready(function() {
     addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
     addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
     addMenuItem( modelComponent.componentName, modelComponent );
+});
+
+$(window).resize(function () {
+    myLayout.updateSize();
+});
+
+myLayout.on('initialised',function() {
+    myLayout.on('itemCreated',function(component) {
+        updateLocales();
+    });
 });
 
 myLayout.init();
