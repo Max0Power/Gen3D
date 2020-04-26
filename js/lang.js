@@ -36,7 +36,7 @@ function updateLocales() {
     }
 
     // vaihda kysymysmerkin tai ohjesivun url kielen mukaan
-    $('.help').attr("href", $.i18n('app-nav-help-url'));
+    //$('.help').attr("href", $.i18n('app-nav-help-url'));
 
     var components = myLayout.root.getItemsByType("component");
     for (var k = 0; k < components.length; k++) {
