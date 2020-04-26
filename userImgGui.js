@@ -104,13 +104,13 @@ class UserInput extends React.Component {
 		<div id={this.props.draggableId} class="draggableContainer">
 		<div class="flexable">
 		<span class="form-group">
-                <label data-i18n="usr-in-lbl-fileformats">Supported fileformats: </label>
+                <label data-i18n="usr-in-lbl-file-formats">Supported file formats: </label>
                 <br />
-                <p class="deftext" data-i18n="usr-in-p-fileformats">png, jpg, gif, hgt.zip</p>
+                <p class="deftext" data-i18n="usr-in-p-file-formats">.png, .jpg, .jpeg, .gif, .hgt.zip</p>
 		</span>
 		<span class="form-group">
-		<label data-i18n="usr-in-lbl-filesystem">File system explorer: </label>
-		<label for="file_input" class="form-control btn btn-default" data-i18n="usr-in-btn-fileformats">Choose File</label>
+		<label data-i18n="usr-in-lbl-file-system">File system explorer: </label>
+		<label for="file_input" class="form-control btn btn-default" data-i18n="usr-in-btn-file-formats">Choose file</label>
                 <input id="file_input" type="file" onChange={this.handleUpload}/>
 		</span>
 		</div>

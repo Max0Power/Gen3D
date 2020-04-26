@@ -4,7 +4,7 @@
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
  * @version 19.10.2019, React
- * @version 23.04.2020, jquery.i18n
+ * @version 23.04.2020, jQuery.i18n
  */
 
 "use strict"

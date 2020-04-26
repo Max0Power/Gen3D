@@ -3,9 +3,9 @@
 	"authors": [
 	    "Harri Linna"
 	    ],
-	"last-updated": "2020-04-23",
+	"last-updated": "2020-04-26",
 	"locale": "en",
-	"comment": "English locale"
+	"language": "English"
     },
     "app-title": "3D-Gen",
     "app-nav-world": "World Map 3D",
@@ -69,8 +69,8 @@
     "noise-ctrl-offset-y": "Offset Y:",
     "noise-ctrl-btn-random-seed": "Random seed",
     "noise-ctrl-random-offsets": "Random offsets",
-    "usr-in-lbl-fileformats": "Supported fileformats:",
-    "usr-in-p-fileformats": "png, jpg, gif, hgt.zip",
-    "usr-in-lbl-filesystem": "File system explorer:",
-    "usr-in-btn-fileformats": "Choose file"
+    "usr-in-lbl-file-formats": "Supported file formats:",
+    "usr-in-p-file-formats": ".png, .jpg, .jpeg, .gif, .hgt.zip",
+    "usr-in-lbl-file-system": "File system explorer:",
+    "usr-in-btn-file-formats": "Choose file"
 }

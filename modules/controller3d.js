@@ -5,6 +5,7 @@
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
+ * @version 26.04.2020, jQuery.i18n
  */
 
 /**

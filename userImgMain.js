@@ -4,6 +4,7 @@
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
  * @version 24.10.2019, React, Zip
+ * @version 26.04.2020, jQuery.i18n
  */
 
 "use strict";
