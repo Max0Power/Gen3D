@@ -56,66 +56,40 @@ var layout = {
         maximise: 'maximise',
         popout: 'open in new window'
     },
+    dimensions: {
+        borderWidth: 8,
+        headerHeight: 40
+    },
     content: [{
         type: 'row',
         content:[{
-	    type: 'column',
-	    width: 27,
-	    height: 100,
-	    content: [{
-		type: 'stack',
-		width: 100,
-		height: 70,
-		content: [
-		    noiseControllerComponent
-		]}
-	    ,{
-		type: 'stack',
-		width: 100,
-		height: 30,
-		content: [
-		    controller3dComponent
-		]}
-	    ]}
-	,{
 	    type: 'stack',
-	    width: 56,
+	    width: 25,
 	    height: 100,
 	    content: [
-		modelComponent,
+		noiseControllerComponent,
 		textureViewerComponent
 	    ]}
 	,{
+	    type: 'stack',
+	    width: 50,
+	    height: 100,
+	    content: [
+		modelComponent
+	    ]}
+	,{
             type: 'stack',
-            width: 17,
+            width: 25,
             height: 100,
             content:[
+		controller3dComponent,
 		textureEditorComponent
 	    ]}
         ]
     }]
 };
 
-/*
-// käytä evästeen runkoa tai oletusta
-var myLayout,savedState = localStorage.getItem('savedState');
-if(savedState !== null) {
-    myLayout = new GoldenLayout(JSON.parse(savedState));
-} else {
-    myLayout = new GoldenLayout(layout, '#container3D');
-}
-*/
-
 var myLayout = new GoldenLayout(layout, '#container3D');
-
-/*
-// tallenna muutos evästeisiin ja päivitä ikkuna
-myLayout.on('stateChanged', function() {
-    const state = JSON.stringify(myLayout.toConfig());
-    localStorage.setItem('savedState', state);
-    window.dispatchEvent(new Event('resize'));
-});
-*/
 
 // Noise Controller component
 myLayout.registerComponent('Noise controller', function( container, componentState) {

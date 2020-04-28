@@ -87,29 +87,33 @@ var layout = {
         maximise: 'maximise',
         popout: 'open in new window'
     },
+    dimensions: {
+        borderWidth: 8,
+        headerHeight: 40
+    },
     content: [{
         type: 'row',
         content:[{
 	    type: 'stack',
-	    width: 27,
+	    width: 25,
 	    height: 100,
 	    content: [
 		mapComponent,
-		controller3dComponent
-	    ]}
-	,{
-	    type: 'stack',
-	    width: 56,
-	    height: 100,
-	    content: [
-		modelComponent,
 		textureViewerComponent
 	    ]}
 	,{
+	    type: 'stack',
+	    width: 50,
+	    height: 100,
+	    content: [
+		modelComponent
+	    ]}
+	,{
             type: 'stack',
-            width: 17,
+            width: 25,
             height: 100,
             content: [
+		controller3dComponent,
 		textureEditorComponent
 	    ]
         }]
@@ -196,7 +200,9 @@ class Leaflet extends React.Component {
 	function outputsize() {
 	    map.invalidateSize();
 	}
-	new ResizeObserver(outputsize).observe(ReactDOM.findDOMNode(this));
+	const leaflet = document.querySelector('#mapid');
+	new ResizeObserver(outputsize).observe(leaflet);
+	//new ResizeObserver(outputsize).observe(ReactDOM.findDOMNode(this));
     }
     
     onMapOneClick(e) {

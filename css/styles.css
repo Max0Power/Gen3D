@@ -7,23 +7,42 @@
  * @version 26.04.2020, jQuery.i18n
  */
 
-html {
-    height: 100%;
-    width: 100%;
+/* Header bar */
+
+.lm_tabs, .lm_header > .lm_tabs > .lm_tab {
+    height: 35px; /* 40 (headerHeight) - 5 (vakio) */
+    line-height: 35px;
+    font-size: 100%;
 }
 
-body { 
-    font-family: Arial;
-    font-size: 14px;
+.lm_close_tab {
+    height: 30px !important; /* 35 (line-height) - 5 (vakio) */
 }
 
-body .lm_content{
+.form-group, #mapid {
+    /* tekstiketän jälkeen tilaa */
+    margin: 4px;  /* 8 (borderWidth) / 2 */
+}
+
+.lm_controls {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+body .lm_content {
     overflow: auto; /* komponentin scrollbar */
 }
 
 .navbar.navbar-inverse {
-    margin-bottom: 0px;
-    border-radius: 0px;
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+#tools {
+    background: black;
 }
 
 .leaflet-container {
@@ -46,20 +65,12 @@ body .lm_content{
     overflow: hidden; /* samaa kuin edellinen kommentti */
 }
 
-input.inputsArea {
-    width: 75px; /* latitude, longitude */
-}
-
-#canv, #colpic, #crange, #cslider {
+#canv, #colpic, #crange, #cslider, .img-center {
     max-height: 100%; /* 500px */
     max-width: 100%; /* 500px */
     margin-left: auto;
     margin-right: auto;
     display: block;
-}
-
-span {
-    padding-right: 5px; /* tekstiketän jälkeen tilaa */
 }
 
 label, h3:nth-child(1), .deftext {
@@ -84,31 +95,8 @@ label, h3:nth-child(1), .deftext {
 
 /* Draggable components */
 
-.draggable {
-    position: absolute;
-    z-index: 8;
-    background-color: transparent; /* #f1f1f1; */
-    border: 1px solid transparent;
-}
-
-.draggableHeader {
-    text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 100%;
-    cursor: move;
-    z-index: 10;
-    background-color: #337AB7; /* #2196F3; */
-    color: #fff;
-    display: none; /* piilota header rikkomatta ruksia */
-}
-
-.draggableHeaderBtn {
-    float: right;
-}
-
 .draggableContainer {
-    padding: 0.5em;
+    padding: 8px; /* huom! ks. gui */
 }
 
 /* Draggable buttons */
@@ -161,10 +149,6 @@ label, h3:nth-child(1), .deftext {
 .form-group {
     flex: auto;
     align-self: flex-end;
-}
-
-.form-control {
-    width: 100%;
 }
 
 input:invalid {

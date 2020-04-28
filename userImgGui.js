@@ -55,28 +55,33 @@ var layout = {
         maximise: 'maximise',
         popout: 'open in new window'
     },
+    dimensions: {
+        borderWidth: 8,
+        headerHeight: 40
+    },
     content: [{
         type: 'row',
         content: [{
-	    type: 'column',
-	    width: 27,
+	    type: 'stack',
+	    width: 25,
 	    height: 100,
 	    content: [
 		userInputComponent,
-		controller3dComponent
+		textureViewerComponent
 	    ]}
 	,{
             type: 'stack',
-            width: 56,
+            width: 50,
             height: 100,
             content: [
 		modelComponent
 	    ]}
 	,{
             type: 'stack',
-	    width: 17,
+	    width: 25,
 	    height: 100,
             content: [
+		controller3dComponent,
 	        textureEditorComponent
 	    ]}
         ]}
@@ -115,7 +120,7 @@ class UserInput extends React.Component {
 		</span>
 		</div>
 		<span class="form-group">
-                <img id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
+                <img class="img-center" id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
 		</span>
 		</div>
             </React.Fragment>
