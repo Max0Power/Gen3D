@@ -7,7 +7,7 @@
  * @version 26.04.2020, jQuery.i18n
  */
 
-/* Header bar */
+/* Asemointi navigointipalkit */
 
 .lm_tabs, .lm_header > .lm_tabs > .lm_tab {
     height: 35px; /* 40 (headerHeight) - 5 (vakio) */
@@ -19,11 +19,6 @@
     height: 30px !important; /* 35 (line-height) - 5 (vakio) */
 }
 
-.form-group, #mapid {
-    /* tekstiketän jälkeen tilaa */
-    margin: 4px;  /* 8 (borderWidth) / 2 */
-}
-
 .lm_controls {
     margin: 0;
     position: absolute;
@@ -32,18 +27,49 @@
     transform: translateY(-50%);
 }
 
-body .lm_content {
-    overflow: auto; /* komponentin scrollbar */
+/* Asemointi komponentit */
+
+.form-inline {
+    display: flex;
+    width: 100%;
 }
 
+.flexable {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.form-group {
+    flex: auto;
+    align-self: flex-end;
+    padding: 4px !important; /* 8 (borderWidth) / 2 */
+    margin: 0 !important; /* override bootstrap */
+}
+
+.draggableContainer, canvas {
+    padding: 4px; /* 8 (borderWidth) / 2 */
+}
+
+#mapid {
+    margin: 4px; /* 8 (borderWidth) / 2 */
+}
+
+#log {
+    padding: 4px; /* 8 (borderWidth) */
+}
+
+/* Asemointi navigointipalkki */
 .navbar.navbar-inverse {
     margin-bottom: 0;
     border-radius: 0;
 }
 
-#tools {
+#tools, #log {
     background: black;
 }
+
+/* Asemointi kartta-tasot */
 
 .leaflet-container {
     position: relative;
@@ -57,8 +83,19 @@ body .lm_content {
     z-index: 1; /* piilottaa alimman tason */
 }
 
+.mapbox-logo {
+    opacity: 0.5; /* ei paista silmään */
+}
+
+/* Yleiset */
+
+body .lm_content {
+    overflow: auto; /* komponentin scrollbar */
+}
+
+
 #container3D {
-    height: calc(100% - 93px);
+    height: calc(100% - 93px); /* nav-bar */
     width: 100%;
     background-color: black;
     position: absolute; /* jos halutaan, etta ikkuna ei kasva kun objektia raahataan, ja raahattavat elementit on asetettu container3D:n sisaan */
@@ -73,7 +110,9 @@ body .lm_content {
     display: block;
 }
 
-label, h3:nth-child(1), .deftext {
+/* Fontit ym. */
+
+label, h3:nth-child(1), .deftext, #log {
     color: #D8D8D8; /* komponenttien tekstit */
 }
 
@@ -91,12 +130,6 @@ label, h3:nth-child(1), .deftext {
 /* Custom Input File */
 #file_input {
     display: none;
-}
-
-/* Draggable components */
-
-.draggableContainer {
-    padding: 8px; /* huom! ks. gui */
 }
 
 /* Draggable buttons */
@@ -133,35 +166,13 @@ label, h3:nth-child(1), .deftext {
     border-radius: 4px;
 }
 
-/* Asemointi pystysuunnassa */
-
-.form-inline {
-    display: flex;
-    width: 100%;
-}
-
-.flexable {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-}
-
-.form-group {
-    flex: auto;
-    align-self: flex-end;
-}
-
 input:invalid {
     background-color: pink;
 }
 
-/* Map */
-.mapbox-logo {
-    opacity: 0.5; /* ei paista silmään */
-}
-
 /* Instructions */
 
+/*
 #help {
     height: 60px;
     width: 60px;
@@ -169,8 +180,8 @@ input:invalid {
     top: 10px;
     left: calc(100% - 70px);
 }
+*/
 
 #instructions {
-    width: 100%;
     padding:1em;
 }

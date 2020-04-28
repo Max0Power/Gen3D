@@ -1,11 +1,11 @@
 "use strict";
 
 var userInputComponent = {
-	type: 'react-component',
-	title: 'User input',
-	id: 'User input',
-	component: 'User input',
-	props: { draggableId: 'User input' }
+    type: 'react-component',
+    title: 'User input',
+    id: 'User input',
+    component: 'User input',
+    props: { draggableId: 'User input' }
 };
 
 var controller3dComponent = {
@@ -44,6 +44,15 @@ var modelComponent = {
     props: { draggableId: '3D-model' }
 }
 
+var consoleWindowComponent = {
+    type: 'component',
+    isClosable: true,
+    id: 'Console window',
+    componentName: 'Console window',
+    componentState: {  },
+    props: { draggableId: 'Console window' }
+}
+
 var layout = {
     settings:{
         showPopoutIcon: false,
@@ -74,7 +83,8 @@ var layout = {
             width: 50,
             height: 100,
             content: [
-		modelComponent
+		modelComponent,
+		consoleWindowComponent
 	    ]}
 	,{
             type: 'stack',
@@ -256,6 +266,11 @@ myLayout.registerComponent('3D-model', function( container, componentState) {
     container.getElement().html( init() );
 });
 
+// Console window component
+myLayout.registerComponent('Console window', function( container, componentState) {
+    container.getElement().html( $( createConsoleWindow(0,0) ) );
+});
+
 var addMenuItem = function( title, component ) {
 	var element = document.createElement("BUTTON");
 	element.textContent = title;
@@ -283,6 +298,7 @@ $(document).ready(function() {
     addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
     addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
     addMenuItem( modelComponent.componentName, modelComponent );
+    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
 });
 
 $(window).resize(function () {

@@ -425,7 +425,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
  * ---------------------------------------------------------------------------
  */
 
-var con; // konsolin komponentti (TextArea), jolla tekstit esitetaan
+//var con; // konsolin komponentti (TextArea), jolla tekstit esitetaan
 
 /**
  * Luo raahattavan ikkunan, joka toimii konsolina.
@@ -436,11 +436,14 @@ function createConsoleWindow(top, left, callback) {
 	// -------------------------- Container for console
 	
 	var container = document.createElement("DIV");
-	container.style.width = "200px";
-	container.style.height = "200px";
+	//container.style.width = "200px";
+	//container.style.height = "200px";
+        container.setAttribute("class", "draggableContainer");
+        fitToContainer(container);
 	
 	// --------------------------- Console text area ja sen tyylit
 	
+        /*
 	con = document.createElement("TEXTAREA");
 	con.style.width = "100%";
 	con.style.height = "100%";
@@ -452,7 +455,28 @@ function createConsoleWindow(top, left, callback) {
 	con.readOnly = true; 
 	con.value = "Hello, welcome to Gen3D!";
 	container.appendChild(con);
-	
+	*/
+    
+        var con = document.createElement("DIV"); // only placeholder
+        con.setAttribute("id", "log");
+        container.appendChild(con);
+        fitToContainer(con);
+
+        /**
+	 * Redirects console.log to Console window
+	 */
+        $(window).on('load', function () {
+	    var old = console.log;
+	    var logger = document.getElementById('log');
+	    console.log = function (message) {
+		if (typeof message == 'object') {
+		    logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+		} else {
+		    logger.innerHTML += message + '<br />';
+		}
+	    }
+	    console.log("Hello, welcome to Gen3D!");
+	});
 
 	return draggableUiComponent("Console", [top, left], container); // tehdaan console raahattavaksi komponentiksi
 }
@@ -461,11 +485,13 @@ function createConsoleWindow(top, left, callback) {
 /**
  * Lisaa konsoliin uuden tekstirivin.
  */
+/*
 function consoleAdd(txt) {
 	if (con != null) {
 		con.value += txt + '\n' ;
 	}
 }
+*/
 
 function fitToContainer(container){
     // Make it visually fill the  positioned parent

@@ -7,7 +7,7 @@
  * @version 23.04.2020, jQuery.i18n
  */
 
-"use strict"
+"use strict";
 
 /**
  * Read area inputs
