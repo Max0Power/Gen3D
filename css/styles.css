@@ -67,12 +67,8 @@ img[src=""] {
     border: none;
 }
 
-#log > p {
-    margin:0;
-    padding:0;
-}
-
 /* Asemointi navigointipalkki */
+
 .navbar.navbar-inverse {
     margin-bottom: 0;
     border-radius: 0;
@@ -106,8 +102,7 @@ body .lm_content {
     overflow: auto; /* komponentin scrollbar */
 }
 
-
-#container3D {
+#container3D { 
     height: calc(100% - 93px); /* nav-bar */
     width: 100%;
     background-color: black;
@@ -129,18 +124,41 @@ label, h3:nth-child(1), .deftext, #log {
     color: #D8D8D8; /* komponenttien tekstit */
 }
 
+/* Firefox */
+
+.draggable {
+    position: absolute;
+    z-index: 8;
+    background-color: transparent; /* #f1f1f1; */
+    border: 1px solid transparent;
+}
+
+.draggableHeader {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    cursor: move;
+    z-index: 10;
+    background-color: #337AB7; /* #2196F3; */
+    color: #fff;
+    display: none; /* piilota header rikkomatta ruksia */
+}
+
+/*
+#inputrange {
+  -moz-appearance:textfield;
+}
+*/
+
 #inputrange::-webkit-outer-spin-button,
 #inputrange::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
-#inputrange {
-  -moz-appearance:textfield;
-}
-
 /* Custom Input File */
+
 #file_input {
     display: none;
 }
