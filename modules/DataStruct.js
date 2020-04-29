@@ -185,6 +185,7 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
 		  that.finish();
 		  worker.terminate();
 	      });
+	      consoleLog("This may take a while...");
 	      worker.postMessage(t);
               break;
 	    case '3':

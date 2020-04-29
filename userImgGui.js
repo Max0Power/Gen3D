@@ -70,32 +70,39 @@ var layout = {
     },
     content: [{
         type: 'row',
-        content: [{
-	    type: 'stack',
-	    width: 25,
-	    height: 100,
-	    content: [
-		userInputComponent,
-		textureViewerComponent
-	    ]}
-	,{
+        content:[{
+            type: 'stack',
+            width: 25,
+            height: 100,
+            content: [
+                userInputComponent
+            ]}
+        ,{
             type: 'stack',
             width: 50,
             height: 100,
             content: [
-		modelComponent,
-		consoleWindowComponent
-	    ]}
-	,{
-            type: 'stack',
-	    width: 25,
-	    height: 100,
-            content: [
-		controller3dComponent,
-	        textureEditorComponent
-	    ]}
-        ]}
-    ]
+                modelComponent
+            ]}
+        ,{
+            type: 'column',
+            width: 25,
+            height: 100,
+            content:[{
+                type: 'stack',
+                content: [
+                    controller3dComponent,
+                    textureEditorComponent
+                ]}
+            ,{
+                type: 'stack',
+                content: [
+                    consoleWindowComponent,
+                    textureViewerComponent
+                ]
+            }]
+        }]
+    }]
 };
 
 class UserInput extends React.Component {
@@ -142,7 +149,8 @@ class UserInput extends React.Component {
         
         const that = this;
         const file = this.file = e.target.files[0];
-        
+	var start = Date.now(); // for message
+
         if (this.isFileImage(file)) {
             this.setState({src: URL.createObjectURL(file)});
             
@@ -151,14 +159,15 @@ class UserInput extends React.Component {
                 that.minmaxh = [0,1];
                 
                 drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		ready(start); // message
             });
         }
         
         if (this.isFileZip(file)) {
             const format = file.type.split('/')[1];
-            this.setState({src: 'images/icon/'+format+'.svg'});
+            this.setState({src: ""}); // tyhjä taustakuva
             
-            lueTiedostoZip(file, null, (data) => {
+            lueTiedostoZip(file, {name:file.name}, (data) => {
 		var select = document.getElementById( 'selectedIntAlg' );
 		var intalg = select.options[select.selectedIndex].value;
 		that.heights = data;
@@ -174,12 +183,14 @@ class UserInput extends React.Component {
                     that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
 		    
 		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    ready(start); // message
 		    break;
 		  case '1':
 		    that.heights = fillAllDataHoles(that.heights);
                     that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
 		    
 		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    ready(start); // message
 		    break;
 		  case '2':
 		    const worker = new Worker('js/thread.js'); // js/thread.js
@@ -187,21 +198,30 @@ class UserInput extends React.Component {
 			that.heights = e.data;
 			that.minmaxh = getHeightsMatrixMinMaxH(that.heights); // modules/DataController.js
 			drawTextureAnd3dModelFromUserImg(that.heights,that.minmaxh);
+			ready(start); // message
 			worker.terminate();
 		    });
+		    consoleLog("This may take a while...");
 		    worker.postMessage(that.heights);
 		    break;
 		  case '3':
 		    that.heights = kaanteinenEtaisyys(that.heights);
                     that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		    
 		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
+		    ready(start); // message
 		    break;
 		  default:
 		    throw new Error("Virhe interpoloinnissa");
 		}
             });
         }
+	
+	function ready(start) {
+	    const ms = Date.now() - start;
+	    const s = Math.floor(ms/1000);
+	    //console.log("Time elapsed "+ s +" second(s)");
+	    consoleLog("Time elapsed "+ s +" second(s)");
+	}
     }
     
     handleLoadedImg(e) {
@@ -233,7 +253,8 @@ class UserInput extends React.Component {
     }
     
     isFileZip(file) {
-        return file && file['type'] === 'application/x-zip-compressed';
+	var zip = file && file['type'] === 'application/x-zip-compressed';
+	return file && (zip || file['type'] === 'application/zip');
     }
 }
 
@@ -309,6 +330,7 @@ myLayout.on('initialised',function() {
     myLayout.on('itemCreated',function(component) {
         updateLocales();
     });
+    consoleLog("Hello, welcome to Gen3D!");
 });
 
 myLayout.init();

@@ -51,12 +51,25 @@
     padding: 4px; /* 8 (borderWidth) / 2 */
 }
 
+img[src=""] {
+   display: none;
+}
+
 #mapid {
     margin: 4px; /* 8 (borderWidth) / 2 */
 }
 
 #log {
     padding: 4px; /* 8 (borderWidth) */
+    font-family: monospace !important;
+    overflow: auto !important;
+    background: black;
+    border: none;
+}
+
+#log > p {
+    margin:0;
+    padding:0;
 }
 
 /* Asemointi navigointipalkki */
@@ -65,7 +78,7 @@
     border-radius: 0;
 }
 
-#tools, #log {
+#tools {
     background: black;
 }
 

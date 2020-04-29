@@ -78,7 +78,8 @@ function generate(callbacks) {
             // lopeta ajastin
             const ms = Date.now() - start;
 	    const s = Math.floor(ms/1000);
-            console.log("Time elapsed "+ s +" second(s)");
+            //console.log("Time elapsed "+ s +" second(s)");
+	    consoleLog("Time elapsed "+ s +" second(s)");
         }]);
         
         dataStruct.execute(files);

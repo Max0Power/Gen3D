@@ -115,10 +115,13 @@ function fillEmptyWithResult(t,empty,result) {
  *     === [[1,1,2],[1,3,2],[1,2,2]]
  */
 function lineaari(t) {
+    const width = t.length;
+    const height = t[0].length;
+
     // taulukko kertoo onko indeksissä käyty aiemmin
-    var ones = luoMatriisi(t.length,t[0].length,true); // js/matriisi.js
-    for (var i = 0; i < t.length; i++) {
-        for (var j = 0; j < t[i].length; j++) {
+    var ones = luoMatriisi(width,height,true); // js/matriisi.js
+    for (var i = 0; i < width; i++) {
+        for (var j = 0; j < height; j++) {
             if (tarkista(t,ones,i,j)) {
 		// selvitetään interpoloitavat sijainnit
                 var empty = annaTyhjat(t,ones,i,j);

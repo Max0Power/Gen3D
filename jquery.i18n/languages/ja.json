@@ -32,6 +32,7 @@
     "Texture viewer": "地肌のビューアー",
     "Texture editor": "地肌のエディター",
     "3D-model": "３Ｄモデル",
+    "Console window": "コンソール・ウィンドウ",
     "Texture:": "地肌：",
     "Grayscale": "濃淡画像",
     "Red-Black": "赤くて黒い",
@@ -72,5 +73,7 @@
     "usr-in-lbl-file-formats": "支えた拡張子：",
     "usr-in-p-file-formats": ".png、.jpg、.jpeg、.gif、.hgt.zip",
     "usr-in-lbl-file-system": "ファイルシステム・エクスプローラ：",
-    "usr-in-btn-file-formats": "ファイルの選択"
+    "usr-in-btn-file-formats": "ファイルの選択",
+    "cmd-hello": "今日は、「Gen-3D」にいらっしゃいませ！",
+    "cmd-wait": "これ、ちょっと時間がかかるだろう……"
 }

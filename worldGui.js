@@ -107,25 +107,32 @@ var layout = {
 	    width: 25,
 	    height: 100,
 	    content: [
-		mapComponent,
-		textureViewerComponent
+		mapComponent
 	    ]}
 	,{
 	    type: 'stack',
 	    width: 50,
 	    height: 100,
 	    content: [
-		modelComponent,
-		consoleWindowComponent
+		modelComponent
 	    ]}
 	,{
-            type: 'stack',
-            width: 25,
-            height: 100,
-            content: [
-		controller3dComponent,
-		textureEditorComponent
-	    ]
+	    type: 'column',
+	    width: 25,
+	    height: 100,
+            content:[{
+		type: 'stack',
+		content: [
+		    controller3dComponent,
+		    textureEditorComponent
+		]}
+	    ,{
+		type: 'stack',
+		content: [
+		    consoleWindowComponent,
+		    textureViewerComponent
+		]
+	    }]
         }]
     }]
 };
@@ -395,6 +402,7 @@ myLayout.on('initialised',function() {
     myLayout.on('itemCreated',function(component) {
 	updateLocales();
     });
+    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello');
 });
 
 myLayout.init();

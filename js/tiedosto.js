@@ -30,6 +30,7 @@ function lueTiedostoImage(file,callback) {
     const reader = new FileReader();
     reader.onprogress = function(e) {
         console.log(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
+	consoleLog(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
     };
     reader.onload = function(e) {
         const img = new Image();
@@ -55,6 +56,7 @@ function lueTiedostoUrl(url,file,callback) {
     request.onprogress = function(e) {
         if (e.loaded && e.total) {
             console.log(filename+" "+Math.floor(e.loaded / e.total * 100)+" %");
+	    consoleLog(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
         }
     };
     request.onreadystatechange = function() {
@@ -91,16 +93,20 @@ function lueTiedostoZip(dataZip,file,callback) {
     
     zip.createReader(new zip.BlobReader(blob), function(zipReader) {
         zipReader.getEntries(function(entries) {
+	    const filename = entries[0].filename;
             entries[0].getData(new zip.BlobWriter(), function(data) {
                 zipReader.close();
                 
                 const myReader = new FileReader();
-                myReader.readAsArrayBuffer(data);
-    
-                myReader.onload = function(e) {
+		myReader.onload = function(e) {
                     const buffer = e.srcElement.result;
                     callback(lueKorkeudet(buffer),file);
                 };
+		myReader.onprogress = function(e) {
+		    console.log(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
+		    consoleLog(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
+		};
+                myReader.readAsArrayBuffer(data);
             });
         });
     }, onerror);
@@ -139,6 +145,9 @@ function lueTiedostotZip(dataZip,files,callback) {
                                 const buffer = e.srcElement.result;
                                 callback(lueKorkeudet(buffer),tied);
                             }
+			    myReader.onprogress = function(e) {
+				console.log("Nothing to report!");
+			    };	
                         });
                     }
                 }

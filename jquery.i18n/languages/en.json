@@ -32,6 +32,7 @@
     "Texture viewer": "Texture viewer",
     "Texture editor": "Texture editor",
     "3D-model": "3D-model",
+    "Console window": "Console window",
     "Texture:": "Texture:",
     "Grayscale": "Grayscale",
     "Red-Black": "Red-Black",
@@ -72,5 +73,7 @@
     "usr-in-lbl-file-formats": "Supported file formats:",
     "usr-in-p-file-formats": ".png, .jpg, .jpeg, .gif, .hgt.zip",
     "usr-in-lbl-file-system": "File system explorer:",
-    "usr-in-btn-file-formats": "Choose file"
+    "usr-in-btn-file-formats": "Choose file",
+    "cmd-hello": "Hello, welcome to Gen3D!",
+    "cmd-wait": "This may take a while..."
 }

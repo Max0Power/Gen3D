@@ -22,7 +22,7 @@ jQuery(function($) {
 
 function updateLocales() {
     $('body').i18n();
-    
+
     var colors = $('.color');
     for (var i = 0; i < colors.length; i++) {
 	var numbers = colors[i].text.match(/\d+/g).map(Number);

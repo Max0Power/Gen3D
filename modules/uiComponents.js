@@ -436,11 +436,16 @@ function createConsoleWindow(top, left, callback) {
 	// -------------------------- Container for console
 	
 	var container = document.createElement("DIV");
-	//container.style.width = "200px";
-	//container.style.height = "200px";
-        container.setAttribute("class", "draggableContainer");
+        //var container = document.createElement("PRE"); /* scrollbar error */
         fitToContainer(container);
-	
+        container.setAttribute("class", "draggableContainer");
+
+        var con = document.createElement("DIV"); 
+        fitToContainer(con);
+        con.setAttribute("id", "log");
+        con.style.whiteSpace = "pre"; // rivi per viesti
+        container.appendChild(con);
+
 	// --------------------------- Console text area ja sen tyylit
 	
         /*
@@ -456,42 +461,27 @@ function createConsoleWindow(top, left, callback) {
 	con.value = "Hello, welcome to Gen3D!";
 	container.appendChild(con);
 	*/
-    
-        var con = document.createElement("DIV"); // only placeholder
-        con.setAttribute("id", "log");
-        container.appendChild(con);
-        fitToContainer(con);
 
-        /**
-	 * Redirects console.log to Console window
-	 */
-        $(window).on('load', function () {
-	    var old = console.log;
-	    var logger = document.getElementById('log');
-	    console.log = function (message) {
-		if (typeof message == 'object') {
-		    logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
-		} else {
-		    logger.innerHTML += message + '<br />';
-		}
-	    }
-	    console.log("Hello, welcome to Gen3D!");
-	});
-
-	return draggableUiComponent("Console", [top, left], container); // tehdaan console raahattavaksi komponentiksi
+	return draggableUiComponent("Console window", [top, left], container); // tehdaan console raahattavaksi komponentiksi
 }
 
+/**
+ * Näytä konsolin viimeisin viesti ellei scrollata
+ */
+function updateScroll(){
+    var element = document.getElementById("log"); // id's container
+    element.scrollTop = element.scrollHeight;
+}
 
 /**
  * Lisaa konsoliin uuden tekstirivin.
+ * Type tarvitaan käännösten avuksi.
  */
-/*
-function consoleAdd(txt) {
-	if (con != null) {
-		con.value += txt + '\n' ;
-	}
+function consoleLog(txt,type) {
+    var logger = document.getElementById('log');
+    logger.innerHTML += txt + '<br />';
+    updateScroll();
 }
-*/
 
 function fitToContainer(container){
     // Make it visually fill the  positioned parent
