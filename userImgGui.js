@@ -1,10 +1,11 @@
 "use strict";
 
 var userInputComponent = {
-    type: 'react-component',
-    title: 'User input',
+    type: 'component',
     id: 'User input',
-    component: 'User input',
+    isClosable: true,
+    componentName: 'User input',
+    componentState: {  },
     props: { draggableId: 'User input' }
 };
 
@@ -105,163 +106,13 @@ var layout = {
     }]
 };
 
-class UserInput extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {src: ''};
-        
-        this.heights;
-        this.minmaxh;
-        
-        this.handleUpload = this.handleUpload.bind(this);
-        this.handleLoadedImg = this.handleLoadedImg.bind(this);
-        this.redraw = this.redraw.bind(this);
-        
-        window._fileInput = this;
-    }
-    
-    render() {
-        return (
-            <React.Fragment>
-		<div id={this.props.draggableId} class="draggableContainer">
-		<div class="flexable">
-		<span class="form-group">
-                <label data-i18n="usr-in-lbl-file-formats">Supported file formats: </label>
-                <br />
-                <p class="deftext" data-i18n="usr-in-p-file-formats">.png, .jpg, .jpeg, .gif, .hgt.zip</p>
-		</span>
-		<span class="form-group">
-		<label data-i18n="usr-in-lbl-file-system">File system explorer: </label>
-		<label for="file_input" class="form-control btn btn-default" data-i18n="usr-in-btn-file-formats">Choose file</label>
-                <input id="file_input" type="file" onChange={this.handleUpload}/>
-		</span>
-		</div>
-		<span class="form-group">
-                <img class="img-center" id={this.props.id} src={this.state.src} onLoad={this.handleLoadedImg} />
-		</span>
-		</div>
-            </React.Fragment>
-        );
-    }
-    
-    handleUpload(e) {
-        if (!e.target.files[0]) return;
-        
-        const that = this;
-        const file = this.file = e.target.files[0];
-	var start = Date.now(); // for message
-
-        if (this.isFileImage(file)) {
-            this.setState({src: URL.createObjectURL(file)});
-            
-            lueTiedostoImage(file,(data) => {
-                that.heights = data;
-                that.minmaxh = [0,1];
-                
-                drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
-		ready(start); // message
-            });
-        }
-        
-        if (this.isFileZip(file)) {
-            const format = file.type.split('/')[1];
-            this.setState({src: ""}); // tyhjä taustakuva
-            
-            lueTiedostoZip(file, {name:file.name}, (data) => {
-		var select = document.getElementById( 'selectedIntAlg' );
-		var intalg = select.options[select.selectedIndex].value;
-		that.heights = data;
-		
-		var maxSize = parseInt(document.getElementById("input_modelMaxVertices").value, 10);
-		if (data.length > maxSize) {
-		    that.heights = decreaseHeightsMatrix(data, maxSize, maxSize);
-		}
-		
-		switch (intalg) {
-		  case '0':
-		    that.heights = fillWeightedAverage(that.heights);
-                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		    
-		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
-		    ready(start); // message
-		    break;
-		  case '1':
-		    that.heights = fillAllDataHoles(that.heights);
-                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		    
-		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
-		    ready(start); // message
-		    break;
-		  case '2':
-		    const worker = new Worker('js/thread.js'); // js/thread.js
-		    worker.addEventListener('message', function(e) {
-			that.heights = e.data;
-			that.minmaxh = getHeightsMatrixMinMaxH(that.heights); // modules/DataController.js
-			drawTextureAnd3dModelFromUserImg(that.heights,that.minmaxh);
-			ready(start); // message
-			worker.terminate();
-		    });
-		    consoleLog("This may take a while...");
-		    worker.postMessage(that.heights);
-		    break;
-		  case '3':
-		    that.heights = kaanteinenEtaisyys(that.heights);
-                    that.minmaxh = getHeightsMatrixMinMaxH(that.heights);
-		    drawTextureAnd3dModelFromUserImg(that.heights, that.minmaxh);
-		    ready(start); // message
-		    break;
-		  default:
-		    throw new Error("Virhe interpoloinnissa");
-		}
-            });
-        }
-	
-	function ready(start) {
-	    const ms = Date.now() - start;
-	    const s = Math.floor(ms/1000);
-	    //console.log("Time elapsed "+ s +" second(s)");
-	    consoleLog("Time elapsed "+ s +" second(s)");
-	}
-    }
-    
-    handleLoadedImg(e) {
-        var img = e.target;
-        
-        // skaalataan kuva pieneksi
-        var maxSize = 200;
-        var pixelsX = img.width;
-        var pixelsY = img.height;
-        if (pixelsX > maxSize || pixelsY > maxSize) {
-            var scale = maxSize / pixelsX; // otetaan skaalaus, jolla skaalataan matriisi, (leveys ja korkeus pysyy samana)
-            if (pixelsY > pixelsX) { // jos y pikseleiden maara suurempaa kuin x piksleiden
-                scale = maxSize / pixelsY // lasketaan scale korkeus pikseleiden suhteen
-            }
-            // lasketaan uudet pixelsX ja pixelsY maarat
-            pixelsX = Math.floor(scale * pixelsX);
-            pixelsY = Math.floor(scale * pixelsY);
-        }
-        img.width = pixelsX;
-        img.height = pixelsY;
-    }
-    
-    redraw(callback) {
-        callback(this.heights,this.minmaxh);
-    }
-    
-    isFileImage(file) {
-        return file && file['type'].split('/')[0] === 'image';
-    }
-    
-    isFileZip(file) {
-	var zip = file && file['type'] === 'application/x-zip-compressed';
-	return file && (zip || file['type'] === 'application/zip');
-    }
-}
-
 var myLayout = new GoldenLayout(layout, '#container3D');
 
 // User input component
-myLayout.registerComponent('User input', UserInput);
+myLayout.registerComponent('User input', function( container, componentState) {
+    container.getElement().html( $( createUserInputImgController() ) );
+});
+
 
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
@@ -314,7 +165,7 @@ var addMenuItem = function( title, component ) {
 };
 
 $(document).ready(function() {
-    addMenuItem( userInputComponent.title, userInputComponent );
+    addMenuItem( userInputComponent.componentName, userInputComponent );
     addMenuItem( controller3dComponent.componentName, controller3dComponent );
     addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
     addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
@@ -330,7 +181,7 @@ myLayout.on('initialised',function() {
     myLayout.on('itemCreated',function(component) {
         updateLocales();
     });
-    consoleLog("Hello, welcome to Gen3D!");
+    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello');
 });
 
 myLayout.init();
