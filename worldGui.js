@@ -142,7 +142,7 @@ var myLayout = new GoldenLayout(layout, '#container3D');
 
 // Map component
 myLayout.registerComponent('Map', function( container, componentState) {
-    container.getElement().html( $( createMap() ) );
+    container.getElement().html( $( (new Map()).getContainer() ) );
 });
 
 // Controller 3D component
@@ -178,6 +178,7 @@ var addMenuItem = function( title, component ) {
 
     var show_hide = true;
     element.onclick = function(event) {
+	event.preventDefault();
 	show_hide = !show_hide;
 	var that = document.getElementById(component.props.draggableId);
 	
@@ -189,7 +190,7 @@ var addMenuItem = function( title, component ) {
 		element.className = "draggableToggleBtnInactive";
 		that.style.display = 'none'; // show, ikkuna pois nakyvista
 	    }
-	}		
+	}
     }
     
     $( '#tools' ).append( element );
@@ -204,8 +205,6 @@ myLayout.on('initialised',function() {
     myLayout.on('itemCreated', function(component) {
 	updateLocales(); // js/lang.js
     });
-    
-    initiateSite(); // worldMain.js
     
     addMenuItem( mapComponent.componentName, mapComponent );
     addMenuItem( controller3dComponent.componentName, controller3dComponent );
