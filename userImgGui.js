@@ -117,14 +117,14 @@ myLayout.registerComponent('User input', function( container, componentState) {
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
     container.getElement().html( $( createInput3dController(0, 0, function() {
-        window._fileInput.redraw(draw3dModelFromUserImg);
+	redraw(draw3dModelFromUserImg);
     }, true, true) ) )
 });
 
 // Texture viewer component
 myLayout.registerComponent('Texture viewer', function( container, componentState) {
     container.getElement().html( $( createTextureController(0, 0, () => {
-        window._fileInput.redraw(drawTextureFromUserImg);
+	redraw(drawTextureFromUserImg);
     }) ) );
 });
 
@@ -164,24 +164,25 @@ var addMenuItem = function( title, component ) {
   	myLayout.createDragSource( element, component );
 };
 
-$(document).ready(function() {
-    addMenuItem( userInputComponent.componentName, userInputComponent );
-    addMenuItem( controller3dComponent.componentName, controller3dComponent );
-    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
-    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
-    addMenuItem( modelComponent.componentName, modelComponent );
-    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
-});
-
 $(window).resize(function () {
     myLayout.updateSize();
 });
 
 myLayout.on('initialised',function() {
     myLayout.on('itemCreated',function(component) {
-        updateLocales();
+        updateLocales(); // js/lang.js
     });
-    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello');
+
+    initiateSite(); // userImgMain.js
+
+    addMenuItem( userInputComponent.componentName, userInputComponent );
+    addMenuItem( controller3dComponent.componentName, controller3dComponent );
+    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
+    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
+    addMenuItem( modelComponent.componentName, modelComponent );
+    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
+    
+    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello'); // modules/uiComponents.js
 });
 
 myLayout.init();

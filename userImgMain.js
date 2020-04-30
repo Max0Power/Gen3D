@@ -10,7 +10,7 @@
 
 "use strict";
 
-window.onload = function() {
+function initiateSite() {
 	textures.setSelectOption(0); // ei anna maailman mittakaavassa skaalattavia tekstuureita!
 }
 
@@ -79,68 +79,18 @@ function draw3dModelFromUserImg(heights, minmax=[0,1]) {
 	drawMesh();
 }
 
+var heights;
+var minmaxh;
 
-/*
- * Luo input kontrollerin, johon kayttaja voi syottaa malliksi luotavan kuvan
- */
-/*
-function createUserInputImgController() {
-	var container = document.createElement("DIV"); // uloin divi
-
-	var userInput = document.createElement("INPUT"); // kayttajan syote
-	userInput.setAttribute("type", "file");
-	container.appendChild(userInput);
-
-	var imgDiv = document.createElement("DIV");
-	container.appendChild(imgDiv);
-	var img = document.createElement("IMG"); // kuva elementti, johon kayttajan syottama kuva asetetaans
-	img.id = "myImg";
-
-	imgDiv.appendChild(img);
-
-	// kun kayttaja on syottanyt kuvan:
-	userInput.onchange = function(event) {
-
-		// tarkistus, TODO tee paremmaksi
-		if (userInput.files.length > 0) {
-			img.src = URL.createObjectURL(userInput.files[0]); // asetetaan imagelle source
-			// kun kuva on ladattu:
-			img.onload = function(event) {
-
-				// skaalataan kayttajan kuva pienempaan kokoon tarvittaessa:
-				var maxSize = 200;
-				var pixelsX = img.width;
-				var pixelsY = img.height;
-				if (pixelsX > maxSize || pixelsY > maxSize) {
-					scale = maxSize / pixelsX; // otetaan skaalaus, jolla skaalataan matriisi, (leveys ja korkeus pysyy samana)
-					if (pixelsY > pixelsX) { // jos y pikseleiden maara suurempaa kuin x piksleiden
-						scale = maxSize / pixelsY // lasketaan scale korkeus pikseleiden suhteen
-					}
-					// lasketaan uudet pixelsX ja pixelsY maarat
-					pixelsX = Math.floor(scale * pixelsX);
-					pixelsY = Math.floor(scale * pixelsY);
-				}
-				img.width = pixelsX;
-				img.height = pixelsY;
-
-				// generoidaan naytettava tekstuuri ja 3d malli:
-				drawTextureAnd3dModelFromUserImg();
-			};
-		}
-	};
-
-	return container;
+function redraw(callback) {
+    callback(heights, minmaxh);
 }
-*/
 
 /*
  * Luo input kontrollerin, johon kayttaja voi syottaa malliksi luotavan kuvan
  */
 function createUserInputImgController() {
-    var heights;
-    var minmaxh;
-
-    var container = document.createElement("DIV");
+    var container = document.createElement("DIV"); // uloin divi
     container.setAttribute("id", "User input");
     container.setAttribute("class", "draggableContainer");
     
@@ -180,9 +130,11 @@ function createUserInputImgController() {
     label21.setAttribute("class", "form-control btn btn-default");
     label21.setAttribute("data-i18n", "usr-in-btn-file-formats");
 
-    var input2 = span2.appendChild(document.createElement("INPUT"));
+    var input2 = span2.appendChild(document.createElement("INPUT")); // kayttajan syote
     input2.setAttribute("id", "file_input");
     input2.setAttribute("type", "file");
+
+    // kun kayttaja on syottanyt kuvan:
     input2.onchange = function(e) {
 	handleUpload(e);
     };
@@ -192,9 +144,9 @@ function createUserInputImgController() {
     var span3 = container.appendChild(document.createElement("SPAN"));
     span3.setAttribute("class", "form-group");
 
-    var img3 = span3.appendChild(document.createElement("IMG"));
+    var img3 = span3.appendChild(document.createElement("IMG")); // kuva elementti, johon kayttajan syottama kuva asetetaan
     img3.setAttribute("class", "img-center");
-    img3.setAttribute("id", "User input");
+    img3.id = "User input";
     img3.setAttribute("src", "");
     img3.onload = function(e) {
 	handleLoadedImg(e);
@@ -205,19 +157,22 @@ function createUserInputImgController() {
     // // // //
 
     function handleUpload(e) {
+	// tarkistus
         if (!e.target.files[0]) return;
 
         const file = e.target.files[0];
         var start = Date.now(); // for message
 
         if (isFileImage(file)) {
-            img3.setAttribute("src", URL.createObjectURL(file));
+            img3.src = URL.createObjectURL(file); // asetetaan imagelle source
 
+	    // kun kuva on ladattu:
             lueTiedostoImage(file,(data) => {
                 heights = data;
                 minmaxh = [0,1];
 
-                drawTextureAnd3dModelFromUserImg(heights, minmaxh);
+		// generoidaan naytettava tekstuuri ja 3d malli:
+                redraw(drawTextureAnd3dModelFromUserImg);
                 ready(start); // message
             });
         }
@@ -241,14 +196,14 @@ function createUserInputImgController() {
                     heights = fillWeightedAverage(heights);
                     minmaxh = getHeightsMatrixMinMaxH(heights);
 
-                    drawTextureAnd3dModelFromUserImg(heights, minmaxh);
+                    redraw(drawTextureAnd3dModelFromUserImg);
                     ready(start); // message
                     break;
                   case '1':
                     heights = fillAllDataHoles(heights);
                     minmaxh = getHeightsMatrixMinMaxH(heights);
 
-                    drawTextureAnd3dModelFromUserImg(heights, minmaxh);
+                    redraw(drawTextureAnd3dModelFromUserImg);
                     ready(start); // message
                     break;
                   case '2':
@@ -256,7 +211,7 @@ function createUserInputImgController() {
                     worker.addEventListener('message', function(e) {
                         heights = e.data;
                         minmaxh = getHeightsMatrixMinMaxH(heights); // modules/DataController.js
-                        drawTextureAnd3dModelFromUserImg(heights, minmaxh);
+                        redraw(drawTextureAnd3dModelFromUserImg);
 
                         ready(start); // message
                         worker.terminate();
@@ -267,7 +222,7 @@ function createUserInputImgController() {
                   case '3':
                     heights = kaanteinenEtaisyys(heights);
                     minmaxh = getHeightsMatrixMinMaxH(heights);
-                    drawTextureAnd3dModelFromUserImg(heights, minmaxh);
+                    redraw(drawTextureAnd3dModelFromUserImg);
                     ready(start); // message
                     break;
                   default:
@@ -287,7 +242,7 @@ function createUserInputImgController() {
     function handleLoadedImg(e) {
         var img = e.target;
 
-        // skaalataan kuva pieneksi
+        // skaalataan kayttajan kuva pienempaan kokoon tarvittaessa:
         var maxSize = 200;
         var pixelsX = img.width;
         var pixelsY = img.height;
@@ -302,10 +257,6 @@ function createUserInputImgController() {
         }
         img.width = pixelsX;
         img.height = pixelsY;
-    }
-
-    function redraw(callback) {
-        callback(heights, minmaxh);
     }
 
     function isFileImage(file) {

@@ -7,6 +7,7 @@
  * @version 19.10.2019, React
  * @version 20.10.2019, Mapbox
  * @version 23.04.2020, jQuery.i18n
+ * @version 30.04.2020, React removed
  */
 -->
 
@@ -21,11 +22,10 @@
 	<!-- css -->
 	<link rel="stylesheet" href="css/styles.css" type="text/css" />
 	<!--<link rel="stylesheet" href="css/leaflet.css" />-->
-        <link rel="stylesheet" href="css/goldenlayout-base.css" />
+        <link rel="stylesheet" href="css/goldenlayout-base.css"  />
         <link rel="stylesheet" href="css/goldenlayout-dark-theme.css" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css" />
-	<!--<link rel="stylesheet" href="css/bootstrap.css" />-->
 	
 	<!-- i18n -->
 	<script src="jquery.i18n/jquery-3.2.1.min.js"></script>
@@ -46,15 +46,8 @@
 	<script src="lib/z-worker.js"></script>
 	<script src="lib/math.js"></script>
 	<script src="lib/deflate.js"></script>
-        <!--<script src="lib/jquery.min.js"></script>-->
         <script src="lib/goldenlayout.min.js"></script>
-        <script src="lib/react.production.min.js"></script>
-        <script src="lib/react-dom.production.min.js"></script>
-        <script src="lib/babel.min.js"></script>
         <script src="lib/mapbox.js"></script>
-	<!--<script src="lib/bootstrap.js"></script>-->
-	<!-- Ei toimi Chromella -->
-	<!--<script src="lib/less.min.js"></script>-->
 	
 	<!-- modules -->
 	<script src="modules/data.js"></script>
@@ -82,8 +75,8 @@
         <script src="sh/usgs.js"></script>
         
         <!-- main -->
-        <script src="worldMain.js"></script>
-        <script src="worldGui.js" type="text/babel"></script>
+	<script src="worldMain.js"></script>
+	<script src="worldGui.js"></script>
         
         <title>World Map 3D | 3D-Gen</title>
     </head>

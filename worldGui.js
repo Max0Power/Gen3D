@@ -1,43 +1,44 @@
 "use strict";
 
 var mapComponent = {
-	type: 'react-component',
-	isClosable: true,
-	title: 'Map',
-	component: 'Map',
-	props: {
-		draggableId: 'Map',
-		latitude: {
-			sign: 'Latitude:',
-			id: 'inputLatitude',
-			name: 'inputLatitude',
-			for: 'inputLatitude',
-			min: '-85',
-			max: '85',
-			step: 'any',
-			value: '0.25'
-		},
-		longitude: {
-			sign: 'Longitude:',
-			id: 'inputLongitude',
-			name: 'inputLongitude',
-			for: 'inputLongitude',
-			min: '-180',
-			max: '180',
-			step: 'any',
-			value: '6.5'
-		},
-		size: {
-			sign: 'Size:',
-			id: 'inputSize',
-			name: 'inputSize',
-			for: 'inputSize',
-			min: '0.01',
-			max: '10',
-			step: '0.01',
-			value: '0.2'
-		}
+    type: 'component',
+    id: 'Map',
+    isClosable: true,
+    componentName: 'Map',
+    componentState: {  },
+    props: {
+	draggableId: 'Map',
+	latitude: {
+	    sign: 'Latitude:',
+	    id: 'inputLatitude',
+	    name: 'inputLatitude',
+	    for: 'inputLatitude',
+	    min: '-85',
+	    max: '85',
+	    step: 'any',
+	    value: '0.25'
+	},
+	longitude: {
+	    sign: 'Longitude:',
+	    id: 'inputLongitude',
+	    name: 'inputLongitude',
+	    for: 'inputLongitude',
+	    min: '-180',
+	    max: '180',
+	    step: 'any',
+	    value: '6.5'
+	},
+	size: {
+	    sign: 'Size:',
+	    id: 'inputSize',
+	    name: 'inputSize',
+	    for: 'inputSize',
+	    min: '0.01',
+	    max: '10',
+	    step: '0.01',
+	    value: '0.2'
 	}
+    }
 }
 
 var controller3dComponent = {
@@ -137,202 +138,12 @@ var layout = {
     }]
 };
 
-class MapComponent extends React.Component {
-    constructor(props) {        
-	super(props);
-        this.handleClick = this.handleClick.bind(this);
-
-	this.leaflet = React.createRef();
-    }
-
-    componentDidMount() {
-	const lat = parseFloat(document.getElementById( 'inputLatitude' ).value);
-	const lng = parseFloat(document.getElementById( 'inputLongitude' ).value);
-	const size = parseFloat(document.getElementById( 'inputSize' ).value);
-	if (lat && lng && size) {
-	    window._leaflet.makeSquareFromClicks(lat,lng,size);
-	}
-    }
-    
-    handleClick(e) {
-        generateImageAnd3D();
-    }
-    
-    render() {
-        return (
-            <React.Fragment>
-		<div id={this.props.draggableId} class='draggableContainer flexable'>
-	        <Leaflet {...this.props} ref={this.leaflet}/>
-                <Input {...this.props.latitude} />
-                <Input {...this.props.longitude} />
-                <Input {...this.props.size} />
-		<span class="form-group flexable">
-                  <button class="form-control btn btn-default" onClick={this.handleClick} data-i18n="map-btn-gen">Generate</button>
-		</span>
-		</div>
-            </React.Fragment>
-        );
-    }
-}
-
-class Leaflet extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.clickSquare = null;
-        this.mymap = null;
-        this.state = ({mapview: 'dark'});
-        
-        this.onMapOneClick = this.onMapOneClick.bind(this);
-        this.makeSquareFromClicks = this.makeSquareFromClicks.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-
-	window._leaflet = this;
-    }
-    
-    handleChange(e) {
-        const layerId = e.target.value;
-        this.setState({mapview: layerId});
-        
-        if (this.style) this.style.remove();
-        if (layerId !== 'default') {
-            this.style = L.mapbox.styleLayer('mapbox://styles/mapbox/' + layerId).addTo(this.mymap);
-        }
-    }
-    
-    componentDidMount() {
-        L.mapbox.accessToken = 'pk.eyJ1IjoiaGFiYSIsImEiOiJjazF5eXptbG4wcTl1M21sODFwbWVnMDI1In0.RgLBJb1OFvgsqYfnREA7ig';
-        var map = this.mymap = L.mapbox.map(ReactDOM.findDOMNode(this), 'mapbox.dark', {
-            minZoom: 1,
-            maxZoom: 18,
-            zoom: 10,
-            center: [0.25,6.5],
-            SameSite: 'None',
-            attributionControl: true,
-            reuseTiles: true
-        });
-        map.on('click', this.onMapOneClick);
-        map.fitWorld();
-
-	function outputsize() {
-	    map.invalidateSize();
-	}
-	const leaflet = document.querySelector('#mapid');
-	new ResizeObserver(outputsize).observe(leaflet);
-	//new ResizeObserver(outputsize).observe(ReactDOM.findDOMNode(this));
-    }
-    
-    onMapOneClick(e) {
-        const click = e.latlng;
-        updateAreaInputs(click.lat, click.lng);
-        
-        const args = readAreaInputs();
-        this.makeSquareFromClicks(...args);
-    }
-
-    makeSquareFromClicks(lat,lng,size) {
-        const map = this.mymap;
-        var square = this.clickSquare;
-        
-        if (square) square.remove();
-        
-        size = size / 2.0;
-        var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
-        // add rectangle passing bounds and some basic styles
-        const rectangle = L.rectangle(bounds, {color: '#2196F3', weight: 1, type: 'fill'}).addTo(map);
-        
-        // asetetaan neliön raahaus
-        rectangle.on('mousedown', () => {
-            map.dragging.disable();
-            map.on('mousemove', (e) => {
-                lat = e.latlng.lat;
-                lng = e.latlng.lng;
-                bounds = [[lat + size, lng + size], [lat - size, lng - size]];
-                rectangle.setBounds(bounds);
-            });
-        }); 
-        rectangle.on('mouseup', (e) =>{
-            map.dragging.enable();
-            map.removeEventListener('mousemove');
-        });
-        
-        square = this.clickSquare = rectangle;
-    }
-    
-    render() {
-        return(
-            <React.Fragment>
-            <div id='mapid' />
-
-	    <span class="form-group">
-            <label for="selectMapView" data-i18n="map-lbl-view">Map view:</label>
-            <select class="form-control btn-default" onChange={this.handleChange} value={this.state.mapview} id="selectMapView">
-                <option value='default' data-i18n="map-opt-black">Black</option>
-                <option value='streets-v11' data-i18n="map-opt-streets">Streets</option>
-                <option value='light-v10' data-i18n="map-opt-light">Light</option>
-                <option value='dark-v10' data-i18n="map-opt-dark">Dark</option>
-                <option value='outdoors-v11' data-i18n="map-opt-outdoors">Outdoors</option>
-                <option value='satellite-v9' data-i18n="map-opt-satellite">Satellite</option>
-                <option value='satellite-streets-v11' data-i18n="map-opt-satellite-streets">Satellite-Streets</option>
-            </select>
-	    </span>
-            </React.Fragment>
-        );
-    }
-}
-
-class Input extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        
-	this.handleValid = this.handleValid.bind(this);
-	this.handleChange = this.handleChange.bind(this);
-    }
-    
-    render() {
-        return (
-            <React.Fragment>	
-	      <span class="form-group">
-              <label for={this.props.id} data-i18n={this.props.sign}>{this.props.sign}</label>
-              <input class="form-control btn-default"
-	        onInput={this.handleValid}
-	        onChange={this.handleChange}
-	        id={this.props.id}
-                name={this.props.id}
-                min={this.props.min}
-                max={this.props.max}
-                step={this.props.step}
-                value={this.state.value}
-                defaultValue={this.props.value}
-	        required
-                type='number'>
-              </input>
-	      </span>
-            </React.Fragment>
-        );
-    }
-    
-    handleChange(e) {
-	e.target.reportValidity();
-    }
-
-    handleValid(e) {
-	this.setState({value: e.target.value});
-	
-	const lat = parseFloat(document.getElementById( 'inputLatitude' ).value);
-	const lng = parseFloat(document.getElementById( 'inputLongitude' ).value);
-	const size = parseFloat(document.getElementById( 'inputSize' ).value);
-	if (lat && lng && size) {
-	    window._leaflet.makeSquareFromClicks(lat,lng,size);
-	}
-    }
-}
-
 var myLayout = new GoldenLayout(layout, '#container3D');
 
 // Map component
-myLayout.registerComponent('Map', MapComponent);
+myLayout.registerComponent('Map', function( container, componentState) {
+    container.getElement().html( $( createMap() ) );
+});
 
 // Controller 3D component
 myLayout.registerComponent('Controller 3D', function( container, componentState) {
@@ -361,7 +172,7 @@ myLayout.registerComponent('Console window', function( container, componentState
 
 var addMenuItem = function( title, component ) {
     var element = document.createElement("BUTTON");
-    element.textContent = title;
+    element.appendChild(document.createTextNode(title));
     element.setAttribute("data-i18n", title);
     element.className = "draggableToggleBtnActive";
 
@@ -385,24 +196,25 @@ var addMenuItem = function( title, component ) {
     myLayout.createDragSource( element, component );
 };
 
-$(document).ready(function() {
-    addMenuItem( mapComponent.title, mapComponent );
-    addMenuItem( controller3dComponent.componentName, controller3dComponent );
-    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
-    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
-    addMenuItem( modelComponent.componentName, modelComponent );
-    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
-});
-
 $(window).resize(function () {
     myLayout.updateSize();
 });
 
 myLayout.on('initialised',function() {
-    myLayout.on('itemCreated',function(component) {
-	updateLocales();
+    myLayout.on('itemCreated', function(component) {
+	updateLocales(); // js/lang.js
     });
-    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello');
+    
+    initiateSite(); // worldMain.js
+    
+    addMenuItem( mapComponent.componentName, mapComponent );
+    addMenuItem( controller3dComponent.componentName, controller3dComponent );
+    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
+    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
+    addMenuItem( modelComponent.componentName, modelComponent );
+    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
+
+    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello'); // modules/uiComponents.js
 });
 
 myLayout.init();

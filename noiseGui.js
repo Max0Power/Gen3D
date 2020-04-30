@@ -164,24 +164,25 @@ var addMenuItem = function( title, component ) {
     myLayout.createDragSource( element, component );
 };
 
-$(document).ready(function() {
-    addMenuItem( noiseControllerComponent.componentName, noiseControllerComponent );
-    addMenuItem( controller3dComponent.componentName, controller3dComponent );
-    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
-    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
-    addMenuItem( modelComponent.componentName, modelComponent );
-    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
-});
-
 $(window).resize(function () {
     myLayout.updateSize();
 });
 
 myLayout.on('initialised',function() {
     myLayout.on('itemCreated',function(component) {
-        updateLocales();
+        updateLocales(); // js/lang.js
     });
-    consoleLog("Hello, welcome to Gen3D!",'cmd-hello');
+
+    initiateSite(); // noiseMain.js
+
+    addMenuItem( noiseControllerComponent.componentName, noiseControllerComponent );
+    addMenuItem( controller3dComponent.componentName, controller3dComponent );
+    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
+    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
+    addMenuItem( modelComponent.componentName, modelComponent );
+    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
+
+    consoleLog("Hello, welcome to Gen3D!",'cmd-hello'); // modules/uiComponents.js
 });
 
 myLayout.init();

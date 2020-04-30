@@ -12,7 +12,7 @@
  * @firstCreated 26.10.2018 by Jussi Parviainen
  * @version 12.11.2018
  */
-window.onload = function() {
+function initiateSite() {
 	textures.setSelectOption(0);
 	
 	// aloituksessa piirrettava grayscale ja 3d malli: 
