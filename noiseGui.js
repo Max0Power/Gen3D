@@ -142,7 +142,7 @@ var addMenuItem = function( title, component ) {
     var element = document.createElement("BUTTON");
     element.textContent = title;
     element.setAttribute("data-i18n", title);
-    element.className = "draggableToggleBtnActive";
+    element.className = "draggableToggleBtnActive navbar-btn";
 
     var show_hide = true;
     element.onclick = function(event) {
@@ -181,8 +181,6 @@ myLayout.on('initialised',function() {
     addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
     addMenuItem( modelComponent.componentName, modelComponent );
     addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
-
-    consoleLog("Hello, welcome to Gen3D!",'cmd-hello'); // modules/uiComponents.js
 });
 
 myLayout.init();

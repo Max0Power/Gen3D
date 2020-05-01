@@ -31,13 +31,25 @@ class Map {
 	return this.container;
     }
 
+    getLatitude() {
+	return parseFloat( this.inputLatitude.value );
+    }
+
+    getLongitude() {
+	return parseFloat( this.inputLongitude.value );
+    }
+
+    getSize() {
+	return parseFloat( this.inputSize.value );
+    }
+
     /**
      * Read area inputs
      */
     readAreaInputs() {
-	let lat = parseFloat(this.inputLatitude.value);
-	let lng = parseFloat(this.inputLongitude.value);
-	let size = parseFloat(this.inputSize.value);
+	const lat = this.getLatitude();
+	const lng = this.getLongitude();
+	const size = this.getSize() / 2.0;
 	
 	return [lat,lng,size];
     }
@@ -56,21 +68,19 @@ class Map {
      * Former option 2
      */
     generateImageAnd3D() {
-	this.generate2([makeGrayscale,make3DModel]);
+	this.generateMap([makeGrayscale,make3DModel]);
     }
 
     /**
      * Generates file objects
      * @param callbacks		array of callback functions
      */
-    generate2(callbacks) {
+    generateMap(callbacks) {
         var start = Date.now(); // start timer
 
-	const lat = parseFloat( this.inputLatitude.value );
-	const lng = parseFloat( this.inputLongitude.value );
-	const size = parseFloat( this.inputSize.value ) / 2.0;
+	const inputs = this.readAreaInputs();
+        var files = fileTehtaat(...getLatlngs(...inputs));
 
-        var files = fileTehtaat(...getLatlngs(lat,lng,size));
         this.datastruct = new DataStruct(); // TODO tarkista onko uudet
         this.datastruct.setCallbacks([function(arg) {
             var result = [arg.heights,arg.minMaxH];
@@ -105,8 +115,8 @@ class Map {
 	    const click = e.latlng;
 	    that.updateAreaInputs(click.lat, click.lng);
 	    
-	    const args = that.readAreaInputs();
-	    that.makeSquareFromClicks(...args);
+	    const inputs = that.readAreaInputs();
+	    that.makeSquareFromClicks(...inputs);
 	});
 	//map.fitWorld();
 	
@@ -114,18 +124,13 @@ class Map {
 	    that.map.invalidateSize();
 	}).observe(this.container);
 	
-	const lat = parseFloat( this.inputLatitude.value );
-	const lng = parseFloat( this.inputLongitude.value );
-	const size = parseFloat( this.inputSize.value );
-	if (lat && lng && size) {
-	    this.makeSquareFromClicks(lat,lng,size);
-	}
+	const inputs = this.readAreaInputs();
+	this.makeSquareFromClicks(...inputs);
     }
 
     makeSquareFromClicks(lat,lng,size) {
 	if (this.clicksquare) this.clicksquare.remove();
 	
-	size = size / 2.0;
 	var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
 	// add rectangle passing bounds and some basic styles
 	const rectangle = L.rectangle(bounds, {color: '#2196F3', weight: 1, type: 'fill'}).addTo(this.map);
@@ -202,9 +207,9 @@ class Map {
 	    option.setAttribute("data-i18n", options[i][2]);
 	}
 	
-	var res0 = this.createInput(mapComponent.props.latitude);
-	var res1 = this.createInput(mapComponent.props.longitude);
-	var res2 = this.createInput(mapComponent.props.size);
+	var res0 = this.createInput(latitude);
+	var res1 = this.createInput(longitude);
+	var res2 = this.createInput(size);
 
 	this.container.appendChild(res0[0]);
 	this.inputLatitude = res0[1];

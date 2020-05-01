@@ -35,7 +35,8 @@
         <!-- lib -->
         <script src="lib/three.js"></script> <!-- 3d mallien luonnin lisa kirjasto -->
         <script src="lib/OrbitControls.js"></script> <!-- Three js trackball controllit 3d mallin katseluun -->
-        <script src="lib/goldenlayout.min.js"></script>
+        <!--<script src="lib/goldenlayout.min.js"></script>-->
+	<script src="lib/goldenlayout.js"></script>
         
         <!-- modules -->
         <script src="modules/textures.js"></script> <!-- Luo 3d mallin -->
@@ -74,7 +75,9 @@
 	    <li><a href="#" target="_blank" data-locale="ja">日本語</a></li>
 	  </ul>
         </div>
-        <div id="tools"></div>
+        <div class="container-fluid bg-black">
+          <div id="tools" class="nav navbar-nav bg-black" />
+        </div>
       </nav>
       <div id="container3D"></div> <!-- div, johon 3D malli luodaan -->
       <!--<a href="instructions/noise.html" target="_blank">

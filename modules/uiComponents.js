@@ -462,6 +462,9 @@ function createConsoleWindow(top, left, callback) {
 	container.appendChild(con);
 	*/
 
+        con.innerHTML += "Hello, welcome to Gen3D!" + '<br />';
+        con.scrollTop = con.scrollHeight;
+
 	return draggableUiComponent("Console window", [top, left], container); // tehdaan console raahattavaksi komponentiksi
 }
 
@@ -490,4 +493,13 @@ function fitToContainer(container){
     // ...then set the internal size to match
     container.width  = container.offsetWidth;
     container.height = container.offsetHeight;
+}
+
+function create3dModel() {
+    var container = document.createElement("DIV");
+    container.setAttribute("class", "draggableContainer");
+    container.setAttribute("id", "3D model");
+    fitToContainer(container);
+    
+    return container;
 }

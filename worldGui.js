@@ -6,40 +6,41 @@ var mapComponent = {
     isClosable: true,
     componentName: 'Map',
     componentState: {  },
-    props: {
-	draggableId: 'Map',
-	latitude: {
-	    sign: 'Latitude:',
-	    id: 'inputLatitude',
-	    name: 'inputLatitude',
-	    for: 'inputLatitude',
-	    min: '-85',
-	    max: '85',
-	    step: 'any',
-	    value: '0.25'
-	},
-	longitude: {
-	    sign: 'Longitude:',
-	    id: 'inputLongitude',
-	    name: 'inputLongitude',
-	    for: 'inputLongitude',
-	    min: '-180',
-	    max: '180',
-	    step: 'any',
-	    value: '6.5'
-	},
-	size: {
-	    sign: 'Size:',
-	    id: 'inputSize',
-	    name: 'inputSize',
-	    for: 'inputSize',
-	    min: '0.01',
-	    max: '10',
-	    step: '0.01',
-	    value: '0.2'
-	}
-    }
-}
+    props: { draggableId: 'Map' }
+};
+	
+const latitude = {
+    sign: 'Latitude:',
+    id: 'inputLatitude',
+    name: 'inputLatitude',
+    for: 'inputLatitude',
+    min: '-85',
+    max: '85',
+    step: 'any',
+    value: '0.25'
+};
+
+const longitude = {
+    sign: 'Longitude:',
+    id: 'inputLongitude',
+    name: 'inputLongitude',
+    for: 'inputLongitude',
+    min: '-180',
+    max: '180',
+    step: 'any',
+    value: '6.5'
+};
+
+const size = {
+    sign: 'Size:',
+    id: 'inputSize',
+    name: 'inputSize',
+    for: 'inputSize',
+    min: '0.01',
+    max: '10',
+    step: '0.01',
+    value: '0.2'
+};
 
 var controller3dComponent = {
     type: 'component',
@@ -73,7 +74,7 @@ var modelComponent = {
     id: '3D-model',
     isClosable: true,
     componentName: '3D-model',
-    componentState: { label: '3D-model' },
+    componentState: {  },
     props: { draggableId: '3D-model' }
 }
 
@@ -162,7 +163,7 @@ myLayout.registerComponent('Texture editor', function( container, componentState
 
 // 3D-model
 myLayout.registerComponent('3D-model', function( container, componentState) {
-    container.getElement().html( init() );
+    container.getElement().html( init() ); // modules/controller3d.js
 });
 
 // Console window component
@@ -174,7 +175,7 @@ var addMenuItem = function( title, component ) {
     var element = document.createElement("BUTTON");
     element.appendChild(document.createTextNode(title));
     element.setAttribute("data-i18n", title);
-    element.className = "draggableToggleBtnActive";
+    element.className = "draggableToggleBtnActive navbar-btn";
 
     var show_hide = true;
     element.onclick = function(event) {
@@ -203,7 +204,7 @@ $(window).resize(function () {
 
 myLayout.on('initialised',function() {
     myLayout.on('itemCreated', function(component) {
-	updateLocales(); // js/lang.js
+	//updateLocales(); // js/lang.js
     });
     
     addMenuItem( mapComponent.componentName, mapComponent );
@@ -212,8 +213,6 @@ myLayout.on('initialised',function() {
     addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
     addMenuItem( modelComponent.componentName, modelComponent );
     addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
-
-    consoleLog("Hello, welcome to Gen3D!", 'cmd-hello'); // modules/uiComponents.js
 });
 
 myLayout.init();

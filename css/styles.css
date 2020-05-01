@@ -70,7 +70,7 @@ img[src=""] {
     border-radius: 0;
 }
 
-#tools {
+.bg-black {
     background: black;
 }
 
@@ -92,7 +92,7 @@ body .lm_content {
 }
 
 #container3D { 
-    height: calc(100% - 93px); /* nav-bar */
+    height: calc(100% - 109px); /* nav-bar */
     width: 100%;
     background-color: black;
     position: absolute; /* jos halutaan, etta ikkuna ei kasva kun objektia raahataan, ja raahattavat elementit on asetettu container3D:n sisaan */
