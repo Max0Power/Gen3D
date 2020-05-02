@@ -22,7 +22,7 @@ class Map {
 	this.inputSize;
 
 	this.container = this.createMap();
-	this.datastruct = new DataStruct(); // TODO
+	this.datastruct = new DataStruct();
 
 	this.initiateSite();
     }
@@ -31,25 +31,29 @@ class Map {
 	return this.container;
     }
 
-    getLatitude() {
-	return parseFloat( this.inputLatitude.value );
+    getElementValue(element) {
+	return parseFloat( element.value );
     }
 
-    getLongitude() {
-	return parseFloat( this.inputLongitude.value );
+    setElementValue(element,value) {
+	element.value = value;
+	var event = new Event('input');
+	element.dispatchEvent(event);
     }
 
-    getSize() {
-	return parseFloat( this.inputSize.value );
+    getValidity() {
+	return this.inputLatitude.checkValidity() &&
+	    this.inputLongitude.checkValidity() &&
+	    this.inputSize.checkValidity();
     }
-
+    
     /**
      * Read area inputs
      */
     readAreaInputs() {
-	const lat = this.getLatitude();
-	const lng = this.getLongitude();
-	const size = this.getSize() / 2.0;
+	const lat = this.getElementValue(this.inputLatitude);
+	const lng = this.getElementValue(this.inputLongitude);
+	const size = this.getElementValue(this.inputSize) / 2.0;
 	
 	return [lat,lng,size];
     }
@@ -59,8 +63,8 @@ class Map {
      * @param latLng   coordinates
      */
     updateAreaInputs(lat,lng) {
-	this.inputLatitude.value = lat;
-	this.inputLongitude.value = lng;
+	this.setElementValue(this.inputLatitude,lat);
+	this.setElementValue(this.inputLongitude,lng);
     }
 
     /**
@@ -81,18 +85,15 @@ class Map {
 	const inputs = this.readAreaInputs();
         var files = fileTehtaat(...getLatlngs(...inputs));
 
-        this.datastruct = new DataStruct(); // TODO tarkista onko uudet
+        this.datastruct = new DataStruct(); // TODO
         this.datastruct.setCallbacks([function(arg) {
             var result = [arg.heights,arg.minMaxH];
             callbacks.map(f => f(...result));
-
-            // 3D mallin koko muuttuu vasta piirron jälkeen
-            window.dispatchEvent(new Event('resize')); // TODO redraw suoraan
             
             const ms = Date.now() - start; // stop timer
 	    const s = Math.floor(ms/1000); // time elapsed
 
-	    consoleLog("Time elapsed "+ s +" second(s)"); // TODO
+	    consoleLog("Time elapsed "+ s +" second(s)");
         }]);
         
         this.datastruct.execute(files);
@@ -110,18 +111,17 @@ class Map {
 	    reuseTiles: true
 	});
 
-	const that = this; // TODO bind?
-	this.map.on('click', function(e) {
+	this.map.on('click', (e) => {
 	    const click = e.latlng;
-	    that.updateAreaInputs(click.lat, click.lng);
-	    
-	    const inputs = that.readAreaInputs();
-	    that.makeSquareFromClicks(...inputs);
+	    this.updateAreaInputs(click.lat, click.lng);
+
+	    const inputs = this.readAreaInputs();
+	    this.makeSquareFromClicks(...inputs);
 	});
 	//map.fitWorld();
 	
-	new ResizeObserver(function() {
-	    that.map.invalidateSize();
+	new ResizeObserver( () => {
+	    this.map.invalidateSize();
 	}).observe(this.container);
 	
 	const inputs = this.readAreaInputs();
@@ -132,8 +132,9 @@ class Map {
 	if (this.clicksquare) this.clicksquare.remove();
 	
 	var bounds = [[lat + size, lng + size], [lat - size, lng - size]];
+
 	// add rectangle passing bounds and some basic styles
-	const rectangle = L.rectangle(bounds, {color: '#2196F3', weight: 1, type: 'fill'}).addTo(this.map);
+	const rectangle = L.rectangle(bounds, {color: getColor(this), weight: 1, type: 'fill'}).addTo(this.map);
 	
 	// asetetaan neliön raahaus
 	rectangle.on('mousedown', () => {
@@ -141,8 +142,12 @@ class Map {
 	    this.map.on('mousemove', (e) => {
 		lat = e.latlng.lat;
 		lng = e.latlng.lng;
+
+		this.updateAreaInputs(lat,lng);
+		
 		bounds = [[lat + size, lng + size], [lat - size, lng - size]];
 		rectangle.setBounds(bounds);
+		rectangle.setStyle({ color: getColor(this) });
 	    });
 	});
 	rectangle.on('mouseup', (e) =>{
@@ -151,6 +156,10 @@ class Map {
 	});
 	
 	this.clicksquare = rectangle;
+
+	function getColor(that) {
+	    return that.getValidity() ? 'dodgerblue' : 'deeppink';
+	}
     }
     
     createMap() {
@@ -182,7 +191,8 @@ class Map {
 	var select = span.appendChild(document.createElement("SELECT"));
 	select.setAttribute("class", "form-control btn-default");
 	select.setAttribute("value", "dark"); // default value
-	select.onchange = function(e) {
+
+	select.onchange = (e) => {
 	    const layerId = e.target.value;
             select.setAttribute("value", layerId);
 	    
@@ -207,18 +217,9 @@ class Map {
 	    option.setAttribute("data-i18n", options[i][2]);
 	}
 	
-	var res0 = this.createInput(latitude);
-	var res1 = this.createInput(longitude);
-	var res2 = this.createInput(size);
-
-	this.container.appendChild(res0[0]);
-	this.inputLatitude = res0[1];
-
-	this.container.appendChild(res1[0]);
-	this.inputLongitude = res1[1];
-	
-	this.container.appendChild(res2[0]);
-	this.inputSize = res2[1];
+	this.inputLatitude = this.createInput(this.container,latitude);
+	this.inputLongitude = this.createInput(this.container,longitude);
+	this.inputSize = this.createInput(this.container,size);
 
 	var span = this.container.appendChild(document.createElement("SPAN"));
 	span.setAttribute("class", "form-group flexable");
@@ -227,17 +228,26 @@ class Map {
 	button.appendChild(document.createTextNode("Generate"));
 	button.setAttribute("class", "form-control btn btn-default");
 	button.setAttribute("data-i18n", "map-btn-gen");
-
-	const that = this;
-	button.onclick = function() {
-	    that.generateImageAnd3D();
-	};
+	
+	button.onclick = () => {
+	    this.generateImageAnd3D();
+	}
+	
+	this.inputLatitude.addEventListener('input', () => {
+	    button.disabled = !this.getValidity();
+	});
+	this.inputLongitude.addEventListener('input', () => {
+	    button.disabled = !this.getValidity();
+	});
+	this.inputSize.addEventListener('input', () => {
+	    button.disabled = !this.getValidity();
+	});    
 
 	return draggableUiComponent("Map", [0,0], this.container);
     }
 
-    createInput(props) {
-	var span = document.createElement("SPAN");
+    createInput(container,props) {
+	var span = container.appendChild(document.createElement("SPAN"));
 	span.setAttribute("class", "form-group");
 	
 	var label = span.appendChild(document.createElement("LABEL"));
@@ -247,17 +257,17 @@ class Map {
 	
 	var input = span.appendChild(document.createElement("INPUT"));
 	input.setAttribute("class", "form-control btn-default");
-	input.oninput = function(e) {
-	    input.setAttribute("value", e.target.value);
-	    const lat = parseFloat( this.inputLatitude.value );
-	    const lng = parseFloat( this.inputLongitude.value );
-	    const size = parseFloat( this.inputSize.value );
-	    if (lat && lng && size) {
+
+	input.oninput = (e) => {
+	    input.value = e.target.value;
+	    
+	    const [lat,lng,size] = this.readAreaInputs();
+
+	    if (!(isNaN(lat) || isNaN(lng) || isNaN(size))) {
 		this.makeSquareFromClicks(lat,lng,size);
+	    } else if (this.clicksquare) {
+		this.clicksquare.remove();
 	    }
-	}
-	input.onchange = function(e) {
-	    e.target.reportValidity();
 	}
 	input.setAttribute("id", props.id);
 	input.setAttribute("name", props.id);
@@ -269,7 +279,7 @@ class Map {
 	input.setAttribute("required", ""); // true
 	input.setAttribute("type", "number");
 
-	return [span,input];
+	return input;
     }
 }
 

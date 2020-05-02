@@ -155,7 +155,7 @@ label, h3:nth-child(1), .deftext, #log {
 /* Draggable buttons */
 
 .draggableToggleBtnActive {
-    background-color: #2196F3;
+    background-color: dodgerblue;
     /*color: #222222; color: #fff; */
     text-align: center;
     padding: 1em;
@@ -175,8 +175,7 @@ label, h3:nth-child(1), .deftext, #log {
 }
 
 .draggableToggleBtnInactive {
-    background-color: #1A78C2;
-    /*color: #fff;*/
+    background-color: lightsteelblue;
     text-align: center;
     padding: 1em;
     font-size: 12px;
@@ -187,7 +186,9 @@ label, h3:nth-child(1), .deftext, #log {
 }
 
 input:invalid {
-    background-color: pink;
+    border-width: 0;
+    background-color: hotpink;
+    color: white;
 }
 
 /* Instructions */
