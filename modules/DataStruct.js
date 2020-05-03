@@ -17,7 +17,7 @@ function DataStruct() {
     this.files = [];
     this.heights = [];
     this.minMaxH = [];
-    this.callbacks = [];
+    this.callback;
     
     // TODO: korjaa tiedostopolun virheet sh/fail.txt
     this.usgs = [usgs,usgs_urls]; // sh/usgs,js
@@ -35,8 +35,8 @@ function DataStruct() {
  *   struct.setCallbacks(makeGrayscale)
  *   struct.execute(files)
  */
-DataStruct.prototype.setCallbacks = function(callbacks) {
-    this.callbacks = callbacks;
+DataStruct.prototype.setCallback = function(callback) {
+    this.callback = callback;
     return this;
 }
 
@@ -45,12 +45,17 @@ DataStruct.prototype.setCallbacks = function(callbacks) {
  * @param files   kaikki ladattavat tiedostot
  */
 DataStruct.prototype.execute = function(files) {
-    this.files = files;
+    // vanhat zip kiertoon
+    var saved = this.files;
+    
+    // päivittäessä käytetään valmiita
+    // generoitaessa korvataan uusilla
+    this.files = files ? files : this.files;
     
     // kloonaa ladattavat tiedostot
-    var fs = files.slice();
+    var fs = this.files.slice();
     // lataa tai generoi tiedostot
-    fs = this.downloadZipFile(fs); // nasa, muu
+    fs = this.downloadZipFile(fs,saved); // nasa, muu
     this.generateHgtFile(fs); // avomeri
 }
 
@@ -58,8 +63,23 @@ DataStruct.prototype.execute = function(files) {
  * Lataa puuttuvan tiedoston nasan palvelimelta
  * @param files   ladattavat tiedostot
  */
-DataStruct.prototype.downloadZipFile = function(files) {
+DataStruct.prototype.downloadZipFile = function(files,saved) {
     var fs = files.slice();
+
+    var i = -1;
+    while (++i < fs.length && 0 < fs.length) {
+	for (var j = 0; j < saved.length; j++) {
+	    if (fs[i] && saved[j] &&
+		fs[i].getFileName() === saved[j].getFileName() &&
+		saved[j].getZip()) {
+		var zip = saved[j].getZip();
+		fs[i].setZip(zip);
+		
+		lueTiedostoZip(zip,fs[i],this.loadHgtFile.bind(this)); // js/tiedosto.js
+		fs.splice(i--,1);
+	    }
+	}
+    }
     
     var i = -1;
     while (++i < fs.length) {
@@ -111,6 +131,10 @@ DataStruct.prototype.generateHgtFile = function(files) {
  * @param file      zip pakettia vastaavan File-olio
  */
 DataStruct.prototype.saveZipFile = function(dataZip,file) {
+    kirjoitaTiedostoZip(dataZip,file,(buffer,file) => {
+	file.setZip(dataZip);
+    });
+    
     lueTiedostoZip(dataZip,file,this.loadHgtFile.bind(this)); // js/tiedosto.js
     //lueTiedostoZip(dataZip,file,this.multiThreadHgt.bind(this)); // js/tiedosto.js
 }
@@ -232,7 +256,7 @@ DataStruct.prototype.loadHgtFile = function(data,file) {
  */
 DataStruct.prototype.finish = function() {
     const args = { heights: this.heights, minMaxH: this.minMaxH };
-    this.callbacks.map(f => f(args));
+    this.callback(args);
 }
 
 /*

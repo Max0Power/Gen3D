@@ -20,6 +20,7 @@ class File {
         
         this.asteet = asteet;
         this.heights = null;
+	this.zip = null;
         
         this.imax = 0; this.ikorjaus = 0;
         this.jmax = 0; this.jkorjaus = 0;
@@ -42,6 +43,14 @@ class File {
     getMax() {
         const max = Math.max(...(this.heights.reduce(laskeMax)));
         return Math.round(max);
+    }
+
+    getZip() {
+	return this.zip;
+    }
+
+    setZip(zip) {
+	this.zip = zip;
     }
     
     setHeightAndWidth(height,width) {

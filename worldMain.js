@@ -10,6 +10,13 @@
 
 "use strict";
 
+/**
+ * Kaikki kartat käyttävät samaa tietorakennetta,
+ * joten myös yksi tai useampi controller 3d
+ * käyttää sitä samaa, mikä vähentää monimutkaisuutta!
+ */
+var datastruct = new DataStruct(); // modules/DataStruct.js
+
 class Map {
     constructor() {
 	this.map;
@@ -22,7 +29,6 @@ class Map {
 	this.inputSize;
 
 	this.container = this.createMap();
-	this.datastruct = new DataStruct();
 
 	this.initiateSite();
     }
@@ -72,7 +78,7 @@ class Map {
      * Former option 2
      */
     generateImageAnd3D() {
-	this.generateMap([makeGrayscale,make3DModel]);
+	this.generateMap([makeGrayscale,make3DModel]); // 
     }
 
     /**
@@ -85,8 +91,7 @@ class Map {
 	const inputs = this.readAreaInputs();
         var files = fileTehtaat(...getLatlngs(...inputs));
 
-        this.datastruct = new DataStruct(); // TODO
-        this.datastruct.setCallbacks([function(arg) {
+        datastruct.setCallback( (arg) => {
             var result = [arg.heights,arg.minMaxH];
             callbacks.map(f => f(...result));
             
@@ -94,9 +99,7 @@ class Map {
 	    const s = Math.floor(ms/1000); // time elapsed
 
 	    consoleLog("Time elapsed "+ s +" second(s)");
-        }]);
-        
-        this.datastruct.execute(files);
+        }).execute(files);
     }
 
     initiateSite() {
@@ -166,7 +169,7 @@ class Map {
 	this.container = document.createElement("DIV");
 	this.container.setAttribute("id", "Map");
 	this.container.setAttribute("class", "flexable");
-	fitToContainer(this.container); // poista kun css!
+	//fitToContainer(this.container); // poista kun css!
 
 	var div = this.container.appendChild(document.createElement("DIV"));
 	div.setAttribute("class", "form-group");
@@ -176,7 +179,7 @@ class Map {
 
 	this.mapid = div.appendChild(document.createElement("DIV"));
 	//this.mapid.setAttribute("id", "mapid");
-	fitToContainer(this.mapid); // poista kun css!
+	//fitToContainer(this.mapid); // poista kun css!
 
 	// // // // Leaflet // // // //
 
@@ -308,13 +311,7 @@ function generate(callbacks) {
     // käynnistä ajastin
     var start = Date.now();
 
-    const input_lat = parseFloat( document.getElementById("inputLatitude").value );
-    const input_lng = parseFloat( document.getElementById("inputLongitude").value );
-    const size = parseFloat( document.getElementById("inputSize").value ) / 2;
-
-    var files = fileTehtaat(...getLatlngs(input_lat,input_lng,size));
-    var dataStruct = new DataStruct();
-    dataStruct.setCallbacks([function(arg) {
+    datastruct.setCallback( (arg) => {
         var result = [arg.heights,arg.minMaxH];
         callbacks.map(f => f(...result));
         // 3D mallin koko muuttuu vasta piirron jälkeen
@@ -325,9 +322,7 @@ function generate(callbacks) {
 	const s = Math.floor(ms/1000);
         //console.log("Time elapsed "+ s +" second(s)");
 	consoleLog("Time elapsed "+ s +" second(s)");
-    }]);
-    
-    dataStruct.execute(files);
+    }).execute();
 }
 
 /**
@@ -335,7 +330,7 @@ function generate(callbacks) {
  */
 function makeGrayscale(heights, minmax) {
     const tile = document.getElementById("selectTextureImg").value;
-    textures.drawTexture(tile, heights, minmax);
+    textures.drawTexture(tile, heights, minmax); // modules/textures.js
 }
 
 /**

@@ -462,7 +462,8 @@ function createConsoleWindow(top, left, callback) {
 	container.appendChild(con);
 	*/
 
-        con.innerHTML += "Hello, welcome to Gen3D!" + '<br />';
+        //con.innerHTML += "Hello, welcome to Gen3D!" + '<br />';
+        con.innerHTML += 'THREE.WebGLRenderer ' + THREE.REVISION + '<br />';
         con.scrollTop = con.scrollHeight;
 
 	return draggableUiComponent("Console window", [top, left], container); // tehdaan console raahattavaksi komponentiksi

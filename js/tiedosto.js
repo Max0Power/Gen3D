@@ -162,7 +162,6 @@ function lueTiedostotZip(dataZip,files,callback) {
  * välimuistiin säilömistä varten
  * 
  */
-/*
 function kirjoitaTiedostoZip(dataHgt,file,callback) {
     dataHgt = kirjoitaKorkeudet(dataHgt);
     const filename = file.getFileName()+".hgt.zip";
@@ -186,7 +185,6 @@ function kirjoitaTiedostoZip(dataHgt,file,callback) {
         });
     }, onerror);
 }
-*/
 
 /**
  * Palauttaa SMRT3 korkesarvot tavujonosta
@@ -214,7 +212,6 @@ function lueKorkeudet(result) {
  * @param data   korkeusarvot matriisissa
  * @return       korkeusarvot pareittain tavujonossa
  */
-/*
 function kirjoitaKorkeudet(data) {
     const koko = Math.pow(data.length,2)*2;
     const buffer = new ArrayBuffer(koko); // Int8
@@ -228,4 +225,3 @@ function kirjoitaKorkeudet(data) {
     
     return bytes.buffer;
 }
-*/
