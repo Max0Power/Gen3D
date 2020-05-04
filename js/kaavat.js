@@ -277,3 +277,34 @@ function laskeAsteet(latlng_1,latlng_2) {
     
     return t.sort(vertaaLatLng);
 }
+
+/**
+ * Lasketaan ositetun matriisin alkioiden määrän per ositus
+ * @param total   montako riviä ja saraketta on matriisissa
+ * @param lkm     kuinka moneen osaan matriisi ositetaan
+ * @return        alimatriisin koko sekä päällekkäisyys
+ * @example
+ *   laskeChunk(5,4) === [2,1]
+ *   laskeChunk(5,3) === [3,2]
+ *   laskeChunk(4,3) === [2,1]
+ *   laskeChunk(4,2) === [3,2]
+ *   laskeChunk(5,2) === [3,1]
+ *   laskeChunk(5,1) === [5,0]
+ *   laskeChunk(4,1) === [4,0]
+ *   
+ *   laskeChunk(1201,8) === [151,1]
+ *   laskeChunk(1201,1) === [1201,0]
+ */
+function laskeChunk(total,lkm) {
+    if (lkm < 1 || total < 2 || total <= lkm) {
+	throw new Error("Virhe!");
+    }
+    
+    // total = (chunk * lkm) - (overlap * (lkm-1))
+    // chunk = ((lkm-1) * overlap + total) / lkm
+    const chunk = math.ceil((total + lkm-1) / lkm);
+    var overlap = (chunk * lkm - total) / (lkm-1);
+    overlap = isNaN(overlap) ? 0 : overlap; // div-by-zero
+    
+    return [chunk,overlap];
+}

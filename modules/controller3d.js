@@ -70,6 +70,15 @@ function init() {
     
     // FPS counter for testing (https://github.com/mrdoob/stats.js/) (MIT Licence)
     javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();stats.dom.style.position="absolute";stats.dom.style.left="10px";stats.dom.style.top="10px";stats.dom.style.zIndex ="0";container.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+
+    function outputsize() {
+	camera.aspect = container.clientWidth / container.clientHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize( container.clientWidth, container.clientHeight );
+	render();
+    }
+    fitToContainer(container); // vapaa tila käyttöön
+    new ResizeObserver(outputsize).observe(container);
 	
     return draggableUiComponent("3D-model", [0, 0], container);
 }
@@ -122,7 +131,7 @@ function drawMesh() {
 	geometry.uvsNeedUpdate = true; // UV, poista, jos omia tekstureita ei kayteta!!!!!!!!!!
 	
 	mesh = new THREE.Mesh( geometry, material ); // luodaan meshi ja asetetaan materiaali
-	mesh.drawMode = THREE.TrianglesDrawMode; //default
+	//mesh.drawMode = THREE.TrianglesDrawMode; //default
 
 	scene.add( mesh ); // lisataan luotu meshi sceneen
 	
@@ -137,15 +146,6 @@ function drawMesh() {
 		render();
 	};
 	*/
-
-    function outputsize() {
-	camera.aspect = container.clientWidth / container.clientHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize( container.clientWidth, container.clientHeight );
-	render();
-    }
-    fitToContainer(container); // vapaa tila käyttöön
-    new ResizeObserver(outputsize).observe(container);
 	
 	/*
 	// animoi, eli kuuntelee controllit
