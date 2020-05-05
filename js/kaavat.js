@@ -308,3 +308,66 @@ function laskeChunk(total,lkm) {
     
     return [chunk,overlap];
 }
+
+/**
+ * Ovatko koordinaatit annetun neliön sisäpuolella
+ * @param position   koordinaatit joita tutkitaan
+ * @param square     neliön keskipiste johon verrataan
+ * @param treshold   neliön sivun pituus eli koko
+ * @return           true jos sisällä, muuten false
+ * @example
+ *   insideSquare([0,0],[0,0],0) === true
+ *   insideSquare([0,0.5],[0,0],1) === true
+ *   insideSquare([0,0.6],[0,0],1) === false
+ *   insideSquare([0,1],[0,0],2) === true
+ *   insideSquare([0,1.1],[0,0],2) === false
+ *   insideSquare([-0.6,0],[1,0],1) === false
+ *   insideSquare([-0.5,0],[1,0],1) === false
+ *   insideSquare([-0.5,0],[0,0],1) === true
+ *   insideSquare([-0.6,0],[0,0],1) === false
+ */
+function insideSquare(position,square,treshold) {
+    return math.abs(position[0] - square[0]) <= treshold / 2 &&
+	math.abs(position[1] - square[1]) <= treshold / 2;
+}
+
+/**
+ * Palauttaa neliön keskipisteen, joka sisältää
+ * annetut koordinaatit. Neliöt eivät koskaan
+ * leikkaa toisiaan, mutta kattavat koordinaatiston.
+ * 
+ * @param position   koordinaatit joita tutkitaan
+ * @param square     neliön keskipiste johon verrataan
+ * @param treshold   neliön sivun pituus eli koko
+ * @return           koordinaatit sisältävä neliö
+ * 
+ * Huom! Jos hyppää neliön reunalle, niin pyöristyksen
+ * vuoksi valitaan sitä seuraava neliö. ks Huom!
+ * 
+ * @example
+ *   replaceSquare([0,0],[0,0],0) === [0,0]
+ *   replaceSquare([0,0.4],[0,0],1) === [0,0]
+ *   Huom! replaceSquare([0,0.5],[0,0],1) === [0,0]
+ *   replaceSquare([0,0.6],[0,0],1) === [0,1]
+ *   replaceSquare([0,1],[0,0],2) === [0,0]
+ *   replaceSquare([0,1.1],[0,0],2) === [0,2]
+ *   replaceSquare([-0.4,0],[1,0],1) === [0,0]
+ *   Huom! replaceSquare([-0.5,0],[0,0],1) === [0,0]
+ *   Huom! replaceSquare([-0.5,0],[1,0],1) === [-1,0]
+ *   replaceSquare([-0.6,0],[1,0],1) === [-1,0]
+ *   replaceSquare([-0.6,0],[0,0],1) === [-1,0]
+ */
+function replaceSquare(position,square,treshold) {
+    var result = square.slice();
+
+    for (var i = 0; i < square.length; i++) {
+	var diff = position[i] - square[i];
+	if (math.abs(diff) > treshold / 2) {
+	    var sign = diff / math.abs(diff);
+	    var fact = math.round(math.abs(diff) / treshold);
+	    result[i] += sign * fact * treshold;
+	}
+    }
+
+    return result;
+}
