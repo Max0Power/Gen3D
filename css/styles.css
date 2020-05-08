@@ -10,8 +10,8 @@
 /* Asemointi navigointipalkit */
 
 .lm_tabs, .lm_header > .lm_tabs > .lm_tab {
-    height: 35px; /* 40 (headerHeight) - 5 (vakio) */
-    line-height: 35px;
+    height: 34px; /* 40 (headerHeight) - 5 (vakio) */
+    line-height: 34px;
     font-size: 100%;
 }
 
