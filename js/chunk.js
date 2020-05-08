@@ -48,7 +48,7 @@ function laskeChunk(total,lkm) {
  */
 function insideSquare(position,square,treshold) {
     const inside = !range(position.length,0).some(i => {
-	return math.abs(position[i]-square[i]) > treshold/2;
+	return Math.abs(position[i]-square[i]) > treshold/2;
     });
 
     return treshold === 0 ? true : inside;

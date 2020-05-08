@@ -6,6 +6,7 @@
  * @version 12.12.2018
  * @version 14.10.2019, GoldenLayout
  * @version 26.04.2020, jQuery.i18n
+ * @version 08.05.2020, Chunks
  */
 
 /**
@@ -34,6 +35,12 @@ var camera;
 var controls;
 var mesh = null;
 
+var meshes = []; // viitteet kaikkiin malleihin
+var square = [0,0]; // päivitysalueen sijainti
+var treshold = 128; // päivitysalueen koko
+var chunk = 3; // montako chunkia näytetään kerralla
+var overlay = 1; // montako pistettä siirretään
+
 function init() {
     container = document.createElement("DIV"); // container, johon renderer lisataan  
     scene = new THREE.Scene();
@@ -57,6 +64,8 @@ function init() {
     // kamera
     var maxDrawDistance = 10000; //1000;
     camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, maxDrawDistance );
+    camera.position.set(cameraPosition[0],cameraPosition[1],cameraPosition[2]);
+    camera.lookAt(0, 0, 0);
     
     // controllit
     controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -71,6 +80,7 @@ function init() {
     // FPS counter for testing (https://github.com/mrdoob/stats.js/) (MIT Licence)
     javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();stats.dom.style.position="absolute";stats.dom.style.left="10px";stats.dom.style.top="10px";stats.dom.style.zIndex ="0";container.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
 
+    // päivitetään mallia aina kun ikkunan kokoa muutetaan
     function outputsize() {
 	camera.aspect = container.clientWidth / container.clientHeight;
 	camera.updateProjectionMatrix();
@@ -79,6 +89,49 @@ function init() {
     }
     fitToContainer(container); // vapaa tila käyttöön
     new ResizeObserver(outputsize).observe(container);
+
+    /*
+    // seurataan kameran liikkeita ja päivitetää chunkit,
+    // mikäli päivitysalue ylitetään. päivitysalueen kokoa
+    // voi suurentaa, samoin chunkien määrää voidaan lisätä
+    controls.addEventListener('change', ( ) => {
+	const pos = camera.position;
+	const position = [pos.x,pos.z];
+	// tarkistetaan tarvitseeko chunkit päivittää
+	const update = !insideSquare(position,square,treshold); // js/chunk.js
+	if (update) {
+	    const oldsquare = square.slice();
+	    const [newsquare,oldtransits,newtransits] = getChunks(
+		position,oldsquare,chunk,treshold,overlay
+	    ); // js/chunk.js
+
+	    // uusi päivitysalue
+	    square = newsquare;
+
+	    // poistetaan vanhat chunkit
+	    for (var i = 0; i < oldtransits.length; i++) {
+		for (var k = 0; k < meshes.length; k++) {
+		    var equal = arrayEquals(oldtransits[i],meshes[k].xz); // js/chunk.js
+		    if (equal) {
+			var mesh = meshes[k].mesh;
+			scene.remove(mesh);
+			mesh.geometry.dispose();
+			mesh.material.dispose();
+			meshes.splice(k--,1);
+		    }
+		}
+	    }
+
+	    // lisäätään uudet chunkit
+	    for (var j = 0; j < newtransits.length; j++) {
+		var tmp = newtransits[j];
+		var heights = generateNoiseMap(128,128, 100, 0, 4, 0.5, 2.0, tmp.map(val => val/100.0));
+		generateMesh(heights, [0,1], 1, 20, "Grayscale", tmp); // maxheight 20
+		var mesh = drawMesh();
+		meshes.push({xz: newtransits[j], mesh: mesh});
+	    }
+	}
+    });*/
 	
     return draggableUiComponent("3D-model", [0, 0], container);
 }
@@ -155,6 +208,8 @@ function drawMesh() {
 		render();
 		
 	}*/
+
+    return mesh;
 }
 
 // renderoi 3d mallin nakyvaksi
@@ -170,8 +225,9 @@ function render() {
  * @param {MATRIISI} heights_minMaxH - Mika on annettujen korkeuksien pienin ja suurin arvo
  * @param {double} quadSize - kuinka suuri vali verticejen pisteiden valilla on eli quadin koko
  * @param {double} max_model_height - maksimi korkeus, johon verticen pystyy luomaan, eli malli ei saa suurempaa korkeutta
+ * @param {MATRIISI} offset koordinaatit johon malli piirretään
  */
-function generateMesh(heights, heights_minMaxH ,quadSize, max_model_height, textureName) {
+function generateMesh(heights, heights_minMaxH ,quadSize, max_model_height, textureName, corners = [0.0, 0.0]) {
 	
 	if (heights.length < 2 || heights[0] < 2) return;
 	
@@ -185,8 +241,8 @@ function generateMesh(heights, heights_minMaxH ,quadSize, max_model_height, text
 	meshTriangles = new Array(triangleCount); // alustetaan taulukko, joka keraa meshin kolmioiden datan
 	meshUvs = new Array(verticesX * verticesZ); // alustetaan taulukko, joka keraa meshin Uv datan
 	// meshin vasen alanurkka, eli x ja z koordinaatit																				. . .
-	var cornerX = 0.0 - ((verticesX - 1) * quadSize * 0.5); // meshin nurkan X koordinaatti . . .
-	var cornerZ = 0.0 - ((verticesZ - 1) * quadSize * 0.5); // meshin nurkan Z koordinaatti x . .
+	var cornerX = corners[0] + 0.0 - ((verticesX - 1) * quadSize * 0.5); // meshin nurkan X koordinaatti . . .
+	var cornerZ = corners[1] + 0.0 - ((verticesZ - 1) * quadSize * 0.5); // meshin nurkan Z koordinaatti x . .
 	
 	var v_index = 0; // mones kasiteltava vertice
 	var t_index = 0; // mones kasiteltava kolmio
