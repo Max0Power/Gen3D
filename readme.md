@@ -1,13 +1,11 @@
 # 3D models from elevation data, noise and images
 
-Hello, welcome to [Gen3D]!(https://max0power.github.io/Gen3D)
-
 ## Getting started
 
 ### Prerequisites
 
-  1. [Git](https://git-scm.com/) `git --version`
-  2. [Python](https://www.python.org) `python -V`
+  1. [Git](https://git-scm.com/)
+  2. [Python](https://www.python.org)
   
 ### Installation
 
