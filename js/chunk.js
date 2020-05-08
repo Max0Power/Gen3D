@@ -163,15 +163,18 @@ function rangeFromToArray(from,to) {
  *   rangeSquare([0,0],-1) === [[0,0]]
  *   rangeSquare([0,0],0) === [[0,0]]
  *   rangeSquare([0,0],1) === [[0,0]]
- *   rangeSquare([0,0],-2) === rangeSquare([0,0],2)
- *   rangeSquare([0,0],2) === rangeSquare([0,0],3)
- *   rangeSquare([0,0],3) === [[-1,-1],[-1,0],[-1,1],
- *     [0,-1],[0,0],[0,1],[1,-1],[1,0],[1,1]]
+ *   rangeSquare([0,0],-2) === [[-0.5,-0.5],...,[0.5,0.5]]
+ *   rangeSquare([0,0],2) === [[-0.5,-0.5],...,[0.5,0.5]]
+ *   rangeSquare([0,0],3) === [[-1,-1],...,[1,1]]
  */
 function rangeSquare(square,chunk) {
-    const half = Math.floor(Math.abs(chunk) / 2);
-    const leftbottom = square.map(val => val-half);
-    const righttop = square.map(val => val+half);
+    const odd = Math.floor(Math.abs(chunk) / 2);
+    const even = Math.abs(chunk)/2 - 0.5;
+
+    // parillinen vaiko pariton
+    var either = chunk % 2 === 0 ? even : odd;
+    const leftbottom = square.map(val => val - either);
+    const righttop = square.map(val => val + either);
 
     return rangeFromToArray(leftbottom,righttop);
 }
@@ -281,11 +284,31 @@ function descale(square,treshold) {
 }
 
 /**
+ * Skaalaa taulukon arvot alaspäin annettulla arvolla.
+ * Funktiota kannattaa kutsua ennen koordinaattien 
+ * käsittelyä, jotta laskut olisivat yksinkertaisempia
+ * 
+ * @param square     skaalattavat arvot taulukossa
+ * @param treshold   arvo johon skaalataan alaspäin
+ * @return           skaalatut arvot taulukossa
+ * @example
+ *   descaleArray([],128) === []
+ *   descaleArray([[0,0]],128) === [[0,0]]
+ *   descaleArray([[128,256],[-128,256]],0) === [[0,0],[0,0]]
+ *   descaleArray([[128,256],[-128,256]],1) === [[1,2],[-1,2]]
+ *   descaleArray([[256,128],[-256,-128]],128) === [[2,1],[-2,-1]]
+ */
+function descaleArray(squares,treshold) {
+    return squares.map(arr => descale(arr,treshold));
+}
+
+/**
  * Laskee päällekkäisten koordinaattien
  * sijoittumisen koordinaatin etäisyyden
  * ja päällekkäisten arvojen määrän mukaan
- * @param square    siirrettävät koordinaatit
- * @return          siirretyt koordinaatit
+ * @param square     skaalattavat arvot taulukossa
+ * @param treshold   arvo johon skaalataan ylöspäin
+ * @return           skaalatut arvot taulukossa
  * @example
  *   doscale([],1) === []
  *   doscale([0,1],0) === [0,0]
@@ -314,4 +337,80 @@ function doscale(square,treshold) {
  */
 function doscaleArray(squares,treshold) {
     return squares.map(arr => doscale(arr,treshold));
+}
+
+/**
+ * Suorittaa koordinaattien siirtämisen
+ * @param squares    siirrettävät kordinaatit
+ * @param transits   koordinaattien siirtomäärät
+ * @return           siirretyt koordinaatit
+ * @example
+ *   transitArray([],[]) === []
+ *   transitArray([[-256,-128]],[[-2,-1]]) === [[-254,-127]]
+ *   transitArray([[256,128]],[[2,1]]) === [[254,127]]
+ *   transitArray([[-128,128]],[[-2,2]]) === [[-126,126]]
+ *   transitArray([[-256,256]],[[-4,4]]) === [[-252,252]]
+ */
+function transitArray(squares,transits) {
+    return range(squares.length,0).map(i => {
+	var x = squares[i][0] - transits[i][0];
+	var z = squares[i][1] - transits[i][1];
+
+	return [x,z];
+    });
+}
+
+/**
+ * Chunkien tärkein funktio, joka laskee käytännössä kaiken!
+ * 
+ * Huom! Jos tulee ongelmia, katso debuggerilla mihin asti
+ * tulokset näyttävät oikein ja tarkista kyseinen funktio.
+ * 
+ * @example
+ *   getChunks([0,0],3,128,1) === [[-127,-127],...,[127,127]]
+ *   getChunks([0,0],5,128,1) === [[-254,-254],...,[254,254]]
+ *   getChunks([0,0],2,128,2) === [[-62,-62],...,[62,62]]
+ *   getChunks([0,0],4,128,2) === [[-186,-186],...,[186,186]]
+ *   
+ *   getChunks([0,0],3,128,2) === [[-126,-126],...,[126,126]]
+ *   getChunks([0,0],5,128,2) === [[-250,-250],...,[250,250]]
+ */
+function getChunks(position,square,chunk,treshold,overlay) {
+    // etsii vanhat chunkit (välitulos)
+    const oldsquare = square.slice();
+    var oldsquares = descale(oldsquare,treshold);
+    oldsquares = rangeSquare(oldsquares,chunk);
+    oldsquares = doscaleArray(oldsquares,treshold);
+
+    // etsii uusien chunkien päivitysalueen sekä
+    // uudet ja osittain vanhat chunkit (välitulos)
+    const newsquare = replaceSquare(position,oldsquare,treshold);
+    var newsquares = descale(newsquare,treshold);
+    newsquares = rangeSquare(newsquares,chunk);
+    newsquares = doscaleArray(newsquares,treshold);
+
+    // etsii poistettavat ja lisättävät koordinaatit
+    const intersect = matriisiLeikkaus(oldsquares,newsquares);
+    const olddiffer = matriisiErotus(oldsquares,intersect);
+    const newdiffer = matriisiErotus(newsquares,intersect);
+
+    // etsii poistettavien chunkien todelliset koordinaatit
+    var oldtransits = descaleArray(olddiffer,treshold);
+    oldtransits = doscaleArray(oldtransits,overlay);
+    oldtransits = transitArray(olddiffer,oldtransits);
+
+    // etsii lisättävien chunkien todelliset koordinaatit
+    var newtransits = descaleArray(newdiffer,treshold);
+    newtransits = doscaleArray(newtransits,overlay);
+    newtransits = transitArray(newdiffer,newtransits);
+
+    // palauttaa vanhojen ja uusien chunkien koordinaatit
+    // sekä uudelleen päivitysalueen keskipisteen, johon
+    // kameran sijaintia ja päivitysaluetta tulee verrata
+    return [newsquare,oldtransits,newtransits];
+}
+
+function resolveOffsets() {
+    throw new Error("Not implemented error!");
+    // TODO: ratkaise chunkien kaipaamat offsetit
 }
