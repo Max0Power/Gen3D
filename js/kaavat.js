@@ -1,3 +1,8 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -21,7 +26,7 @@
  */
 function laskeDms(ddd) {
     const ddd_pos = Math.abs(ddd);
-    const neg = ddd < 0 ? true : false
+    const neg = ddd < 0 ? true : false;
     
     var deg = Math.floor(ddd_pos);
     const _min = (ddd_pos-deg)*(60);
@@ -171,7 +176,7 @@ function laskeAsteidenEtaisyys(latlng_1,latlng_2) {
  *   range(2,0) === [0,1]
  */
 function range(size, start) {
-    return [...Array(size).keys()].map(i => start + i);
+    return [...new Array(size).keys()].map(i => start + i);
 }
 
 /**

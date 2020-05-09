@@ -5,7 +5,8 @@
 ### Prerequisites
 
   1. [Git](https://git-scm.com/)
-  2. [Python](https://www.python.org)
+  2. [Java](https://jdk.java.net/)
+  3. [Python](https://www.python.org)
   
 ### Installation
 
@@ -17,3 +18,10 @@
 ## Usage
 
   Go to `localhost:8000` on your browser to open the site.
+
+## Debug
+
+### Static code analysis
+
+    Go to project directory `cd Gen3D`.
+    Run analysis tool `java -jar test/rhino-1.7.12.jar test/jshint-rhino.js *.js instructions/*.js js/* modules/* sh/*.js`.

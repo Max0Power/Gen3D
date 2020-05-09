@@ -1,4 +1,8 @@
-"use strict"
+/*jshint esnext: true */
+/*jshint -W097 */
+/*global range*/
+
+"use strict";
 
 /**
  * Lasketaan ositetun matriisin alkioiden määrän per ositus
@@ -18,7 +22,7 @@
  *   laskeChunk(1201,1) === [1201,0]
  */
 function laskeChunk(total,lkm) {
-    const chunk = math.ceil((total + lkm-1) / lkm);
+    const chunk = Math.ceil((total + lkm-1) / lkm);
     const overlap = lkm <= 1 ? 0 : (chunk * lkm - total) / (lkm-1);
 
     return [chunk,overlap];
@@ -49,7 +53,7 @@ function laskeChunk(total,lkm) {
 function insideSquare(position,square,treshold) {
     const inside = !range(position.length,0).some(i => {
 	return Math.abs(position[i]-square[i]) > treshold/2;
-    });
+    }); // range > js/kaavat.js
 
     return treshold === 0 ? true : inside;
 }
@@ -90,7 +94,7 @@ function replaceSquare(position,square,treshold) {
 	var tmp = square[i] + sign * fact * treshold;
 
 	return Math.abs(diff) > treshold/2 ? tmp : square[i];
-    });
+    }); // range > js/kaavat.js
 }
 
 /**
@@ -114,7 +118,7 @@ function rangeFromTo(from,to) {
     const abs = Math.abs(diff);
     const sign = diff === 0 ? 1 : diff / abs;
 
-    return range(abs+1,0).map(i => from + sign * i); // js/kaavat.js
+    return range(abs+1,0).map(i => from + sign * i); // range > js/kaavat.js
 }
 
 /**
@@ -142,7 +146,7 @@ function rangeFromToArray(from,to) {
     const result = [];
     rows.forEach(row => {
 	cols.forEach(col => {
-	    result.push([row,col]);
+            result.push([row,col]);
 	});
     });
 
@@ -192,7 +196,7 @@ function rangeSquare(square,chunk) {
  *   arrayEquals([1],[12]) === false
  */
 function arrayEquals(fstarr,sndarr) {
-    return range(fstarr.length,0)
+    return range(fstarr.length,0)  // range > js/kaavat.js
         .map(i => fstarr[i] === sndarr[i])
         .every(item => item === true);
 }
@@ -209,9 +213,9 @@ function arrayEquals(fstarr,sndarr) {
  */
 function matriisiSuodata(set) {
     return set.filter((arr,i) => {
-	return !set.slice(i+1).some(cur => {
-	    return arrayEquals(arr,cur);
-	});
+        return !set.slice(i+1).some(cur => {
+            return arrayEquals(arr,cur);
+        });
     });
 }
 
@@ -231,11 +235,11 @@ function matriisiSuodata(set) {
  */
 function matriisiLeikkaus(fstset,sndset) {
     const intersect = fstset.filter(fstarr => {
-	return sndset.some(sndarr => {
-	    return arrayEquals(fstarr,sndarr);
-	});
+        return sndset.some(sndarr => {
+            return arrayEquals(fstarr,sndarr);
+        });
     });
-
+    
     return matriisiSuodata(intersect);
 }
 
@@ -256,11 +260,11 @@ function matriisiLeikkaus(fstset,sndset) {
  */
 function matriisiErotus(fstset,sndset) {
     const intersect = matriisiLeikkaus(fstset,sndset);
-
+    
     return fstset.filter(fstarr => {
-	return !intersect.some(sndarr => {
-	    return arrayEquals(fstarr,sndarr);
-	});
+        return !intersect.some(sndarr => {
+            return arrayEquals(fstarr,sndarr);
+        });
     });
 }
 
@@ -357,7 +361,7 @@ function transitArray(squares,transits) {
 	var z = squares[i][1] - transits[i][1];
 
 	return [x,z];
-    });
+    }); // range > js/kaavat.js
 }
 
 /**
@@ -367,13 +371,7 @@ function transitArray(squares,transits) {
  * tulokset näyttävät oikein ja tarkista kyseinen funktio.
  * 
  * @example
- *   getChunks([0,0],3,128,1) === [[-127,-127],...,[127,127]]
- *   getChunks([0,0],5,128,1) === [[-254,-254],...,[254,254]]
- *   getChunks([0,0],2,128,2) === [[-62,-62],...,[62,62]]
- *   getChunks([0,0],4,128,2) === [[-186,-186],...,[186,186]]
- *   
- *   getChunks([0,0],3,128,2) === [[-126,-126],...,[126,126]]
- *   getChunks([0,0],5,128,2) === [[-250,-250],...,[250,250]]
+ *   TODO: täydennä testit
  */
 function getChunks(position,square,chunk,treshold,overlay) {
     // etsii vanhat chunkit (välitulos)
