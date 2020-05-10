@@ -447,7 +447,7 @@ function createTextureEditor(posLeft, posTop) {
 	setIsScaledToWorld();
 	updateColorSlider();
 	
-	return draggableUiComponent("Texture editor", [posLeft, posTop], all);
+	return draggableUiComponent("Texture editor", all);
 	
 	// FUNKTIOT || FUNKTIOT || FUNKTIOT || FUNKTIOT || FUNKTIOT
 	// funktiot, joilla kontrolloidaan elementteja

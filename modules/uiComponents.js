@@ -141,68 +141,25 @@ function numberBox(id, value, step, min, max, isOnlyInteger) {
     }
 }
 
-var DRAGGABLE_Z_INDEX = 8;
-
 /**
- * Luo raahattavan komponentin, johon asetetaan paramerina annettu sisalto (contenElm)
- * Palauttaa lopuksi luodun komponentitn
- * headerTxt raahattavan "ikkunan" ylapalkin teksti
- * position, paikka [x,y], johon ikkuna luodaan, esim [0,0];
+ * Luo kehyksen yhdenmukaistaan komponentit
+ * @param id        komponentin yksilöllinen tunniste
+ * @param content   kehyksen sisältämä komponentti
+ * @return          kehyksen div-tyyppinen elementti
  */
-function draggableUiComponent(headerTxt, position, contentElm) {
+function draggableUiComponent(id, content) {   
+    // luodaan kehys raahattavalle elementille
+    var container = document.createElement("DIV");
     
-    // luodaan container, joka on kehys raahattavalle elementille
-	var container = document.createElement("DIV");
-	container.className="draggable"; // asetetaan tyyppi raahattavaksi
-        fitToContainer(container); // käytetään koko tila
+    container.appendChild(content);
+    // elementin tunniste
+    container.id = id;
+    // asetetaan tyyppi raahattavaksi
+    container.className="draggable draggableContainer";
+    // varataan koko tila käyttöön
+    fitToContainer(container);
 
-        container.id = headerTxt; // löytyy dokumentista otsikolla
-        /*
-	var header = document.createElement("DIV"); // header komponentti, eli ylapalkki
-	header.className = "draggableHeader"; // asetetaan class, joka maarittelee ylapalkin tyylin
-	header.textContent = headerTxt; // asetetaan teksti
-	container.appendChild(header);
-	*/
-	
-	var contentDiv = document.createElement("DIV"); // Luodaan divi, johon tulee parametrina annettu sisalto
-	contentDiv.appendChild(contentElm);
-	contentDiv.className="draggableContainer"; // luokka, joka maarittelee sislto laatikon tyylin
-	container.appendChild(contentDiv);
-        fitToContainer(contentDiv); // käytetään koko tila
-	
-        /*
-	var show_hide = true;
-	
-	var tools_toggleBtn = document.createElement("BUTTON");
-	tools_toggleBtn.textContent = headerTxt;
-	tools_toggleBtn.className = "draggableToggleBtnActive";
-	
-	tools_toggleBtn.onclick = function(event) {
-		show_hide = !show_hide;
-		if (show_hide) {
-			tools_toggleBtn.className = "draggableToggleBtnActive";
-			container.style.display = 'block'; // show, ikkunan nakyviin
-		}
-		else {
-			tools_toggleBtn.className = "draggableToggleBtnInactive";
-			container.style.display = 'none'; // show, ikkuna pois nakyvista
-		}
-	}
-	document.getElementById("tools").appendChild(tools_toggleBtn);
-	
-	// buttoni HEADER osassa, jolla voi sulkea ikkunan
-	var btn = document.createElement("BUTTON");
-	btn.textContent = "x";
-	btn.className = "draggableHeaderBtn"; // oma tyyli luokka
-	btn.onclick = function(event) {
-		tools_toggleBtn.className = "draggableToggleBtnInactive";
-		container.style.display = 'none'; // show, ikkunan sisalto nakyviin
-		show_hide = false;
-	};
-	header.appendChild(btn);
-	*/
-	
-	return container;
+    return container;
 }
 
 
@@ -271,7 +228,7 @@ function createTextureController(top, left, callback) {
     //container.appendChild(btn_container);
     container.appendChild(all);
 
-    return draggableUiComponent("Texture viewer", [top, left], container);
+    return draggableUiComponent("Texture viewer", container);
 }
 
 
@@ -385,6 +342,30 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
 
     selectElm.selectedIndex = "1";
 
+    // ------------------------------ Square root
+    /*
+    var rootSpan = container.appendChild(document.createElement("SPAN"));
+    rootSpan.className = "form-group";
+
+    var rootLabel = rootSpan.appendChild(document.createElement("LABEL"));
+    rootLabel.appendChild(document.createTextNode("Square root:"));
+    rootLabel.setAttribute("for", "squareRoot");
+
+    var rootInput = numberBox("squareRoot", 1, 1, 1, 5, true);
+    rootSpan.appendChild(rootInput);
+
+    // ------------------------------ Treshold
+
+    var tresholdSpan = container.appendChild(document.createElement("SPAN"));
+    tresholdSpan.className = "form-group";
+
+    var tresholdLabel = tresholdSpan.appendChild(document.createElement("LABEL"));
+    tresholdLabel.appendChild(document.createTextNode("Treshold:"));
+    tresholdLabel.setAttribute("for", "treshold");
+
+    var tresholdInput = numberBox("treshold", 0, 1, 0, 128, true);
+    tresholdSpan.appendChild(tresholdInput);
+    */
     // ------------------------------ Update model
     
     var drawModelSpan = document.createElement("SPAN");
@@ -415,7 +396,7 @@ function createInput3dController(top, left, callback, isMax=false, interpolate=f
     downloadSpan.appendChild(btn_download);
     container.appendChild(downloadSpan);
 
-    return draggableUiComponent("Controller 3D", [top, left], container);
+    return draggableUiComponent("Controller 3D", container);
 }
 
 /*
@@ -466,7 +447,8 @@ function createConsoleWindow(top, left, callback) {
         con.innerHTML += 'THREE.WebGLRenderer ' + THREE.REVISION + '<br />';
         con.scrollTop = con.scrollHeight;
 
-	return draggableUiComponent("Console window", [top, left], container); // tehdaan console raahattavaksi komponentiksi
+    // tehdaan console raahattavaksi komponentiksi
+    return draggableUiComponent("Console window", container);
 }
 
 /**

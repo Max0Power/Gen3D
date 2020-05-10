@@ -5,8 +5,7 @@
 ### Prerequisites
 
   1. [Git](https://git-scm.com/)
-  2. [Java](https://jdk.java.net/)
-  3. [Python](https://www.python.org)
+  2. [Python](https://www.python.org)
   
 ### Installation
 
@@ -15,13 +14,17 @@
   3. Switch the branch to update the working directory `git checkout gh-pages`.
   4. Run `python -m SimpleHTTPServer` to create a web server.
 
-## Usage
+### Usage
 
   Go to `localhost:8000` on your browser to open the site.
 
-## Debug
+## Running tests
 
-### Static code analysis
+### Prerequisites
 
-    Go to project directory `cd Gen3D`.
-    Run analysis tool `java -jar test/rhino-1.7.12.jar test/jshint-rhino.js *.js instructions/*.js js/* modules/* sh/*.js`.
+  1. [Java](https://jdk.java.net/)
+
+### Usage
+
+  1. Go to project directory `cd Gen3D`.
+  2. Check syntax `java -jar test/rhino-1.7.12.jar test/jshint-rhino.js *.js instructions/*.js js/* modules/* sh/*.js`.

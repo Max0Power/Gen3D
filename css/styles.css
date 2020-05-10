@@ -10,13 +10,13 @@
 /* Asemointi navigointipalkit */
 
 .lm_tabs, .lm_header > .lm_tabs > .lm_tab {
-    height: 34px; /* 40 (headerHeight) - 5 (vakio) */
+    height: 34px;
     line-height: 34px;
     font-size: 100%;
 }
 
 .lm_close_tab {
-    height: 30px !important; /* 35 (line-height) - 5 (vakio) */
+    height: 30px !important;
 }
 
 .lm_controls {
@@ -43,12 +43,12 @@
 .form-group {
     flex: auto;
     align-self: flex-end;
-    padding: 4px !important; /* 8 (borderWidth) / 2 */
+    padding: 4px !important;
     margin: 0 !important; /* override bootstrap */
 }
 
 .draggableContainer, canvas {
-    padding: 4px; /* 8 (borderWidth) / 2 */
+    padding: 4px;
 }
 
 img[src=""] {
@@ -56,7 +56,7 @@ img[src=""] {
 }
 
 #log {
-    padding: 4px; /* 8 (borderWidth) */
+    padding: 4px;
     font-family: monospace !important;
     overflow: auto !important;
     background: black;
@@ -66,8 +66,8 @@ img[src=""] {
 /* Asemointi navigointipalkki */
 
 .navbar.navbar-inverse {
-    margin-bottom: 0;
-    border-radius: 0;
+    margin-bottom: 0; /* bootstrap */
+    border-radius: 0; /* bootstrap */
 }
 
 .bg-black {
@@ -97,52 +97,23 @@ body .lm_content {
     overflow: hidden; /* samaa kuin edellinen kommentti */
 }
 
+#container3D > * {
+    color: #D8D8D8; /* fontti */
+}
+
 #canv, #colpic, #crange, #cslider, .img-center {
-    max-height: 100%; /* 500px */
-    max-width: 100%; /* 500px */
+    max-height: 100%;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     display: block;
 }
 
-/* Fontit ym. */
-
-label, h3:nth-child(1), .deftext, #log {
-    color: #D8D8D8; /* komponenttien tekstit */
-}
-
-/* Firefox */
-
 .draggable {
-    position: absolute;
-    z-index: 8;
-    background-color: transparent; /* #f1f1f1; */
-    border: 1px solid transparent;
+    border: 1px solid transparent; /* Firefox */
+    position: absolute; /* Mapbox */
+    z-index: 1; /* Mapbox */
 }
-
-.draggableHeader {
-    text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 100%;
-    cursor: move;
-    z-index: 10;
-    background-color: #337AB7; /* #2196F3; */
-    color: #fff;
-    display: none; /* piilota header rikkomatta ruksia */
-}
-
-/*
-#inputrange {
-  -moz-appearance:textfield;
-}
-
-#inputrange::-webkit-outer-spin-button,
-#inputrange::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-*/
 
 /* Custom Input File */
 
@@ -154,7 +125,6 @@ label, h3:nth-child(1), .deftext, #log {
 
 .draggableToggleBtnActive {
     background-color: dodgerblue;
-    /*color: #222222; color: #fff; */
     text-align: center;
     padding: 1em;
     font-size: 12px;

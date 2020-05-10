@@ -345,6 +345,25 @@ function doscaleArray(squares,treshold) {
 
 /**
  * Suorittaa koordinaattien siirtämisen
+ * @param square    siirrettävät kordinaatit
+ * @param transit   siirron koordinaatit
+ * @return          siirretyt koordinaatit
+ * @example
+ *   transit([],[]) === []
+ *   transit([-256,-128],[-2,-1]) === [-254,-127]
+ *   transit([256,128],[2,1]) === [254,127]
+ *   transit([-128,128],[-2,2]) === [-126,126]
+ *   transit([-256,256],[-4,4]) === [-252,252]
+ */
+function transit(square,transit) {
+    var x = square[0] - transit[0];
+    var z = square[1] - transit[1];
+    
+    return [x,z];
+}
+
+/**
+ * Suorittaa koordinaattien siirtämisen
  * @param squares    siirrettävät kordinaatit
  * @param transits   koordinaattien siirtomäärät
  * @return           siirretyt koordinaatit
@@ -357,10 +376,7 @@ function doscaleArray(squares,treshold) {
  */
 function transitArray(squares,transits) {
     return range(squares.length,0).map(i => {
-	var x = squares[i][0] - transits[i][0];
-	var z = squares[i][1] - transits[i][1];
-
-	return [x,z];
+	return transit(squares[i],transits[i]);
     }); // range > js/kaavat.js
 }
 
@@ -374,15 +390,21 @@ function transitArray(squares,transits) {
  *   TODO: täydennä testit
  */
 function getChunks(position,square,chunk,treshold,overlay) {
-    // etsii vanhat chunkit (välitulos)
     const oldsquare = square.slice();
+
+    // etsii vanhat chunkit (välitulos)
     var oldsquares = descale(oldsquare,treshold);
     oldsquares = rangeSquare(oldsquares,chunk);
     oldsquares = doscaleArray(oldsquares,treshold);
 
-    // etsii uusien chunkien päivitysalueen sekä
-    // uudet ja osittain vanhat chunkit (välitulos)
     const newsquare = replaceSquare(position,oldsquare,treshold);
+
+    // etsii seuraavan tresholdin todelliset koordinaait
+    //var newtransit = descale(newsquare,treshold);
+    //newtransit = doscale(newtransit,overlay);
+    //newtransit = transit(newsquare,newtransit);
+
+    // etsii uudet chnkit (välitulos)
     var newsquares = descale(newsquare,treshold);
     newsquares = rangeSquare(newsquares,chunk);
     newsquares = doscaleArray(newsquares,treshold);
@@ -391,7 +413,7 @@ function getChunks(position,square,chunk,treshold,overlay) {
     const intersect = matriisiLeikkaus(oldsquares,newsquares);
     const olddiffer = matriisiErotus(oldsquares,intersect);
     const newdiffer = matriisiErotus(newsquares,intersect);
-
+    
     // etsii poistettavien chunkien todelliset koordinaatit
     var oldtransits = descaleArray(olddiffer,treshold);
     oldtransits = doscaleArray(oldtransits,overlay);

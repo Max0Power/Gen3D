@@ -110,7 +110,7 @@ var myLayout = new GoldenLayout(layout, '#container3D');
 
 // Noise Controller component
 myLayout.registerComponent('Noise controller', function( container, componentState) {
-    container.getElement().html( $( draggableUiComponent("Noise controller", [0,0], createNoiseController()) ) );
+    container.getElement().html( $( draggableUiComponent("Noise controller", createNoiseController()) ) );
 });
 
 // Controller 3D component

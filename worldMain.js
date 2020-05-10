@@ -246,7 +246,7 @@ class Map {
 	    button.disabled = !this.getValidity();
 	});    
 
-	return draggableUiComponent("Map", [0,0], this.container);
+	return draggableUiComponent("Map", this.container);
     }
 
     createInput(container,props) {

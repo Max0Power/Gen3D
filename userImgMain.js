@@ -152,7 +152,7 @@ function createUserInputImgController() {
 	handleLoadedImg(e);
     };
 
-    return draggableUiComponent("User input", [0,0], container);
+    return draggableUiComponent("User input", container);
 
     // // // //
 

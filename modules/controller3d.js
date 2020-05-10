@@ -37,9 +37,9 @@ var mesh = null;
 
 var meshes = []; // viitteet kaikkiin malleihin
 var square = [0,0]; // päivitysalueen sijainti
-var treshold = 128; // päivitysalueen koko
-var chunk = 3; // montako chunkia näytetään kerralla
-var overlay = 1; // montako pistettä siirretään
+var treshold = 0; // päivitysalueen koko
+var chunk = 5; // montako chunkia näytetään kerralla
+var overlay = 10; // montako pistettä siirretään
 
 function init() {
     container = document.createElement("DIV"); // container, johon renderer lisataan  
@@ -90,7 +90,6 @@ function init() {
     fitToContainer(container); // vapaa tila käyttöön
     new ResizeObserver(outputsize).observe(container);
 
-    /*
     // seurataan kameran liikkeita ja päivitetää chunkit,
     // mikäli päivitysalue ylitetään. päivitysalueen kokoa
     // voi suurentaa, samoin chunkien määrää voidaan lisätä
@@ -109,6 +108,7 @@ function init() {
 	    square = newsquare;
 
 	    // poistetaan vanhat chunkit
+            var count = 0;
 	    for (var i = 0; i < oldtransits.length; i++) {
 		for (var k = 0; k < meshes.length; k++) {
 		    var equal = arrayEquals(oldtransits[i],meshes[k].xz); // js/chunk.js
@@ -118,10 +118,13 @@ function init() {
 			mesh.geometry.dispose();
 			mesh.material.dispose();
 			meshes.splice(k--,1);
+
+                        count++;
 		    }
 		}
 	    }
-
+            console.log("poistettu "+count);
+            count = 0;
 	    // lisäätään uudet chunkit
 	    for (var j = 0; j < newtransits.length; j++) {
 		var tmp = newtransits[j];
@@ -129,11 +132,13 @@ function init() {
 		generateMesh(heights, [0,1], 1, 20, "Grayscale", tmp); // maxheight 20
 		var mesh = drawMesh();
 		meshes.push({xz: newtransits[j], mesh: mesh});
+                count++;
 	    }
+            console.log("lisätty "+count);
 	}
-    });*/
+    });
 	
-    return draggableUiComponent("3D-model", [0, 0], container);
+    return draggableUiComponent("3D-model", container);
 }
 
 
