@@ -1,3 +1,6 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+
 "use strict";
 
 function interpolointi(t) {
@@ -23,24 +26,24 @@ function interpoloi(r) {
 
     for (var i = 0; i < r.length; i++) {
 	if (r[i] === empt) {
-	    empty.push(i);
-	    if (r[i-1] > empt) {
+            empty.push(i);
+            if (r[i-1] > empt) {
 		xs.push(i-1);
 		ys.push(r[i-1]);
-	    }
-	    if (r[i+1] > empt) {
+            }
+            if (r[i+1] > empt) {
 		xs.push(i+1);
 		ys.push(r[i+1]);
-	    }
+            }
 	}
     }
     
     if (empty.length > 0) {
 	var d = differenssi(xs,ys);
 	for (var j = 0; j < empty.length; j++) {
-	    r[empty[j]] = newton(d,xs,empty[j]);
-	    r[empty[j]] = r[empty[j]] > max ? max : r[empty[j]]
-	    r[empty[j]] = r[empty[j]] < 0 ? 0 : r[empty[j]]
+            r[empty[j]] = newton(d,xs,empty[j]);
+            r[empty[j]] = r[empty[j]] > max ? max : r[empty[j]];
+            r[empty[j]] = r[empty[j]] < 0 ? 0 : r[empty[j]];
 	}
     }
 
@@ -51,7 +54,7 @@ function differenssi(xs,ys) {
     var d = ys.slice();
     for (var i = 1; i < d.length; i++) {
 	for (var j = d.length-1; j >= i; j--) {
-	    d[j] = (d[j]-d[j-1])/(xs[j]-xs[j-i]);
+            d[j] = (d[j]-d[j-1])/(xs[j]-xs[j-i]);
 	}
     }
 

@@ -1,3 +1,20 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+/*global laskeYlaAla */
+/*global laskeI */
+/*global laskeDms */
+/*global range */
+/*global vertaaLat */
+/*global laskeVasOik */
+/*global laskeJ */
+/*global vertaaLng */
+/*global laskeVasYla */
+/*global laskeAsteet */
+/*global laskeOikAla */
+/*global laskeSumma */
+
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -17,7 +34,7 @@
  *   laskeYlaAlaIndeksit(-1,0.269164,-0.230374) === [0,276]
  */
 function laskeYlaAlaIndeksit(aste,lat_1,lat_2) {
-    const lats = laskeYlaAla(lat_1,lat_2);
+    const lats = laskeYlaAla(lat_1,lat_2); // js/kaavat.js
     
     var indeksit = [0,1200];
     
@@ -41,10 +58,10 @@ function laskeYlaAlaIndeksit(aste,lat_1,lat_2) {
  *     === [877,1200],[0,276]
  */
 function laskeKaikkiYlaAlaIndeksit(lat_1,lat_2) {
-    [yla,ala] = laskeYlaAla(lat_1,lat_2).map(Math.floor);
+    var [yla,ala] = laskeYlaAla(lat_1,lat_2).map(Math.floor); // js/kaavat.js
     
     /* Taulukoi asteet pohjoisesta etelään */
-    var t = range(Math.abs(yla-ala)+1,ala).sort(vertaaLat);
+    var t = range(Math.abs(yla-ala)+1,ala).sort(vertaaLat); // js/kaavat.js
     
     /* Palauttaa asteita vastaavat rivi-indeksit */
     return t.map(x => { return laskeYlaAlaIndeksit(x,lat_1,lat_2); });
@@ -74,7 +91,7 @@ function laskeRivit(lat_1,lat_2) {
  *   laskeVasOikIndeksit(8,6.602783,8.723145) === [0, 868]
  */
 function laskeVasOikIndeksit(aste,lng_1,lng_2) {
-    const lngs = laskeVasOik(lng_1,lng_2);
+    const lngs = laskeVasOik(lng_1,lng_2); // js/kaavat.js
     
     var indeksit = [0,1200];
     
@@ -94,10 +111,10 @@ function laskeVasOikIndeksit(aste,lng_1,lng_2) {
  *     === [723,1200],[0,1200],[0,868]
  */
 function laskeKaikkiVasOikIndeksit(lng_1,lng_2) {
-    [vas,oik] = laskeVasOik(lng_1,lng_2).map(Math.floor);
+    var [vas,oik] = laskeVasOik(lng_1,lng_2).map(Math.floor); // js/kaavat.js
     
     /* Taulukoi asteet lännestä itään */
-    var t = range(Math.abs(oik-vas)+1,vas).sort(vertaaLng);
+    var t = range(Math.abs(oik-vas)+1,vas).sort(vertaaLng); // js/kaavat.js
     
     /* Palauttaa asteita vastaavat sarake-indeksit */
     return t.map(x => { return laskeVasOikIndeksit(x,lng_1,lng_2); });
@@ -156,7 +173,7 @@ function laskeVasYlaIndeksit(asteet,latlng_1,latlng_2) {
  *     === [877,723],[877,0],[0,723],[0,0]
  */
 function laskeKaikkiVasYlaIndeksit(latlng_1,latlng_2) {
-    var asteet = laskeAsteet(latlng_1,latlng_2);
+    var asteet = laskeAsteet(latlng_1,latlng_2); // js/kaavat.js
     
     return asteet.map(x => { return laskeVasYlaIndeksit(x,latlng_1,latlng_2); });
 }
@@ -202,7 +219,7 @@ function laskeOikAlaIndeksit(asteet,latlng_1,latlng_2) {
  *     === [1200,1200],[1200,868],[276,1200],[276,868]
  */
 function laskeKaikkiOikAlaIndeksit(latlng_1,latlng_2) {
-    var asteet = laskeAsteet(latlng_1,latlng_2);
+    var asteet = laskeAsteet(latlng_1,latlng_2); // js/kaavat.js
     
     return asteet.map(x => { return laskeOikAlaIndeksit(x,latlng_1,latlng_2); });
 }
@@ -217,7 +234,7 @@ function laskeSkaalatutRivit(lat_1,lat_2,max) {
     var t = laskeRivit(lat_1,lat_2);
     
     /* Kaikkien rivien lukumäärä */
-    const summa = t.reduce(laskeSumma);
+    const summa = t.reduce(laskeSumma); // js/kaavat.js
     const k = max/summa;
     
     /* Suhteuta rivimäärät max arvoon */
@@ -234,7 +251,7 @@ function laskeSkaalatutSarakkeet(lng_1,lng_2,max) {
     var t = laskeSarakkeet(lng_1,lng_2);
     
     /* Kaikkien sarakkeiden lkm */
-    const summa = t.reduce(laskeSumma);
+    const summa = t.reduce(laskeSumma); // js/kaavat.js
     const k = max/summa;
     
     /* Suhteuta sarakemäärät max arvoon */
@@ -386,7 +403,7 @@ function yhdistaMatriisit(ts,vasYla,oikAla) {
  *   yhdistaRivit(c,d) === [[1,2,3,4,5],[1,2,3,4,5],[1,2,3,4,5]]
  */
 function yhdistaRivit(a,b) {
-    return a ? range(a.length,0).map(x => [...a[x],...b[x]]) : b;
+    return a ? range(a.length,0).map(x => [...a[x],...b[x]]) : b; // js/kaavat.js
 }
 
 /**
@@ -400,16 +417,4 @@ function yhdistaRivit(a,b) {
  */
 function yhdistaSarakkeet(a,b) {
     return a ? [...a,...b] : b;
-}
-
-function tuplavarmistus(t) {
-    for (var i = 0; i < t.length; i++) {
-        for (var j = 0; j < t[i].length; j++) {
-            if (t[i][j] === -32768) {
-                t[i][j] = 0;
-            }
-        }
-    }
-    
-    return t;
 }

@@ -1,3 +1,19 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+/*global FileReader */
+/*global consoleLog */
+/*global Image */
+/*global getImageDataFromMemory */
+/*global XMLHttpRequest */
+/*global zip */
+/*global Blob */
+/*global onerror */
+/*global DataView */
+/*global laskeK */
+/*global ArrayBuffer */
+
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -29,8 +45,8 @@ function lueTiedostot(tiedostot,callback) {
 function lueTiedostoImage(file,callback) {
     const reader = new FileReader();
     reader.onprogress = function(e) {
-        console.log(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
-	consoleLog(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
+        //console.log(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %");
+	consoleLog(file.name+" "+Math.floor(100 * e.loaded / e.total)+" %"); // modules/uiComponents.js
     };
     reader.onload = function(e) {
         const img = new Image();
@@ -55,8 +71,8 @@ function lueTiedostoUrl(url,file,callback) {
     const request = new XMLHttpRequest();
     request.onprogress = function(e) {
         if (e.loaded && e.total) {
-            console.log(filename+" "+Math.floor(e.loaded / e.total * 100)+" %");
-	    consoleLog(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
+            //console.log(filename+" "+Math.floor(e.loaded / e.total * 100)+" %");
+            consoleLog(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
         }
     };
     request.onreadystatechange = function() {
@@ -93,7 +109,7 @@ function lueTiedostoZip(dataZip,file,callback) {
     
     zip.createReader(new zip.BlobReader(blob), function(zipReader) {
         zipReader.getEntries(function(entries) {
-	    const filename = entries[0].filename;
+            const filename = entries[0].filename;
             entries[0].getData(new zip.BlobWriter(), function(data) {
                 zipReader.close();
                 
@@ -103,13 +119,14 @@ function lueTiedostoZip(dataZip,file,callback) {
                     callback(lueKorkeudet(buffer),file);
                 };
 		myReader.onprogress = function(e) {
-		    console.log(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
-		    consoleLog(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
+                    //console.log(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
+                    consoleLog(filename+" "+Math.floor(100 * e.loaded / e.total)+" %");
 		};
                 myReader.readAsArrayBuffer(data);
             });
         });
     }, onerror);
+    zip.onerror = errorListener;
 }
 
 /**
@@ -134,26 +151,28 @@ function lueTiedostotZip(dataZip,files,callback) {
                 for (var j = 0; j < files.length; j++) {
                     const file = files[j]; // BlobWriter
                     if (name === files[j].getFileName()) {
-                        entries[i].getData(new zip.BlobWriter(), function(data) {
+                        entries[i].getData(new zip.BlobWriter(), (data) => {
                             zipReader.close();
                             
                             const myReader = new FileReader();
                             myReader.readAsArrayBuffer(data);
                             
                             const tied = file; // FileReader
-                            myReader.onload = function(e) {
+                            myReader.onload = (e) => {
                                 const buffer = e.srcElement.result;
                                 callback(lueKorkeudet(buffer),tied);
-                            }
-			    myReader.onprogress = function(e) {
-				console.log("Nothing to report!");
-			    };	
+                            };
+                            myReader.onprogress = (e) => {
+				//console.log("Nothing to report!");
+                                consoleLog("Nothing to report!");
+                            };	
                         });
                     }
                 }
             }
         });
     }, onerror);
+    zip.onerror = errorListener;
 }
 
 /*
@@ -184,6 +203,7 @@ function kirjoitaTiedostoZip(dataHgt,file,callback) {
             });
         });
     }, onerror);
+    zip.onerror = errorListener;
 }
 
 /**

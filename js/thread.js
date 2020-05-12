@@ -1,3 +1,10 @@
+/*jshint -W097 */
+/*global self */
+/*global importScripts */
+/*global lineaari */
+
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -8,7 +15,7 @@
 importScripts('matriisi.js', 'interpolointi.js', '../lib/math.js');
 
 self.addEventListener('message', function(e) {
-    self.postMessage(lineaari(e.data));
+    self.postMessage(lineaari(e.data)); // js.kaavat.js
     self.close();
 });
 

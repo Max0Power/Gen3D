@@ -1,3 +1,8 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+
+"use strict";
+
 /**
  * Joukko merkkijonoaliohjelmia Ohjelmointi 2-kurssin käyttöön
  * @author Vesa Lappalainen

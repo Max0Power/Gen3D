@@ -1,6 +1,6 @@
 /*jshint esnext: true */
 /*jshint -W097 */
-/*global range*/
+/*global range */
 
 "use strict";
 
@@ -53,7 +53,7 @@ function laskeChunk(total,lkm) {
 function insideSquare(position,square,treshold) {
     const inside = !range(position.length,0).some(i => {
 	return Math.abs(position[i]-square[i]) > treshold/2;
-    }); // range > js/kaavat.js
+    }); // js/kaavat.js
 
     return treshold === 0 ? true : inside;
 }
@@ -94,7 +94,7 @@ function replaceSquare(position,square,treshold) {
 	var tmp = square[i] + sign * fact * treshold;
 
 	return Math.abs(diff) > treshold/2 ? tmp : square[i];
-    }); // range > js/kaavat.js
+    }); // js/kaavat.js
 }
 
 /**
@@ -118,7 +118,7 @@ function rangeFromTo(from,to) {
     const abs = Math.abs(diff);
     const sign = diff === 0 ? 1 : diff / abs;
 
-    return range(abs+1,0).map(i => from + sign * i); // range > js/kaavat.js
+    return range(abs+1,0).map(i => from + sign * i); // js/kaavat.js
 }
 
 /**
@@ -196,7 +196,7 @@ function rangeSquare(square,chunk) {
  *   arrayEquals([1],[12]) === false
  */
 function arrayEquals(fstarr,sndarr) {
-    return range(fstarr.length,0)  // range > js/kaavat.js
+    return range(fstarr.length,0)  // js/kaavat.js
         .map(i => fstarr[i] === sndarr[i])
         .every(item => item === true);
 }
@@ -355,9 +355,9 @@ function doscaleArray(squares,treshold) {
  *   transit([-128,128],[-2,2]) === [-126,126]
  *   transit([-256,256],[-4,4]) === [-252,252]
  */
-function transit(square,transit) {
-    var x = square[0] - transit[0];
-    var z = square[1] - transit[1];
+function transit(square,shift) {
+    var x = square[0] - shift[0];
+    var z = square[1] - shift[1];
     
     return [x,z];
 }
@@ -377,7 +377,7 @@ function transit(square,transit) {
 function transitArray(squares,transits) {
     return range(squares.length,0).map(i => {
 	return transit(squares[i],transits[i]);
-    }); // range > js/kaavat.js
+    }); // js/kaavat.js
 }
 
 /**
@@ -428,9 +428,4 @@ function getChunks(position,square,chunk,treshold,overlay) {
     // sekä uudelleen päivitysalueen keskipisteen, johon
     // kameran sijaintia ja päivitysaluetta tulee verrata
     return [newsquare,oldtransits,newtransits];
-}
-
-function resolveOffsets() {
-    throw new Error("Not implemented error!");
-    // TODO: ratkaise chunkien kaipaamat offsetit
 }

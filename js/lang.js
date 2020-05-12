@@ -1,3 +1,16 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+/*global jQuery */
+/*global $ */
+/*global myLayout */
+/*global mapComponent */
+/*global noiseControllerComponent */
+/*global userInputComponent */
+/*global controller3dComponent */
+/*global textureViewerComponent */
+/*global textureEditorComponent */
+/*global modelComponent */
+
 "use strict";
 
 jQuery(function($) {
@@ -8,7 +21,7 @@ jQuery(function($) {
         $('.switch-locale').on('click', 'a', function(e) {
             e.preventDefault();
             $.i18n().locale = $(this).data('locale');
-	    updateLocales();
+            updateLocales();
         });
     });
 
@@ -31,32 +44,32 @@ function updateLocales() {
 
     var customs = $('.custom');
     for (var j = 0; j < customs.length; j++) {
-	var numbers = customs[j].text.match(/\d+/g).map(Number);
-	customs[j].text = $.i18n("texture-opt-custom-n", numbers[0]);
+        var numerot = customs[j].text.match(/\d+/g).map(Number);
+	customs[j].text = $.i18n("texture-opt-custom-n", numerot[0]);
     }
 
-    var components = myLayout.root.getItemsByType("component");
+    var components = myLayout.root.getItemsByType("component"); // worldGui.js, noiseGui.js, userImgGui.js
     for (var k = 0; k < components.length; k++) {
 	var component = components[k];
 	if (component.componentName.includes("-react-")) {
-	    component.setTitle($.i18n(component.config.component));
+            component.setTitle($.i18n(component.config.component));
 	} else {
-	    component.setTitle($.i18n(component.componentName));
+            component.setTitle($.i18n(component.componentName));
 	}
     }
     
     // päivitä raahattavien komponenttien otsikot
     if (typeof mapComponent !== 'undefined') {
-	mapComponent.title = $.i18n(mapComponent.component);
+	mapComponent.title = $.i18n(mapComponent.component); // worldGui.js
     }
     if (typeof noiseControllerComponent !== 'undefined') {
-	noiseControllerComponent.title = $.i18n(noiseControllerComponent.componentName);
+	noiseControllerComponent.title = $.i18n(noiseControllerComponent.componentName); // noiseGui.js
     }
     if (typeof userInputComponent !== 'undefined') {
-	userInputComponent.title = $.i18n(userInputComponent.componentName);
+	userInputComponent.title = $.i18n(userInputComponent.componentName); // userImgGui.js
     }	
-    controller3dComponent.title = $.i18n(controller3dComponent.componentName);
-    textureViewerComponent.title = $.i18n(textureViewerComponent.componentName);
-    textureEditorComponent.title = $.i18n(textureEditorComponent.componentName);
-    modelComponent.title = $.i18n(modelComponent.componentName);
+    controller3dComponent.title = $.i18n(controller3dComponent.componentName); // worldGui.js, noiseGui.js, userImgGui.js
+    textureViewerComponent.title = $.i18n(textureViewerComponent.componentName); // worldGui.js, noiseGui.js, userImgGui.js
+    textureEditorComponent.title = $.i18n(textureEditorComponent.componentName); // worldGui.js, noiseGui.js, userImgGui.js
+    modelComponent.title = $.i18n(modelComponent.componentName); // worldGui.js, noiseGui.js, userImgGui.js
 }

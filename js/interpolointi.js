@@ -1,3 +1,11 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+/*global luoMatriisi */
+/*global laskeSumma */
+/*global math */
+
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -18,7 +26,7 @@ function kaanteinenEtaisyys(t) {
 		var sample = annaNaytteet(t,empty);
 		var result = laskeKaanteinenEtaisyys(t,empty,sample); // interpolointi
 		fillEmptyWithResult(t,empty,result);
-	    }
+            }
         }
     }
     
@@ -26,34 +34,34 @@ function kaanteinenEtaisyys(t) {
 }
 
 function annaNaytteet(t,empty) {
-    if (empty.length < 1) throw Error("Virhe!");
+    if (empty.length < 1) throw new Error("Virhe!");
     
     var sample = [];
     for (var m = 0; m < empty.length; m++) {
-	[i,j] = empty[m];
+	var [i,j] = empty[m];
 
 	var tmp = [[i-1,j-1],[i-1,j],[i-1,j+1],
-		    [i,j-1],[i,j+1],
-		    [i+1,j-1],[i+1,j],[i+1,j+1]];
+                   [i,j-1],[i,j+1],
+                   [i+1,j-1],[i+1,j],[i+1,j+1]];
 
 	for (var n = 0; n < tmp.length; n++) {
-	    var [ti,tj] = tmp[n];
+            var [ti,tj] = tmp[n];
 
-	    if (t[ti] && t[ti][tj] && t[ti][tj] > NODATA) {
+            if (t[ti] && t[ti][tj] && t[ti][tj] > NODATA) {
 		var bool = true;
 
 		for (var k = 0; k < sample.length; k++) {
-		    var [si,sj] = sample[k];
+                    var [si,sj] = sample[k];
 
-		    if (si === ti && sj === tj) {
+                    if (si === ti && sj === tj) {
 			bool = false;
 			break;
-		    }
+                    }
 		}
 		if (bool) {
-		    sample.push(tmp[n]);
+                    sample.push(tmp[n]);
 		}
-	    }
+            }
 	}
     }
 
@@ -61,7 +69,7 @@ function annaNaytteet(t,empty) {
 }
 
 function laskeKaanteinenEtaisyys(t,empty,sample) {
-    if (sample.length < 1) throw Error("Virhe!");
+    if (sample.length < 1) throw new Error("Virhe!");
     
     const r = 2;
     var result = [];
@@ -71,18 +79,18 @@ function laskeKaanteinenEtaisyys(t,empty,sample) {
 
 	var qs = [];
 	for (var j = 0; j < sample.length; j++) {
-	    var [xi,yi] = sample[j];
+            var [xi,yi] = sample[j];
 
-	    var di = Math.sqrt( Math.pow(x-xi,2) + Math.pow(y-yi,2) );
-	    var qi = 1/(Math.pow(di,r));
-	    qs.push(qi);
+            var di = Math.sqrt( Math.pow(x-xi,2) + Math.pow(y-yi,2) );
+            var qi = 1/(Math.pow(di,r));
+            qs.push(qi);
 	}
 
 	var f = 0;
 	const sq = qs.reduce(laskeSumma); // js/kaavat.js
 	for (var k = 0; k < qs.length; k++) {
-	    var [xxi,yyi] = sample[k];
-	    f += (qs[k]/sq)*t[xxi][yyi];
+            var [xxi,yyi] = sample[k];
+            f += (qs[k]/sq)*t[xxi][yyi];
 	}
 	
 	result.push(Math.round(f));
@@ -92,7 +100,7 @@ function laskeKaanteinenEtaisyys(t,empty,sample) {
 }
 
 function fillEmptyWithResult(t,empty,result) {
-    if (empty.length !== result.length) throw Error("Virhe!");
+    if (empty.length !== result.length) throw new Error("Virhe!");
 
     for(var m = 0; m < empty.length; m++) {
 	var [i,j] = empty[m];
@@ -126,7 +134,7 @@ function lineaari(t) {
 		// selvitetään interpoloitavat sijainnit
                 var empty = annaTyhjat(t,ones,i,j);
 		laske(t,empty); // interpolointi
-	    }
+            }
         }
     }
     
@@ -256,7 +264,7 @@ function lineaariOriginal(t) {
     var b = [];
     var apu;
     for (var k = 0; k < empty.length; k++) {
-        apu = kertoimet(t,empty,k);
+        apu = kertoimetAlt(t,empty,k);
         A[k] = apu[0];
         b[k] = apu[1];
     }
@@ -272,7 +280,7 @@ function lineaariOriginal(t) {
     
     return t;
     
-    function kertoimet(t,empty,k) {
+    function kertoimetAlt(t,empty,k) {
         const i = empty[k][0];
         const j = empty[k][1];
         var f = (new Array(empty.length)).fill(0);

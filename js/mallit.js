@@ -1,3 +1,13 @@
+/*jshint esnext: true */
+/*jshint -W097 */
+/*global laskeRivit */
+/*global laskeSumma */
+/*global laskeSarakkeet */
+/*global laskeAsteet */
+/*global File */
+
+"use strict";
+
 /**
  * (c) 2018 Jussi Parviainen, Harri Linna, Wiljam Rautiainen, Pinja Turunen
  * Licensed under CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)
@@ -21,8 +31,8 @@ function fileTehtaat(latlng_1,latlng_2,max=200) {
     var askelJ = (Math.abs(latlng_1[1]-latlng_2[1])*1201-1)/(max-1);
     */
     
-    const rows = laskeRivit(latlng_1[0],latlng_2[0]).reduce(laskeSumma);
-    const cols = laskeSarakkeet(latlng_1[1],latlng_2[1]).reduce(laskeSumma);
+    const rows = laskeRivit(latlng_1[0],latlng_2[0]).reduce(laskeSumma); // js/matriisi.js, js/kaavat.js
+    const cols = laskeSarakkeet(latlng_1[1],latlng_2[1]).reduce(laskeSumma); // js/matriisi.js, js/kaavat.js
     
     var askelI = Math.max(1, Math.floor(rows/max)); // max > 0
     var askelJ = Math.max(1, Math.floor(cols/max)); // max > 0
@@ -31,7 +41,7 @@ function fileTehtaat(latlng_1,latlng_2,max=200) {
     
     var t = [];
     for (var i = 0; i < as.length; i++) {
-        t[i] = new File(as[i],latlng_1,latlng_2);
+        t[i] = new File(as[i],latlng_1,latlng_2); // modules/File.js
         t[i].setHeightAndWidth(askelI,askelJ); // modules/File.js
         //t[i].setJakojaannos(apui[i],apuj[i])
     }
@@ -40,9 +50,9 @@ function fileTehtaat(latlng_1,latlng_2,max=200) {
     
     function laskeKorjaus(pituus,askel,korjaus) {
         var jakojaannos = (pituus-1)%askel;
-        var korjaus = askel-1-korjaus-jakojaannos
+        var korjattu = askel-1-korjaus-jakojaannos;
         
-        return korjaus;
+        return korjattu;
     }
 }
 
