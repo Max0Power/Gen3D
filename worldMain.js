@@ -104,6 +104,7 @@ class Map {
 
     initiateSite() {
 	L.mapbox.accessToken = 'pk.eyJ1IjoiaGFiYSIsImEiOiJjazF5eXptbG4wcTl1M21sODFwbWVnMDI1In0.RgLBJb1OFvgsqYfnREA7ig';
+	
 	this.map = L.mapbox.map(this.mapid, 'mapbox.dark', {
 	    minZoom: 1,
 	    maxZoom: 18,
@@ -200,15 +201,14 @@ class Map {
             select.setAttribute("value", layerId);
 	    
 	    if (this.style) this.style.remove();
-            if (layerId !== 'default') {
+            if (layerId !== 'dark-v10') {
 		this.style = L.mapbox.styleLayer('mapbox://styles/mapbox/' + layerId).addTo(this.map);
             }
 	}
 	
-	const options = [["Black","default","map-opt-black"],
-			 ["Streets","streets-v11","map-opt-streets"],
+	const options = [["Dark","dark-v10","map-opt-dark"],
 			 ["Light","light-v10","map-opt-light"],
-			 ["Dark","dark-v10","map-opt-dark"],
+			 ["Streets","streets-v11","map-opt-streets"],
 			 ["Outdoors","outdoors-v11","map-opt-outdoors"],
 			 ["Satellite","satellite-v9","map-opt-satellite"],
 			 ["Satellite-Streets","satellite-streets-v11","map-opt-satellite-streets"]];

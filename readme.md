@@ -2,29 +2,15 @@
 
 ## Getting started
 
-### Prerequisites
-
-  1. [Git](https://git-scm.com/)
-  2. [Python](https://www.python.org)
+  ```
+  git clone https://github.com/Max0Power/Gen3D.git
+  git checkout gh-pages
+  python -m SimpleHTTPServer` OR `python3 -m http.server
+  firefox localhost:8000/world.html
+  ```
   
-### Installation
-
-  1. Clone this repository `git clone https://github.com/Max0Power/Gen3D.git`.
-  2. Go to project directory `cd Gen3D`.
-  3. Switch the branch to update the working directory `git checkout gh-pages`.
-  4. Run `python -m SimpleHTTPServer` to create a web server.
-
-### Usage
-
-  Go to `localhost:8000` on your browser to open the site.
-
 ## Running tests
 
-### Prerequisites
-
-  1. [Java](https://jdk.java.net/)
-
-### Usage
-
-  1. Go to project directory `cd Gen3D`.
-  2. Check syntax `java -jar test/rhino-1.7.12.jar test/jshint-rhino.js *.js instructions/*.js js/* modules/* sh/*.js`.
+  ```
+  java -jar test/rhino-1.7.12.jar test/jshint-rhino.js $(find . -name "*.js")
+  ```

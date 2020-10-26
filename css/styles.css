@@ -174,3 +174,7 @@ input:invalid {
 #instructions {
     padding:1em;
 }
+
+#\33 D-model > div:nth-child(1) {
+    overflow: hidden; /* Firefox pärinät */
+}
