@@ -5,6 +5,7 @@
  * @version 14.10.2019, GoldenLayout
  * @version 20.10.2019, Mapbox
  * @version 26.04.2020, jQuery.i18n
+ * @version 27.10.2020, tools removed
  */
 
 /* Asemointi navigointipalkit */
@@ -89,8 +90,8 @@ body .lm_content {
     overflow: auto; /* komponentin scrollbar */
 }
 
-#container3D { 
-    height: calc(100% - 109px); /* nav-bar */
+#container3D {
+    height: calc(100% - 52px); /* nav-bar */
     width: 100%;
     background-color: black;
     position: absolute; /* jos halutaan, etta ikkuna ei kasva kun objektia raahataan, ja raahattavat elementit on asetettu container3D:n sisaan */
@@ -121,38 +122,6 @@ body .lm_content {
     display: none;
 }
 
-/* Draggable buttons */
-
-.draggableToggleBtnActive {
-    background-color: dodgerblue;
-    text-align: center;
-    padding: 1em;
-    font-size: 12px;
-    font-weight: bold;
-    border-width: 0px;
-    margin-right: 2px;
-    border-radius: 4px;
-}
-
-.draggableToggleBtnInactive:active, 
-.draggableToggleBtnActive:active,
-.draggableToggleBtnInactive:hover,
-.draggableToggleBtnActive:hover {
-    background-color: hotpink;
-    color: white;
-}
-
-.draggableToggleBtnInactive {
-    background-color: lightsteelblue;
-    text-align: center;
-    padding: 1em;
-    font-size: 12px;
-    font-weight: bold;
-    border-width: 0px;
-    margin-right: 2px;
-    border-radius: 4px;
-}
-
 input:invalid {
     border-width: 0;
     background-color: hotpink;
@@ -160,16 +129,6 @@ input:invalid {
 }
 
 /* Instructions */
-
-/*
-#help {
-    height: 60px;
-    width: 60px;
-    position: absolute;
-    top: 10px;
-    left: calc(100% - 70px);
-}
-*/
 
 #instructions {
     padding:1em;

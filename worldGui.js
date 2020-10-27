@@ -3,7 +3,7 @@
 var mapComponent = {
     type: 'component',
     id: 'Map',
-    isClosable: true,
+    isClosable: false,
     componentName: 'Map',
     componentState: {  },
     props: { draggableId: 'Map' }
@@ -45,7 +45,7 @@ const size = {
 var controller3dComponent = {
     type: 'component',
     id: 'Controller 3D',
-    isClosable: true,
+    isClosable: false,
     componentName: 'Controller 3D',
     componentState: {  },
     props: { draggableId: 'Controller 3D' }
@@ -54,7 +54,7 @@ var controller3dComponent = {
 var textureViewerComponent = {
     type: 'component',
     id: 'Texture viewer',
-    isClosable: true,
+    isClosable: false,
     componentName: 'Texture viewer',
     componentState: {  },
     props: { draggableId: 'Texture viewer' }
@@ -62,7 +62,7 @@ var textureViewerComponent = {
 
 var textureEditorComponent = {
     type: 'component',
-    isClosable: true,
+    isClosable: false,
     id: 'Texture editor',
     componentName: 'Texture editor',
     componentState: {  },
@@ -72,7 +72,7 @@ var textureEditorComponent = {
 var modelComponent = {
     type: 'component',
     id: '3D-model',
-    isClosable: true,
+    isClosable: false,
     componentName: '3D-model',
     componentState: {  },
     props: { draggableId: '3D-model' }
@@ -80,7 +80,7 @@ var modelComponent = {
 
 var consoleWindowComponent = {
     type: 'component',
-    isClosable: true,
+    isClosable: false,
     id: 'Console window',
     componentName: 'Console window',
     componentState: {  },
@@ -91,7 +91,7 @@ var layout = {
     settings:{
         showPopoutIcon: false,
         showMaximiseIcon: true,
-        showCloseIcon: true
+        showCloseIcon: false
     },
     labels: {
         close: 'close',
@@ -171,48 +171,8 @@ myLayout.registerComponent('Console window', function( container, componentState
     container.getElement().html( $( createConsoleWindow(0,0) ) );
 });
 
-var addMenuItem = function( title, component ) {
-    var element = document.createElement("BUTTON");
-    element.appendChild(document.createTextNode(title));
-    element.setAttribute("data-i18n", title);
-    element.className = "draggableToggleBtnActive navbar-btn";
-
-    var show_hide = true;
-    element.onclick = function(event) {
-	event.preventDefault();
-	show_hide = !show_hide;
-	var that = document.getElementById(component.props.draggableId);
-	
-	if (that) {
-	    if (show_hide) {
-		element.className = "draggableToggleBtnActive";
-		that.style.display = 'block'; // show, ikkunan nakyviin
-	    } else {
-		element.className = "draggableToggleBtnInactive";
-		that.style.display = 'none'; // show, ikkuna pois nakyvista
-	    }
-	}
-    }
-    
-    $( '#tools' ).append( element );
-    myLayout.createDragSource( element, component );
-};
-
 $(window).resize(function () {
     myLayout.updateSize();
-});
-
-myLayout.on('initialised',function() {
-    myLayout.on('itemCreated', function(component) {
-	//updateLocales(); // js/lang.js
-    });
-    
-    addMenuItem( mapComponent.componentName, mapComponent );
-    addMenuItem( controller3dComponent.componentName, controller3dComponent );
-    addMenuItem( textureViewerComponent.componentName, textureViewerComponent );
-    addMenuItem( textureEditorComponent.componentName, textureEditorComponent );
-    addMenuItem( modelComponent.componentName, modelComponent );
-    addMenuItem( consoleWindowComponent.componentName, consoleWindowComponent );
 });
 
 myLayout.init();
